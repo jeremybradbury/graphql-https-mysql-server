@@ -1,20 +1,31 @@
+const { createServer } = require('http')
 const express = require('express')
-const graphqlHTTP = require('express-graphql')
+const bodyParser = require('body-parser')
+const { graphqlExpress, graphiqlExpress } = require('graphql-server-express')
 const schema = require('./schema')
 
-const server = express()
+const app = express()
 
 const dev = process.env.NODE_ENV !== 'production'
 const PORT = process.env.PORT || 5000
 
-server.use(
+app.use(bodyParser.json())
+
+app.use(
   '/graphql',
-  graphqlHTTP((req, res, gql) => ({
-    schema,
-    graphiql: dev,
-    pretty: dev
-  }))
+  graphqlExpress({
+    schema
+  })
 )
+
+app.use(
+  '/graphiql',
+  graphiqlExpress({
+    endpointURL: '/graphql'
+  })
+)
+
+const server = createServer(app)
 
 server.listen(PORT, err => {
   if (err) throw err
