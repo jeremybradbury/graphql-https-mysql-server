@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src"
+  },
   "dependencies": {
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
