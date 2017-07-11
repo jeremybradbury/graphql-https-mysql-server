@@ -1,7 +1,6 @@
 const { GraphQLNonNull } = require('graphql')
 const EventType = require('../types/event')
 const EventInputType = require('../types/input/event')
-const Event = require('../db/event')
 const socket = require('../socket')
 
 module.exports = {
@@ -12,7 +11,7 @@ module.exports = {
       type: new GraphQLNonNull(EventInputType)
     }
   },
-  resolve: (root, { data }) => {
+  resolve: (root, { data }, { db: { Event } }) => {
     return new Promise((resolve, reject) => {
       const newEvent = new Event(data)
 

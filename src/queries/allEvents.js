@@ -1,11 +1,10 @@
 const { GraphQLList } = require('graphql')
 const EventType = require('../types/event')
-const Event = require('../db/event')
 const getProjection = require('../utils/projection')
 
 module.exports = {
   type: new GraphQLList(EventType),
-  resolve: (root, args, options, fieldASTs) => {
+  resolve: (root, args, { db: { Event } }, fieldASTs) => {
     return new Promise((resolve, reject) => {
       const projection = getProjection(fieldASTs)
 

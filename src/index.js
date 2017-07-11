@@ -5,6 +5,7 @@ const { graphqlExpress, graphiqlExpress } = require('graphql-server-express')
 const { SubscriptionServer } = require('subscriptions-transport-ws')
 const { subscribe, execute } = require('graphql')
 const schema = require('./schema')
+const db = require('./db')
 
 const app = express()
 
@@ -16,6 +17,9 @@ app.use(bodyParser.json())
 app.use(
   '/graphql',
   graphqlExpress({
+    context: {
+      db
+    },
     schema
   })
 )
