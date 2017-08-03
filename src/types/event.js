@@ -6,13 +6,13 @@ const {
 } = require('graphql')
 
 module.exports = new GraphQLObjectType({
-  name: 'Event',
+  name: "Event",
   fields: () => ({
     id: {
       type: new GraphQLNonNull(GraphQLID)
     },
     name: {
-      type: GraphQLString
+      type: new GraphQLNonNull(GraphQLString)
     },
     date: {
       type: GraphQLString

@@ -1,38 +1,38 @@
-const { createServer } = require('http')
-const express = require('express')
-const bodyParser = require('body-parser')
-const { graphqlExpress, graphiqlExpress } = require('graphql-server-express')
-const { SubscriptionServer } = require('subscriptions-transport-ws')
-const { subscribe, execute } = require('graphql')
-const schema = require('./schema')
-const db = require('./db')
+const { createServer } = require('https');
+const express = require('express');
+const bodyParser = require('body-parser');
+const fs = require('fs');
+const { graphqlExpress, graphiqlExpress } = require('graphql-server-express');
+const { SubscriptionServer } = require('subscriptions-transport-ws');
+const { subscribe, execute } = require('graphql');
+const schema = require('./schema');
+const db = require('./db');
+const app = express();
 
-const app = express()
+const dev = process.env.NODE_ENV !== 'production';
+const PORT = process.env.PORT || 3443;
 
-const dev = process.env.NODE_ENV !== 'production'
-const PORT = process.env.PORT || 5000
-
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 app.use(
-  '/graphql',
+  '/api',
   graphqlExpress({
     context: {
       db
     },
     schema
   })
-)
+);
 
 app.use(
-  '/graphiql',
+  '/docs',
   graphiqlExpress({
-    endpointURL: '/graphql',
+    endpointURL: '/api',
     subscriptionsEndpoint: `ws://localhost:${PORT}/subscriptions`
   })
-)
+);
 
-const server = createServer(app)
+const server = createServer({ key: fs.readFileSync("./https/key.pem"), cert: fs.readFileSync("./https/cert.pem") }, app);
 
 server.listen(PORT, err => {
   if (err) throw err

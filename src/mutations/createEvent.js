@@ -13,15 +13,13 @@ module.exports = {
   },
   resolve: (root, { data }, { db: { Event } }) => {
     return new Promise((resolve, reject) => {
-      const newEvent = new Event(data)
-
-      newEvent
-        .save()
-        .then(data => {
+      Event.sync().then(() => {
+        console.log(data);
+        return Event.create(data);
+      }).then(data => {
           socket.publish('EVENT_CREATED', {
             eventCreated: data
           })
-
           resolve(data)
         })
         .catch(errors => reject(errors))

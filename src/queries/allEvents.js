@@ -6,11 +6,11 @@ module.exports = {
   type: new GraphQLList(EventType),
   args: {
     first: {
-      name: 'first',
+      name: 'limit',
       type: GraphQLInt
     },
     skip: {
-      name: 'skip',
+      name: 'offset',
       type: GraphQLInt
     }
   },
@@ -21,15 +21,15 @@ module.exports = {
     fieldASTs
   ) => {
     return new Promise((resolve, reject) => {
-      const projection = getProjection(fieldASTs)
-
-      Event.find({})
-        .select(projection)
-        .skip(skip)
-        .limit(first)
-        .exec()
-        .then(data => resolve(data))
-        .catch(errors => reject(errors))
+      const projection = Object.keys(getProjection(fieldASTs));
+      const q = { 
+        attributes: projection,
+        offset: skip,
+        limit: first
+      }
+      Event.findAll(q)
+        .then(events => { resolve(events); })
+        .catch(errors => reject(errors));
     })
   }
 }

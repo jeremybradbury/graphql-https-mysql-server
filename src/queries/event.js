@@ -12,13 +12,13 @@ module.exports = {
   },
   resolve: (root, { id }, { db: { Event } }, fieldASTs) => {
     return new Promise((resolve, reject) => {
-      const projection = getProjection(fieldASTs)
-
-      Event.findById(id)
-        .select(projection)
-        .exec()
-        .then(data => resolve(data))
-        .catch(errors => reject(errors))
-    })
+      const projection = Object.keys(getProjection(fieldASTs));
+      const q = {
+        where: {id: id}, 
+        attributes: projection
+      };
+      Event.find(q).then(events => resolve(events))
+        .catch(errors => reject(errors));
+    })  
   }
 }

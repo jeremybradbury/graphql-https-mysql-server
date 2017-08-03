@@ -1,13 +1,16 @@
-const mongoose = require('./connection')
-const { Schema } = mongoose
+const Sequelize = require('sequelize');
+const sequelize = require('./connection');
 
-module.exports = mongoose.model(
-  'Event',
-  Schema({
-    name: {
-      type: String,
-      required: true
-    },
-    date: Date
-  })
-)
+const Event = sequelize.define('event', {
+  name: {
+    type: Sequelize.STRING,
+    vailidate: {
+      notNull: true
+    }
+  },
+  date: {
+    type: Sequelize.DATE
+  }
+});
+
+module.exports = Event;

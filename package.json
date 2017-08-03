@@ -1,18 +1,21 @@
 {
-  "name": "graphql-server",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "graphql-mysql-server",
+  "version": "0.0.5",
+  "author": "Jeremy Bradbury",
   "license": "MIT",
-  "scripts": {
+    "scripts": {
+    "start": "node src",
     "dev": "nodemon src"
   },
+  "main": "index.js",
   "dependencies": {
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "graphql": "^0.10.3",
     "graphql-server-express": "^1.0.0",
     "graphql-subscriptions": "^0.4.4",
-    "mongoose": "^4.11.0",
+    "mysql2": "^1.3.6",
+    "sequelize": "^4.4.2",
     "subscriptions-transport-ws": "^0.8.0"
   },
   "devDependencies": {
