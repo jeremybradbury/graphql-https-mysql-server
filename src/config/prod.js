@@ -12,25 +12,31 @@ exports.dbConfig = {
   port: 3306
 };
 exports.logConfig = {
-  directory: '../log',
-  accessLogName: 'access.log',
-  accessLogOptions: {
-    size: '10M',
-    compress: 'gzip'
+  dir: path.normalize(__dirname+'/../log'),
+  access: {
+    fn: 'access.log',
+    options: {
+      size: '10M',
+      compress: 'gzip'
+    }
   },
-  errorLogName: 'error.log',
-  errorLogOptions: {
-    level: 'warn',
-    handleExceptions: true,
-    json: true,
-    maxsize: 10485760,
-    zippedArchive: true,
-    colorize: false
-  },
-  errorConsoleOptions: {
-    level: 'error',
-    handleExceptions: true,
-    //json: true,
-    colorize: true
+  error: {
+    fn: 'error.log',
+    options: {
+      file: {
+        level: 'warn',
+        handleExceptions: true,
+        json: true,
+        maxsize: 10485760,
+        zippedArchive: true,
+        colorize: false
+      },
+      console: {
+        level: 'error',
+        handleExceptions: true,
+        //json: true,
+        colorize: true
+      }
+    }
   }
 };

@@ -8,9 +8,10 @@ const { subscribe, execute } = require('graphql');
 const schema = require('./schema');
 const { appConfig } = require('./config');
 const db = require('./db');
+const dev = process.env.NODE_ENV !== 'production';
 const app = express();
 
-const dev = process.env.NODE_ENV !== 'production';
+app.tools = require('auto-load')('src/tools');
 
 app.use(bodyParser.json());
 
@@ -23,28 +24,14 @@ app.use('/docs',
   })
 );
 
-const server = createServer({ 
-    key: fs.readFileSync("./https/key.pem"), 
-    cert: fs.readFileSync("./https/cert.pem") 
-  }, 
-  app
-);
+const server = createServer({ key: fs.readFileSync("./https/key.pem"), cert: fs.readFileSync("./https/cert.pem") }, app);
 
-server.listen(PORT, err => {
+server.listen(appConfig.port, err => {
   if (err) throw err
 
   new SubscriptionServer(
-    {
-      schema,
-      execute,
-      subscribe,
-      onConnect: () => console.log('Client connected')
-    },
-    {
-      server,
-      path: '/subscriptions'
-    }
-  )
-
-  console.log(`> Ready on PORT ${appConfig.port}`)
+    { schema, execute, subscribe, onConnect: () => console.log('Client connected') },
+    { server, path: '/subscriptions' }
+  );
+  app.tools.logger.error.info(`> Ready on PORT ${appConfig.port}`)
 })
