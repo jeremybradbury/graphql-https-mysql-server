@@ -1,6 +1,6 @@
 const { GraphQLList, GraphQLInt } = require('graphql')
 const EventType = require('../types/event')
-const getProjection = require('../utils/projection')
+const getProjection = require('../tools/projection')
 
 module.exports = {
   type: new GraphQLList(EventType),

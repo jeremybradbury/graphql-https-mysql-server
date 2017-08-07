@@ -11,7 +11,7 @@ const db = require('./db');
 const dev = process.env.NODE_ENV !== 'production';
 const app = express();
 
-app.tools = require('auto-load')('src/tools');
+app.tools = require('auto-load')('src/tools/auto');
 
 app.use(bodyParser.json());
 
