@@ -1,5 +1,7 @@
 const { createServer } = require('https');
 const express = require('express');
+const passport = require("passport");
+const { Strategy } = require("passport-http-bearer");
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const { graphqlExpress, graphiqlExpress } = require('graphql-server-express');
