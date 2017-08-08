@@ -1,5 +1,5 @@
 'use strict';
-const { logConfig } = require('../config');
+const { logConfig } = require('../../config');
 const fs = require('fs');
 const rfs = require('rotating-file-stream');
 const access = require('morgan');
