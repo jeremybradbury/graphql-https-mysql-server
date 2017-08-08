@@ -22,7 +22,7 @@ app.use('/api', graphqlExpress({ context: { db }, schema }));
 app.use('/docs',
   graphiqlExpress({
     endpointURL: '/api',
-    subscriptionsEndpoint: `ws://${appConfig.host}:${appConfig.port}/subscriptions`
+    subscriptionsEndpoint: `wss://${appConfig.host}:${appConfig.port}/subscriptions`
   })
 );
 
@@ -35,5 +35,5 @@ server.listen(appConfig.port, err => {
     { schema, execute, subscribe, onConnect: () => console.log('Client connected') },
     { server, path: '/subscriptions' }
   );
-  app.tools.logger.error.info(`> Ready on PORT ${appConfig.port}`)
+  app.tools.logger.error.info(`Listening on ${appConfig.host}:${appConfig.port}`);
 })
