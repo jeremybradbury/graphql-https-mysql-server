@@ -1,27 +1,3 @@
-<script>
-  function getToken(renew) {
-    let url = (typeof renew == 'undefined') ? '/user/getToken' : '/user/token';
-    window.fetch(url, {
-      method: 'POST',
-      credentials: 'include'
-    })
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(json) {
-      let token = document.getElementById('token');
-      let expires = document.getElementById('expires');
-      token.value = json.data.token;
-      expires.value = json.data.expires.slice(0, 19).replace('T', ' ');
-      localStorage.setItem('token',json.data.token);
-      localStorage.setItem('expires',json.data.expires);
-    })
-    .catch(function(ex) {
-      console.error(ex);
-    });
-  }
-  getToken(); // request token on login
-</script>
 <h2 class="content-head is-center">API Token</h2>
 <div class="pure-g">
     <div class="l-box-lrg pure-u-1 pure-u-md-4-24"></div>
@@ -41,6 +17,7 @@
     </div>
 </div>
 <script>
+getToken(); // request token on login
 document.getElementById('token').value = localStorage.getItem('token');
 document.getElementById('expires').value = localStorage.getItem('expires').slice(0, 19).replace('T', ' ');
 </script>

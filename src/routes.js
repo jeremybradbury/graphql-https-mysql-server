@@ -11,6 +11,7 @@ module.exports = function(app, passport) {
   app.get('/login', function(req, res) {
     res.render('login.ejs', { message: req.flash('loginMessage') }); 
   });
+  app.use('/private', isLoggedIn, express.static(__dirname+'/private'));
   app.get('/dash', isLoggedIn, function(req,res) {
     res.render('dash.ejs', { user : req.user }); 
   });
