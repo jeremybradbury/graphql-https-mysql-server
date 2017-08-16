@@ -11,7 +11,7 @@ module.exports = function(app, passport) {
   app.get('/login', function(req, res) {
     res.render('login.ejs', { message: req.flash('loginMessage') }); 
   });
-  app.get('/dash', isLoggedIn, function(req,res,next) {
+  app.get('/dash', isLoggedIn, function(req,res) {
     res.render('dash.ejs', { user : req.user }); 
   });
   app.post('/login', passport.authenticate('local', {
@@ -20,11 +20,11 @@ module.exports = function(app, passport) {
       failureFlash : true
     })
   );
-  app.get('/logout', function(req, res, next) {
+  app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/dash');
   });
-  app.get('/begin/:token', function(req, res, next) {
+  app.get('/begin/:token', function(req, res) {
     db.User.findByToken(req.params.token)
       .then(user => {
         if(user instanceof Error || !user.status) { // valid user without a flasey status
@@ -42,7 +42,7 @@ module.exports = function(app, passport) {
       })
   });
   // token auth routes
-  app.use('/token/password',TokenAuth,function(req,res,next) {
+  app.use('/token/password',TokenAuth,function(req,res) {
     const password = app.tools.newPass();
     db.User.findById(req.user.id)
       .then(user => {
@@ -53,7 +53,7 @@ module.exports = function(app, passport) {
         log.e.error(e);
       });
   });
-  app.use('/token/check',TokenAuth,function(req,res,next) {
+  app.use('/token/check',TokenAuth,function(req,res) {
     db.User.findById(req.user.id)
       .then(user => {
         if(user) res.sendStatus(200);
@@ -63,7 +63,7 @@ module.exports = function(app, passport) {
         log.e.error(e);
       });
   });
-  app.use('/token/expire',TokenAuth,function(req,res,next) {
+  app.use('/token/expire',TokenAuth,function(req,res) {
     db.User.findById(req.user.id)
       .then(user => {
         user.tokenExpire();
@@ -72,7 +72,7 @@ module.exports = function(app, passport) {
         log.e.error(e);
       });
   });
-  app.use('/token/renew',TokenAuth,function(req,res,next) {
+  app.use('/token/renew',TokenAuth,function(req,res) {
     db.User.findById(req.user.id)
       .then(user => {
         const data = user.tokenNew();
@@ -84,7 +84,7 @@ module.exports = function(app, passport) {
   });
   
   // user auth routes
-  app.use('/user/auth',function(req,res,next) { 
+  app.use('/user/auth',function(req,res) { 
     let User = req.get('Authorization').split(':'); // TODO: grab from post body
     db.User.check(User[0],User[1])
       .then(user => {
@@ -95,7 +95,7 @@ module.exports = function(app, passport) {
         log.e.error(e);
       });
   });
-  app.use('/user/token',isLoggedIn,function(req,res,next) { 
+  app.use('/user/token',isLoggedIn,function(req,res) { 
     db.User.findById(req.user.id)
       .then(user => {
         const data = user.tokenNew();
@@ -105,7 +105,7 @@ module.exports = function(app, passport) {
         log.e.error(e);
       });
   });
-  app.use('/user/getToken',isLoggedIn,function(req,res,next) { 
+  app.use('/user/getToken',isLoggedIn,function(req,res) { 
     db.User.findById(req.user.id)
       .then(user => {
         const data = { token: user.token, expires: user.expires };
