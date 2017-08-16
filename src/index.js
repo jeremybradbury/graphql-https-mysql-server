@@ -1,37 +1,53 @@
-const { createServer } = require('https');
-const express = require('express');
-const bodyParser = require('body-parser');
+'use strict';
 const fs = require('fs');
-const { graphqlExpress, graphiqlExpress } = require('graphql-server-express');
+const express = require('express');
+const session = require('express-session');
+const passport = require("passport");
+const helmet = require('helmet');
+const flash = require('connect-flash');
+const cookieParser = require('cookie-parser');
+const { json, urlencoded  } = require('body-parser');
+const { createServer } = require('https');
 const { SubscriptionServer } = require('subscriptions-transport-ws');
 const { subscribe, execute } = require('graphql');
-const schema = require('./schema');
 const { appConfig } = require('./config');
+const schema = require('./schema');
 const db = require('./db');
-const dev = process.env.NODE_ENV !== 'production';
+const key = fs.readFileSync("./https/key.pem");
+const cert = fs.readFileSync("./https/cert.pem");
 const app = express();
 
+// middleware
+require('./config/passport')(passport);
+app.set('view engine', 'ejs');
+app.use(session({ 
+  secret: 'nv59082340582304t98v2g5erjferwtzpoev9j', 
+  cookie: { secure: true }, 
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize()); 
+app.use(passport.session());
+app.use(helmet());
 app.tools = require('auto-load')('src/tools');
+app.db = db;
+app.use(json());
+app.use(urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(app.tools.log.access("combined",{stream: app.tools.log.aStream})); // add morgan
+app.use(flash());
+//app.disable('view cache');
 
-app.use(bodyParser.json());
+// routes
+require('./routes')(app, passport); 
 
-app.use('/api', graphqlExpress({ context: { db }, schema }));
-
-app.use('/docs',
-  graphiqlExpress({
-    endpointURL: '/api',
-    subscriptionsEndpoint: `ws://${appConfig.host}:${appConfig.port}/subscriptions`
-  })
-);
-
-const server = createServer({ key: fs.readFileSync("./https/key.pem"), cert: fs.readFileSync("./https/cert.pem") }, app);
-
+const server = createServer({ key: key, cert: cert }, app);
 server.listen(appConfig.port, err => {
   if (err) throw err
 
   new SubscriptionServer(
-    { schema, execute, subscribe, onConnect: () => console.log('Client connected') },
+    { schema, execute, subscribe, onConnect: () => app.tools.log.e.debug('Client connected') },
     { server, path: '/subscriptions' }
   );
-  app.tools.logger.error.info(`> Ready on PORT ${appConfig.port}`)
+  app.tools.log.e.info(`Listening on ${appConfig.host}:${appConfig.port}`);
 })
