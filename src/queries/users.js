@@ -1,9 +1,9 @@
 const { GraphQLList, GraphQLInt } = require('graphql')
-const EventType = require('../types/event')
+const UserType = require('../types/user')
 const getProjection = require('../tools/projection')
 
 module.exports = {
-  type: new GraphQLList(EventType),
+  type: new GraphQLList(UserType),
   args: {
     first: {
       name: 'limit',
@@ -17,7 +17,7 @@ module.exports = {
   resolve: (
     root,
     { first = null, skip = null },
-    { db: { Event } },
+    { db: { User } },
     fieldASTs
   ) => {
     return new Promise((resolve, reject) => {
@@ -27,8 +27,8 @@ module.exports = {
         offset: skip,
         limit: first
       }
-      Event.findAll(q)
-        .then(events => { resolve(events); })
+      User.findAll(q)
+        .then(users => { resolve(users); })
         .catch(errors => reject(errors));
     })
   }

@@ -1,9 +1,12 @@
 const Sequelize = require('sequelize');
 const { dbConfig } = require('../config');
+const tools = require('auto-load')('src/tools');
+
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
   host: dbConfig.host,
   dialect: 'mysql',
-  pool: { max: 4, min: 0, idle: 10000 }
+  pool: { max: 4, min: 0, idle: 10000 },
+  logging: tools.log.e.silly // don't disable,  log level silly
 });
 const connection = sequelize.authenticate()
   .then(() => {
