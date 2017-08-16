@@ -38,6 +38,10 @@ function getToken(renew) {
     localStorage.setItem('token',json.data.token);
     localStorage.setItem('expires',json.data.expires);
   })
+  .then(function(){
+    document.getElementById('mytoken').value = localStorage.getItem('token');
+    document.getElementById('expires').value = localStorage.getItem('expires').slice(0, 19).replace('T', ' ');
+  })
   .catch(function(ex) {
     console.error(ex);
   });
