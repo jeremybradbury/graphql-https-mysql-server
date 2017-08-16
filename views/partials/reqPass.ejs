@@ -1,0 +1,44 @@
+<script>
+  function resetPassword() {
+    window.fetch('/token/password', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
+    })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(json) {
+      let password = document.getElementById('password');
+      let warning = document.getElementById('warning');
+      warning.removeAttribute("style");
+      password.value = json.data.password;
+      password.focus(); 
+      password.select();
+    })
+    .catch(function(ex) {
+      console.error(ex);
+    });
+  }
+</script>
+<h2 class="content-head is-center">New Passphrase</h2>
+<div class="pure-g">
+    <div class="l-box-lrg pure-u-1 pure-u-md-1-4"></div>
+    <div class="l-box-lrg pure-u-1 pure-u-md-1-2">
+        <p class="is-center">You are not allowed to choose a passphrase, we will generate one for you. 
+            <br>See <a href="https://xkcd.com/936/" target="_blank">this factual web comic</a> for rationale.
+        </p>
+        <form class="pure-form pure-form-stacked is-center">
+            <fieldset>
+                <div class="alert" id="warning" style="display:none;">
+                    Important: below is your new password. 
+                    <br>Press Cmd/Ctrl+C now to Copy it now, before Logout. 
+                    <br>Then Login using the new passphrase.
+                </div>
+                <input class="pure-u-1" id="password" type="text" readonly="true" placeholder="new passpharses appear here"> 
+                <button id="reset" onclick="resetPassword();return false;" class="pure-button">Request</button>
+            </fieldset>
+        </form>
+    </div>
+</div>

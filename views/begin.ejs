@@ -1,0 +1,24 @@
+<%- include ./partials/head %>
+<body>
+  <div class="header">
+    <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
+      <a class="pure-menu-heading" href="/dash">SMAGNET Dashboard</a>
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item"><a href="/logout" class="pure-menu-link">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+    <div class="splash-container">
+        <div class="splash">
+            <h1 class="splash-head">Welcome to SMAGNET</h1>
+            <p class="splash-subhead">Where secure, easy to remember passphrases are created for you, rather than complex, insecure passwords. Set a new password imediately or risk being locked out.</p>
+        </div>
+    </div>
+    <div class="content-wrapper" id="top">
+        <div class="content">
+            <%- include ./partials/reqPass %>
+        </div>
+<script>
+  window.localStorage.setItem('token','<%= user.token %>'); 
+</script>
+<%- include ./partials/footer %>
