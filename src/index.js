@@ -20,8 +20,8 @@ const app = express();
 // middleware
 require('./config/passport')(passport);
 app.set('view engine', 'ejs');
-app.use(session({ 
-  secret: 'nv59082340582304t98v2g5erjferwtzpoev9j', 
+app.use(session({
+  secret: appConfig.secret,
   cookie: { secure: true }, 
   resave: false,
   saveUninitialized: false

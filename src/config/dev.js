@@ -1,9 +1,13 @@
 'use strict';
+const generateToken = require('../tools/generateToken');
+
 exports.appConfig = {
   host: process.env.API_HOST || 'localhost',
   url: process.env.API_URL || 'https://localhost',
   port: process.env.API_PORT || 3443,
+  secret: process.env.API_SECRET || generateToken(),
 };
+
 exports.dbConfig = {
   user: 'root',
   password: 'root',

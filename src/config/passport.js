@@ -6,10 +6,16 @@ const { log } = require('auto-load')('src/tools');
 module.exports = function(passport) {
   // user auth from passport local
   passport.serializeUser(function(user, next) {
-    next(null, user);
+    next(null, user.id);
   });
   passport.deserializeUser(function(id, next) {
-    next(null, id);
+    db.User.findById(id)
+    .then(user => {
+      next(null, user);
+    })
+    .catch(e => {
+      next(e, false);
+    })
   });
   passport.use(new LocalStrategy({ 
       usernameField : 'email', 
