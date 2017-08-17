@@ -1,0 +1,32 @@
+<h2 class="content-head is-center">Manage Users</h2>
+<div class="pure-g">
+    <div class="l-box-lrg pure-u-1">
+        <table class="pure-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Token</th>
+                    <th>Expires</th>
+                    <th>Created</th>
+                    <th>Modified</th>
+                </tr>
+            </thead>
+            <tbody>
+              <% for(var i=0; i<local.users.length; i++) { %>
+                <tr>
+                    <td><a href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%= local.users[i].dataValues.id %></a></td>
+                    <td><%= local.users[i].dataValues.email %></td>
+                    <td><%= local.users[i].dataValues.status %></td>
+                    <td><input type="text" name="token" value="<%= local.users[i].dataValues.token %>"></td>
+                    <td><%= local.users[i].dataValues.expires %></td>
+                    <td><%= local.users[i].dataValues.createdAt %></td>
+                    <td><%= local.users[i].dataValues.updatedAt %></td>
+                <tr>   
+              <% } %>
+            </tbody>
+        </table>
+        <br>
+    </div>
+</div>

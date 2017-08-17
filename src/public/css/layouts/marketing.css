@@ -216,8 +216,12 @@ a.pure-button-primary,button.pure-button-primary {
 	background-color:#1f8dd6;
 }
 
-.dark p,.dark a,.dark h2,.dark h3 {
+.dark * {
 	color:#fff;
+}
+
+.dark th, .dark input {
+	color:#000;
 }
 
 .dark .pure-button {

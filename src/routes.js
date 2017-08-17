@@ -9,11 +9,29 @@ module.exports = function(app, passport) {
   // dashboard routes
   app.use('/',express.static(__dirname+'/public')); 
   app.get('/login', function(req, res) {
-    res.render('login.ejs', { message: req.flash('loginMessage') }); 
+    res.render('login.ejs', { message: req.flash('loginMessage'), local: {url: req.url, user : ''} }); 
   });
   app.use('/private', isLoggedIn, express.static(__dirname+'/private'));
   app.get('/dash', isLoggedIn, function(req,res) {
-    res.render('dash.ejs', { user : req.user }); 
+    res.render('dash.ejs', { local: {url: req.url, user : req.user, impersonate: false} }); 
+  });
+  app.get('/dash/admin', isLoggedIn, function(req,res) {
+    let local = {url: req.url, user : req.user};
+    if(req.user.status == 'manage-users') {
+      db.User.findAll({ attributes: { exclude: ['password'] }})
+      .then(users=>{
+        local.users = users;
+        res.render('admin.ejs', {local: local});
+      })
+    }
+  });
+  app.get('/dash/admin/user/:id', isLoggedIn, function(req,res) {
+    if(req.user.status == 'manage-users') {
+      db.User.findById(req.params.id)
+        .then(user=>{
+          res.render('dash.ejs', {local: {user: user, impersonate: req.user.email }});
+        })
+    }
   });
   app.post('/login', passport.authenticate('local', {
       successRedirect : '/dash',
@@ -25,14 +43,14 @@ module.exports = function(app, passport) {
     req.logout();
     res.redirect('/dash');
   });
-  app.get('/begin/:token', function(req, res) {
+  app.get('/new/:token', function(req, res) {
     db.User.findByToken(req.params.token)
       .then(user => {
         if(user instanceof Error || !user.status) { // valid user without a flasey status
           res.sendStatus(401);
         } else {
           if(!user.password) { // empty password == new user
-            res.render('begin.ejs', { user : user });
+            res.render('new.ejs', { user : user });
           } else {
             res.redirect('/dash'); // password is already set, go login fool (or home if you are logged in)
           }
@@ -123,7 +141,7 @@ module.exports = function(app, passport) {
     endpointURL: '/api',
     subscriptionsEndpoint: `wss://${appConfig.host}:${appConfig.port}/subscriptions`
   }));
-  app.use('*',TokenAuth,(req,res)=>{ res.sendStatus(404); }); // 404 everything else (if token used, otherwise 401)
+  app.use('*',(req,res)=>{ res.sendStatus(404); }); // 404 everything else
 }
 
 // user auth middleware
