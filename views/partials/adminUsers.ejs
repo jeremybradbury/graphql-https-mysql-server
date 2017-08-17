@@ -21,7 +21,7 @@
                     <td>
                         <form class="pure-form pure-form-stacked is-center" method="post" >
                             <select id="status" name="status">
-                                <option <% if(!local.users[i].dataValues.status || local.users[i].dataValues.status == '' ) { %>selected="true"<% } %>>Disabled</option>
+                                <option value=""<% if(!local.users[i].dataValues.status || local.users[i].dataValues.status == '' ) { %>selected="true"<% } %>>Disabled</option>
                                 <option value="active" <% if(local.users[i].dataValues.status == 'active') { %>selected="true"<% } %>>Active</option>
                                 <option value="invite-only" <% if(local.users[i].dataValues.status == 'invite-only') { %>selected="true"<% } %>>Invite New Users</option>
                                 <option value="manage-users" <% if(local.users[i].dataValues.status == 'manage-users') { %>selected="true"<% } %>>Manage Users</option>
