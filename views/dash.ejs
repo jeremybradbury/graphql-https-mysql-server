@@ -8,7 +8,15 @@
         <span class="pure-menu-heading">&bull;</span><a class="pure-menu-heading" href="/dash/admin#top">Admin</a>
       <% } %>
       <ul class="pure-menu-list is-right">
-        <li class="pure-menu-item"><a href="/logout" class="pure-menu-link">Logout<small><br><%= local.user.email %><% if(local.impersonate){ %><br>as <%= local.impersonate %><% } %></small></a></li>
+        <li class="pure-menu-item">
+        <% if(local.impersonate){ %>
+          <small>current user: <%= local.impersonate %></small>
+          <br>impersonating: <%= local.user.email %>
+        <% } else { %>
+          <a href="/logout" class="pure-menu-link">Logout
+          <br><small><%= local.user.email %></small></a>
+        <% } %>
+        </li>
         <li class="pure-menu-item"><a href="/dash#password" class="pure-menu-link">Password<br>reset</a></li>
       </ul>
     </div>
