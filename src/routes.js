@@ -6,43 +6,72 @@ const express = require('express');
 module.exports = function(app, passport) {
   const TokenAuth = passport.authenticate("bearer", { session: false }); // token auth middleware
   const { db, tools: {log} } = app;
-  // dashboard routes
-  app.use('/',express.static(__dirname+'/public')); 
+  // static resources (icons,images,css,etc)
+  app.use('/',express.static(__dirname+'/public'));
+  // logged in only static resources (script.js has ajax code for auth endpoints)
+  app.use('/private', isLoggedIn, express.static(__dirname+'/private'));
+  // user auth view
   app.get('/login', function(req, res) {
     res.render('login.ejs', { message: req.flash('loginMessage'), local: {url: req.url, user : ''} }); 
   });
-  app.use('/private', isLoggedIn, express.static(__dirname+'/private'));
+  // login endpoint
+  app.post('/login', function(req, res, next) {
+    passport.authenticate('local', function(err, user, info) {
+      if (err) { return next(err); }
+      // Redirect if it fails
+      if (!user) { return res.redirect('/login'); }
+      req.logIn(user, function(err) {
+        if (err) { return next(err); }
+        // Redirect if it succeeds
+        return res.redirect(req.session.returnTo || '/dash');
+      });
+    })(req, res, next);
+  });
+  // logout endpoint
+  app.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/dash');
+  });
+  // dash view
   app.get('/dash', isLoggedIn, function(req,res) {
     res.render('dash.ejs', { local: {url: req.url, user : req.user, impersonate: false} }); 
   });
+  // admin dash view
   app.get('/dash/admin', isLoggedIn, function(req,res) {
-    let local = {url: req.url, user : req.user};
-    if(req.user.status == 'manage-users') {
+    if(req.user.status == 'manage-users') { // isAdmin()
+      let local = {url: req.url, user : req.user};
       db.User.findAll({ attributes: { exclude: ['password'] }})
-      .then(users=>{
-        local.users = users;
-        res.render('admin.ejs', {local: local});
-      })
+        .then(users=>{
+          local.users = users;
+          res.render('admin.ejs', {local: local});
+        })
     }
   });
+  // admin user update endpoint
+  app.post('/dash/admin', isLoggedIn, function(req,res) {
+    if(req.user.status == 'manage-users') { // isAdmin()
+      log.e.info(req.body);
+      db.User.findById(req.body.id)
+        .then(user => {
+          if(req.body.status){
+            user.enable(req.body.status);
+          } else {
+            user.disable();
+          }
+          res.redirect('/dash/admin');
+        })
+    }
+  });
+  // user impersonation dash view
   app.get('/dash/admin/user/:id', isLoggedIn, function(req,res) {
-    if(req.user.status == 'manage-users') {
+    if(req.user.status == 'manage-users') { // isAdmin()
       db.User.findById(req.params.id)
         .then(user=>{
           res.render('dash.ejs', {local: {user: user, impersonate: req.user.email }});
         })
     }
   });
-  app.post('/login', passport.authenticate('local', {
-      successRedirect : '/dash',
-      failureRedirect : '/login', 
-      failureFlash : true
-    })
-  );
-  app.get('/logout', function(req, res) {
-    req.logout();
-    res.redirect('/dash');
-  });
+  // new user/password view
   app.get('/new/:token', function(req, res) {
     db.User.findByToken(req.params.token)
       .then(user => {
@@ -56,11 +85,8 @@ module.exports = function(app, passport) {
           }
         }
       })
-      .catch(e => {
-        log.e.error(e);
-      })
   });
-  // token auth routes
+  // token password reset endpoint
   app.use('/token/password',TokenAuth,function(req,res) {
     const password = app.tools.newPass();
     db.User.findById(req.user.id)
@@ -68,87 +94,63 @@ module.exports = function(app, passport) {
         res.json({data: {password: password}});
         user.encryptPass(password);
       })
-      .catch(e => {
-        log.e.error(e);
-      });
   });
+  // get user from auth token endpoint
   app.use('/token/check',TokenAuth,function(req,res) {
     db.User.findById(req.user.id)
       .then(user => {
         if(user) res.sendStatus(200);
         else res.sendStatus(401);
       })
-      .catch(e => {
-        log.e.error(e);
-      });
   });
+  // expire this token endpoint
   app.use('/token/expire',TokenAuth,function(req,res) {
     db.User.findById(req.user.id)
       .then(user => {
         user.tokenExpire();
       })
-      .catch(e => {
-        log.e.error(e);
-      });
   });
+  // renew this token endpoint
   app.use('/token/renew',TokenAuth,function(req,res) {
     db.User.findById(req.user.id)
       .then(user => {
         const data = user.tokenNew();
         res.json({data: data });
       })
-      .catch(e => {
-        log.e.error(e);
-      });
   });
-  
-  // user auth routes
-  app.use('/user/auth',function(req,res) { 
-    let User = req.get('Authorization').split(':'); // TODO: grab from post body
-    db.User.check(User[0],User[1])
-      .then(user => {
-        if(user) res.sendStatus(200);
-        else res.sendStatus(401);
-      })
-      .catch(e => {
-        log.e.error(e);
-      });
-  });
+  // user auth token renew endpoint
   app.use('/user/token',isLoggedIn,function(req,res) { 
     db.User.findById(req.user.id)
       .then(user => {
         const data = user.tokenNew();
         res.json({data: data});
       })
-      .catch(e => {
-        log.e.error(e);
-      });
   });
+  // get user with auth token endpoint
   app.use('/user/getToken',isLoggedIn,function(req,res) { 
     db.User.findById(req.user.id)
       .then(user => {
         const data = { token: user.token, expires: user.expires };
         res.json({data: data});
       })
-      .catch(e => {
-        log.e.error(e);
-      });
   });
-  
-  // GraphQL API routes
+  // GraphQL API
   app.post('/api', TokenAuth, graphqlExpress({ context: { db }, schema })); // only allow posts
+  // GraphiQL - needs token AND login session
   app.get('/docs', isLoggedIn, graphiqlExpress({
     endpointURL: '/api',
     subscriptionsEndpoint: `wss://${appConfig.host}:${appConfig.port}/subscriptions`
   }));
-  app.use('*',(req,res)=>{ res.sendStatus(404); }); // 404 everything else
+  // 404 everything else
+    // TODO: 404 view
+  app.use('*',(req,res)=>{ res.sendStatus(404); });
 }
-
 // user auth middleware
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
-    return next();
+    return next(); // proceed to next middleware
   }
+  // not authenticated
   req.session.returnTo = req.url;
   res.redirect('/login');
 }

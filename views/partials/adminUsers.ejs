@@ -8,7 +8,7 @@
                     <th>Email</th>
                     <th>Status</th>
                     <th>Token</th>
-                    <th>Expires</th>
+                    <th>Token Expires</th>
                     <th>Created</th>
                     <th>Modified</th>
                 </tr>
@@ -19,13 +19,25 @@
                 <tr>
                     <td><a href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%= local.users[i].dataValues.id %></a></td>
                     <td><%= local.users[i].dataValues.email %></td>
-                    <td><%= local.users[i].dataValues.status %></td>
-                    <td><input type="text" name="token" value="<%= local.users[i].dataValues.token %>"></td>
-                    <td><%= local.users[i].dataValues.expires %></td>
-                    <td><%= local.users[i].dataValues.createdAt %></td>
-                    <td><%= local.users[i].dataValues.updatedAt %></td>
-                <tr>   
-              <% } %>
+                    <td>
+                        <form class="pure-form pure-form-stacked is-center" method="post" >
+                            <select id="status" name="status">
+                                <option <% if(!local.users[i].dataValues.status || local.users[i].dataValues.status == '' ) { %>selected="true"<% } %>>Disabled</option>
+                                <option value="active" <% if(local.users[i].dataValues.status == 'active') { %>selected="true"<% } %>>Active</option>
+                                <option value="invite-only" <% if(local.users[i].dataValues.status == 'invite-only') { %>selected="true"<% } %>>Invite New Users</option>
+                                <option value="manage-users" <% if(local.users[i].dataValues.status == 'manage-users') { %>selected="true"<% } %>>Manage Users</option>
+                            </select>
+                            <input type="hidden" name="id" value="<%= local.users[i].dataValues.id %>">
+                            <button class="pure-button" type="submit">Update</button>
+                        </form>
+                    </td>
+                    <td><textarea class="pure-input-1-1" type="text" name="token"><%= local.users[i].dataValues.token %></textarea></td>
+                    <td><small><%= local.users[i].dataValues.expires %></small></td>
+                    <td><small><%= local.users[i].dataValues.createdAt %></small></td>
+                    <td><small><%= local.users[i].dataValues.updatedAt %></small></td>
+                <tr>
+                
+              <%_ } -%>
             </tbody>
         </table>
         <br>

@@ -6,10 +6,10 @@ const { log } = require('auto-load')('src/tools');
 module.exports = function(passport) {
   // user auth from passport local
   passport.serializeUser(function(user, next) {
-    next(null, user.id);
+    next(null, user.id); // serialize id
   });
   passport.deserializeUser(function(id, next) {
-    db.User.findById(id)
+    db.User.findById(id) // get user by id
     .then(user => {
       next(null, user);
     })
