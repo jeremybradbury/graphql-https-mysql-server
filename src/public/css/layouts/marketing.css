@@ -220,7 +220,7 @@ a.pure-button-primary,button.pure-button-primary {
 	color:#fff;
 }
 
-.dark th, .dark input {
+.dark th, .dark input, .dark select, .dark textarea   {
 	color:#000;
 }
 
@@ -236,6 +236,14 @@ a.pure-button-primary,button.pure-button-primary {
 	border-radius:5px;
 	padding:1em;
 	color:#fff;
+}
+
+.pure-table thead {
+  background-color: #1f8dd6;
+}
+
+.dark .pure-table thead {
+  background-color: #fff;
 }
 
 /*
