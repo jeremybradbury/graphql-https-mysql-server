@@ -10,8 +10,8 @@
       <ul class="pure-menu-list is-right">
         <li class="pure-menu-item">
         <% if(local.impersonate){ %>
-          <small>current user: <%= local.impersonate %></small>
-          <br>impersonating: <%= local.user.email %>
+          <small>current user: <b><%= local.impersonate %></b></small>
+          <br>impersonating: <b><%= local.user.email %></b>
         <% } else { %>
           <a href="/logout" class="pure-menu-link">Logout
           <br><small><%= local.user.email %></small></a>
