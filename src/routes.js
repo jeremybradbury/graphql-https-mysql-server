@@ -43,23 +43,36 @@ module.exports = function(app, passport) {
       db.User.findAll({ attributes: { exclude: ['password'] }})
         .then(users=>{
           local.users = users;
-          res.render('admin.ejs', {local: local});
+          res.render('admin.ejs', {message: req.flash('inviteMessage'), local: local});
         })
     }
   });
   // admin user update endpoint
-  app.post('/dash/admin', isLoggedIn, function(req,res) {
+  app.post('/dash/admin', isLoggedIn, function(req,res,next) {
     if(req.user.status == 'manage-users') { // isAdmin()
-      log.e.info(req.body);
-      db.User.findById(req.body.id)
+      if(req.body.id) {
+        db.User.findById(req.body.id)
         .then(user => {
           if(req.body.status){
+            log.e.info(user.email + ' changed to ' + req.body.status);
             user.enable(req.body.status);
           } else {
+            log.e.info(user.email + ' disabled');
             user.disable();
           }
           res.redirect('/dash/admin');
         })
+      }
+      if(req.body.email) {
+        db.User.create({email: req.body.email})
+          .then(user => {
+            let message = `New user: ${req.body.email} has been created. <br>Please provide user with this link to set a password: ${appConfig.url}:${appConfig.port}/new/${user.token} <br>Note: this link expires in 24 hours. It has NOT been sent to the user (emails is not setup).`;
+            req.flash('inviteMessage', message);
+            res.redirect('/dash/admin');
+          })
+      }
+    } else {
+      next();
     }
   });
   // user impersonation dash view
@@ -79,7 +92,7 @@ module.exports = function(app, passport) {
           res.sendStatus(401);
         } else {
           if(!user.password) { // empty password == new user
-            res.render('new.ejs', { user : user });
+            res.render('new.ejs', {local: { user : user }});
           } else {
             res.redirect('/dash'); // password is already set, go login fool (or home if you are logged in)
           }

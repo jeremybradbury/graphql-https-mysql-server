@@ -1,3 +1,6 @@
+<% if (message.length > 0) { %>
+  <div class="alert"><%- message %></div>
+<% } %>
 <h2 class="content-head is-center">Add & Invite New User</h2>
 <div class="pure-g">
     <div class="l-box-lrg pure-u-1 pure-u-md-4-24"></div>
@@ -5,27 +8,13 @@
         <p class="is-center">Enter an email and access level to create a new user and generate a new password url. 
           <br>The new user must create a password and login within 24 hours or the link will expire.
         </p>
-        <form class="pure-form pure-form-stacked is-center">
+        <form class="pure-form pure-form-stacked is-center" method="post">
             <fieldset>
                 <label for="email">Email</label> 
                 <input class="pure-u-1" id="email" name="email" type="text" placeholder="email">
-                <label for="status">Status</label> 
-                <select class="pure-u-1" id="status" name="status">
-                  <option>Disabled</option>
-                  <option value="active" selected="true">Active</option>
-                  <% if (local.user.status == "manage-users" || local.user.status == "invite-only" ) { %>
-                    <option value="invite-only">Invite New Users</option>
-                  <% } %>
-                  <% if (local.user.status == "manage-users" ) { %>
-                    <option value="manage-users">Manage Users</option>
-                  <% } %>
-                </select>
                 <br>
                 <button type="submit" class="pure-button">Invite</button>
             </fieldset>
         </form>
     </div>
 </div>
-<script>
-//getToken(); // request token on login
-</script>
