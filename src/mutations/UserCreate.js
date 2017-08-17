@@ -14,17 +14,17 @@ module.exports = {
   resolve: (root, { data }, { db: { User } }) => {
     return new Promise((resolve, reject) => {
       User.sync()
-      .then(() => {
-        //console.log(data);
-        return User.create(data);
-      })
-      .then(data => {
-        socket.publish('USER_CREATED', {
-          userCreated: data
+        .then(() => {
+          //console.log(data);
+          return User.create(data);
         })
-        resolve(data)
-      })
-      .catch(errors => reject(errors))
+        .then(data => {
+          socket.publish('USER_CREATED', {
+            userCreated: data
+          })
+          resolve(data)
+        })
+        .catch(errors => reject(errors))
     })
   }
 };
