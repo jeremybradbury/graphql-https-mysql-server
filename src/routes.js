@@ -1,11 +1,12 @@
 const { graphqlExpress, graphiqlExpress } = require('graphql-server-express');
-const schema = require('./schema');
+var schema = require('./schema');
 const { appConfig } = require('./config');
 const express = require('express');
+const admin = require('./db/admin');
 
 module.exports = function(app, passport) {
   const TokenAuth = passport.authenticate("bearer", { session: false }); // token auth middleware
-  const { db, tools: {log} } = app;
+  var { db, tools: {log} } = app;
   // static resources (icons,images,css,etc)
   app.use('/',express.static(__dirname+'/public'));
   // logged in only static resources (script.js has ajax code for auth endpoints)
@@ -166,9 +167,19 @@ module.exports = function(app, passport) {
   });
   // GraphQL API
   app.post('/api', TokenAuth, graphqlExpress({ context: { db }, schema })); // only allow posts
+  // GraphQL API
+  //console.dir(admin);
+  db = admin;
+  schema = require('./schema-admin');
+  app.post('/api/admin', TokenAuth, isAdmin, graphqlExpress({ context: { db }, schema })); // only allow posts
   // GraphiQL - needs token AND login session
   app.get('/docs', isLoggedIn, graphiqlExpress({
     endpointURL: '/api',
+    subscriptionsEndpoint: `wss://${appConfig.host}:${appConfig.port}/subscriptions`
+  }));
+  // GraphiQL - needs token AND login session
+  app.get('/docs/admin', isLoggedIn, isAdmin, graphiqlExpress({
+    endpointURL: '/api/admin',
     subscriptionsEndpoint: `wss://${appConfig.host}:${appConfig.port}/subscriptions`
   }));
   // 404 everything else
@@ -189,6 +200,6 @@ function isAdmin(req, res, next) {
   if(req.user.status == 'manage-users') {
     return next(); // proceed to next middleware
   }
-  // not authenticated
+  // not allowed
   res.sendStatus(403);
 }

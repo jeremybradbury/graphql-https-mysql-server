@@ -1,7 +1,7 @@
 const { GraphQLNonNull } = require('graphql');
-const UserType = require('../types/user');
-const UserInputType = require('../types/input/user');
-const socket = require('../socket');
+const UserType = require('../../types/user');
+const UserInputType = require('../../types/input/user');
+const socket = require('../../socket');
 
 module.exports = {
   type: UserType,

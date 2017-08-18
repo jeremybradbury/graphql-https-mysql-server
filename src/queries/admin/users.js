@@ -1,6 +1,6 @@
 const { GraphQLList, GraphQLInt } = require('graphql')
-const UserType = require('../types/user')
-const getProjection = require('../tools/projection')
+const UserType = require('../../types/user')
+const getProjection = require('../../tools/projection')
 
 module.exports = {
   type: new GraphQLList(UserType),

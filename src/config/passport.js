@@ -1,6 +1,6 @@
 const LocalStrategy = require('passport-local').Strategy;
 const TokenStrategy = require("passport-http-bearer").Strategy;
-const db = require('../db');
+const db = require('../db/admin');
 const { log } = require('auto-load')('src/tools');
 
 module.exports = function(passport) {
