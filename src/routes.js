@@ -37,60 +37,52 @@ module.exports = function(app, passport) {
     res.render('dash.ejs', { local: {url: req.url, user : req.user, impersonate: false} }); 
   });
   // admin dash view
-  app.get('/dash/admin', isLoggedIn, function(req,res) {
-    if(req.user.status == 'manage-users') { // isAdmin()
-      let local = {url: req.url, user : req.user};
-      db.User.findAll({ attributes: { exclude: ['password'] }})
-        .then(users=>{
-          local.users = users;
-          res.render('admin.ejs', {message: req.flash('inviteMessage'), local: local});
-        })
-    }
+  app.get('/dash/admin', isLoggedIn, isAdmin, function(req,res) {
+    let local = {url: req.url, user : req.user};
+    db.User.findAll({ attributes: { exclude: ['password'] }})
+      .then(users=>{
+        local.users = users;
+        res.render('admin.ejs', {message: req.flash('inviteMessage'), local: local});
+      })
   });
   // admin user update endpoint
-  app.post('/dash/admin', isLoggedIn, function(req,res,next) {
-    if(req.user.status == 'manage-users') { // isAdmin()
-      if(req.body.expires) { // expire post
-        db.User.findById(req.body.id)
-          .then(user => {
-            user.tokenExpire();
-            res.redirect('/dash/admin');
-          })
-      } else {
-        if(req.body.id) { // status post
-        db.User.findById(req.body.id)
-          .then(user => {
-            if(req.body.status){
-              log.e.info(user.email + ' changed to ' + req.body.status);
-              user.enable(req.body.status);
-            } else {
-              log.e.info(user.email + ' disabled');
-              user.disable();
-            }
-            res.redirect('/dash/admin');
-          })
-        }
-        if(req.body.email) { // invite post
-          db.User.create({email: req.body.email})
-            .then(user => {
-              let message = `New user: ${req.body.email} has been created. <br>Please provide user with this link to set a password: ${appConfig.url}:${appConfig.port}/new/${user.token} <br>Note: this link expires in 24 hours. It has NOT been sent to the user (emails is not setup).`;
-              req.flash('inviteMessage', message);
-              res.redirect('/dash/admin');
-            })
-        }
-      }
+  app.post('/dash/admin', isLoggedIn, isAdmin, function(req,res,next) {
+    if(req.body.expires) { // expire post
+      db.User.findById(req.body.id)
+        .then(user => {
+          user.tokenExpire();
+          res.redirect('/dash/admin');
+        })
     } else {
-      next();
+      if(req.body.id) { // status post
+      db.User.findById(req.body.id)
+        .then(user => {
+          if(req.body.status){
+            log.e.info(user.email + ' changed to ' + req.body.status);
+            user.enable(req.body.status);
+          } else {
+            log.e.info(user.email + ' disabled');
+            user.disable();
+          }
+          res.redirect('/dash/admin');
+        })
+      }
+      if(req.body.email) { // invite post
+        db.User.create({email: req.body.email})
+          .then(user => {
+            let message = `New user: ${req.body.email} has been created. <br>Please provide user with this link to set a password: ${appConfig.url}:${appConfig.port}/new/${user.token} <br>Note: this link expires in 24 hours. It has NOT been sent to the user (emails is not setup).`;
+            req.flash('inviteMessage', message);
+            res.redirect('/dash/admin');
+          })
+      }
     }
   });
   // user impersonation dash view
-  app.get('/dash/admin/user/:id', isLoggedIn, function(req,res) {
-    if(req.user.status == 'manage-users') { // isAdmin()
-      db.User.findById(req.params.id)
-        .then(user=>{
-          res.render('dash.ejs', {local: {user: user, impersonate: req.user.email }});
-        })
-    }
+  app.get('/dash/admin/user/:id', isLoggedIn, isAdmin, function(req,res) {
+    db.User.findById(req.params.id)
+      .then(user=>{
+        res.render('dash.ejs', {local: {user: user, impersonate: req.user.email }});
+      })
   });
   // new user/password view
   app.get('/new/:token', function(req, res) {
@@ -193,4 +185,12 @@ function isLoggedIn(req, res, next) {
   // not authenticated
   req.session.returnTo = req.url;
   res.redirect('/login');
+}
+// admin middleware
+function isAdmin(req, res, next) {
+  if(req.user.status == 'manage-users') {
+    return next(); // proceed to next middleware
+  }
+  // not authenticated
+  res.sendStatus(403);
 }
