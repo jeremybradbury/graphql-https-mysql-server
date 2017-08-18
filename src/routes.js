@@ -18,11 +18,9 @@ module.exports = function(app, passport) {
   app.post('/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
       if (err) { return next(err); }
-      // Redirect if it fails
       if (!user) { return res.redirect('/login'); }
       req.logIn(user, function(err) {
         if (err) { return next(err); }
-        // Redirect if it succeeds
         return res.redirect(req.session.returnTo || '/dash');
       });
     })(req, res, next);
@@ -33,11 +31,11 @@ module.exports = function(app, passport) {
     res.redirect('/dash');
   });
   // dash view
-  app.get('/dash', isLoggedIn, function(req,res) {
+  app.get('/dash',isLoggedIn,function(req,res) {
     res.render('dash.ejs', { local: {url: req.url, user : req.user, impersonate: false} }); 
   });
   // admin dash view
-  app.get('/dash/admin', isLoggedIn, isAdmin, function(req,res) {
+  app.get('/dash/admin',isLoggedIn,isAdmin,function(req,res) {
     let local = {url: req.url, user : req.user};
     db.User.findAll({ attributes: { exclude: ['password'] }})
       .then(users=>{
@@ -46,7 +44,7 @@ module.exports = function(app, passport) {
       })
   });
   // admin user update endpoint
-  app.post('/dash/admin', isLoggedIn, isAdmin, function(req,res,next) {
+  app.post('/dash/admin',isLoggedIn,isAdmin,function(req,res,next) {
     if(req.body.expires) { // expire post
       db.User.findById(req.body.id)
         .then(user => {
