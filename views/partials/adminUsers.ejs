@@ -30,7 +30,14 @@
                             <button class="pure-button" type="submit">Update</button>
                         </form>
                     </td>
-                    <td><textarea class="pure-input-1-1" type="text" name="token"><%= local.users[i].dataValues.token %></textarea></td>
+                    <td>
+                        <form class="pure-form pure-form-stacked is-center" method="post" >
+                            <textarea class="pure-input-1-1" type="text" name="token"><%= local.users[i].dataValues.token %></textarea>
+                            <input type="hidden" name="id" value="<%= local.users[i].dataValues.id %>">
+                            <input type="hidden" name="expires" value="x">
+                            <button class="pure-button" type="submit">Expire</button>
+                        </form>
+                    </td>
                     <td><small><%= local.users[i].dataValues.expires %></small></td>
                     <td><small><%= local.users[i].dataValues.createdAt %></small></td>
                     <td><small><%= local.users[i].dataValues.updatedAt %></small></td>

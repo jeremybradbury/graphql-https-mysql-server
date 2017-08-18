@@ -50,26 +50,34 @@ module.exports = function(app, passport) {
   // admin user update endpoint
   app.post('/dash/admin', isLoggedIn, function(req,res,next) {
     if(req.user.status == 'manage-users') { // isAdmin()
-      if(req.body.id) {
+      if(req.body.expires) { // expire post
         db.User.findById(req.body.id)
-        .then(user => {
-          if(req.body.status){
-            log.e.info(user.email + ' changed to ' + req.body.status);
-            user.enable(req.body.status);
-          } else {
-            log.e.info(user.email + ' disabled');
-            user.disable();
-          }
-          res.redirect('/dash/admin');
-        })
-      }
-      if(req.body.email) {
-        db.User.create({email: req.body.email})
           .then(user => {
-            let message = `New user: ${req.body.email} has been created. <br>Please provide user with this link to set a password: ${appConfig.url}:${appConfig.port}/new/${user.token} <br>Note: this link expires in 24 hours. It has NOT been sent to the user (emails is not setup).`;
-            req.flash('inviteMessage', message);
+            user.tokenExpire();
             res.redirect('/dash/admin');
           })
+      } else {
+        if(req.body.id) { // status post
+        db.User.findById(req.body.id)
+          .then(user => {
+            if(req.body.status){
+              log.e.info(user.email + ' changed to ' + req.body.status);
+              user.enable(req.body.status);
+            } else {
+              log.e.info(user.email + ' disabled');
+              user.disable();
+            }
+            res.redirect('/dash/admin');
+          })
+        }
+        if(req.body.email) { // invite post
+          db.User.create({email: req.body.email})
+            .then(user => {
+              let message = `New user: ${req.body.email} has been created. <br>Please provide user with this link to set a password: ${appConfig.url}:${appConfig.port}/new/${user.token} <br>Note: this link expires in 24 hours. It has NOT been sent to the user (emails is not setup).`;
+              req.flash('inviteMessage', message);
+              res.redirect('/dash/admin');
+            })
+        }
       }
     } else {
       next();
@@ -108,14 +116,6 @@ module.exports = function(app, passport) {
         user.encryptPass(password);
       })
   });
-  // get user from auth token endpoint
-  app.use('/token/check',TokenAuth,function(req,res) {
-    db.User.findById(req.user.id)
-      .then(user => {
-        if(user) res.sendStatus(200);
-        else res.sendStatus(401);
-      })
-  });
   // expire this token endpoint
   app.use('/token/expire',TokenAuth,function(req,res) {
     db.User.findById(req.user.id)
@@ -146,6 +146,33 @@ module.exports = function(app, passport) {
         const data = { token: user.token, expires: user.expires };
         res.json({data: data});
       })
+  });
+  // admin get token by id
+  app.post('/user/getTokenById',isLoggedIn,function(req,res,next) {
+    if(req.user.status == 'manage-users') {
+      db.User.findById(req.body.id)
+        .then(user => {
+          if(user){
+           const data = { token: user.token, expires: user.expires };
+           res.json({data: data}); 
+          } else {
+            next();
+          }
+        })
+    }
+  });
+  // admin renew token by id
+  app.post('/user/renewTokenById',isLoggedIn,function(req,res,next) {
+    if(req.user.status == 'manage-users') {
+      db.User.findById(req.body.id)
+        .then(user => {
+          if(user){
+            res.json({data: user.tokenNew()}); 
+          } else {
+            next();
+          }
+        })
+    }
   });
   // GraphQL API
   app.post('/api', TokenAuth, graphqlExpress({ context: { db }, schema })); // only allow posts

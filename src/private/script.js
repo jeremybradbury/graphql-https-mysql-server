@@ -21,12 +21,16 @@ function resetPassword() {
   });
 }
 
-function getToken(renew) {
+function getToken(renew,id) {
   let url = (typeof renew == 'undefined') ? '/user/getToken' : '/user/token';
-  window.fetch(url, {
-    method: 'POST',
-    credentials: 'include'
-  })
+  let q = { method: 'POST' };
+  q.credentials = 'include';
+  if(typeof id != 'undefined'){
+    url = (typeof renew == 'undefined') ? '/user/getTokenById' : '/user/renewTokenById';
+    q.body = `id=${id}`;
+    q.headers = {"Content-Type": "application/x-www-form-urlencoded"};
+  }
+  window.fetch(url, q)
   .then(function(response) {
     return response.json();
   })
