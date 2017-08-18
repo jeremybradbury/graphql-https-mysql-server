@@ -140,7 +140,7 @@ module.exports = function(app, passport) {
       })
   });
   // admin get token by id
-  app.post('/user/getTokenById',isLoggedIn,function(req,res,next) {
+  app.post('/user/getTokenById',isLoggedIn,isAdmin,function(req,res,next) {
     if(req.user.status == 'manage-users') {
       db.User.findById(req.body.id)
         .then(user => {
@@ -154,7 +154,7 @@ module.exports = function(app, passport) {
     }
   });
   // admin renew token by id
-  app.post('/user/renewTokenById',isLoggedIn,function(req,res,next) {
+  app.post('/user/renewTokenById',isLoggedIn,isAdmin,function(req,res,next) {
     if(req.user.status == 'manage-users') {
       db.User.findById(req.body.id)
         .then(user => {
