@@ -139,12 +139,22 @@ module.exports = function(app, passport) {
         })
       }
       if(req.body.email) { // invite post
-        db.User.create({email: req.body.email})
-          .then(user => {
-            let message = `New user: ${req.body.email} has been created. <br>Please provide user with this link to set a password: ${appConfig.url}:${appConfig.port}/new/${user.token} <br>Note: this link expires in 24 hours. It has NOT been sent to the user (emails is not setup).`;
+        db.User.findOrCreate({where: {email: req.body.email}})
+          .spread((user,created) => {
+            let message;
+            if(created) {
+              message = `New user: ${req.body.email} has been created. <br>Please provide user with this link to set a password: ${appConfig.url}:${appConfig.port}/new/${user.token} <br>Note: this link expires in 24 hours. It has NOT been sent to the user (emails is not setup).`;
+            } else { // user exists
+              if(!user.password){
+                token = user.tokenNew(1);
+                message = `User ${req.body.email} exists. <br>Please provide user with this new link to set a password: ${appConfig.url}:${appConfig.port}/new/${token.token} <br>Note: this link expires in 24 hours. It has NOT been sent to the user (emails is not setup).`;
+              } else {
+                message = 'User has set a password already.';
+              }
+            }
             req.flash('inviteMessage', message);
             res.redirect('/dash/admin');
-          })
+          });
       }
     }
   });
