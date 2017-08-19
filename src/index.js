@@ -49,5 +49,6 @@ server.listen(appConfig.port, err => {
     { schema, execute, subscribe, onConnect: () => app.tools.log.e.debug('Client connected') },
     { server, path: '/subscriptions' }
   );
+  // TODO: admin subscription server
   app.tools.log.e.info(`Listening on ${appConfig.host}:${appConfig.port}`);
 })

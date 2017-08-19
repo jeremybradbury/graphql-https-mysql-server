@@ -7,14 +7,13 @@ const admin = require('./db/admin');
 module.exports = function(app, passport) {
   const TokenAuth = passport.authenticate("bearer", { session: false }); // token auth middleware
   var { db, tools: {log} } = app;
-  // static resources (icons,images,css,etc)
+  /* static resources (icons,images,css,etc */
   app.use('/',express.static(__dirname+'/public'));
-  // logged in only static resources (script.js has ajax code for auth endpoints)
+  
+  /* authenticated static resources (script.js has ajax code for auth endpoints) */
   app.use('/private', isLoggedIn, express.static(__dirname+'/private'));
-  // user auth view
-  app.get('/login', function(req, res) {
-    res.render('login.ejs', { message: req.flash('loginMessage'), local: {url: req.url, user : ''} }); 
-  });
+  
+  /* auth endpoints */
   // login endpoint
   app.post('/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
@@ -31,74 +30,7 @@ module.exports = function(app, passport) {
     req.logout();
     res.redirect('/dash');
   });
-  // dash view
-  app.get('/dash',isLoggedIn,function(req,res) {
-    res.render('dash.ejs', { local: {url: req.url, user : req.user, impersonate: false} }); 
-  });
-  // admin dash view
-  app.get('/dash/admin',isLoggedIn,isAdmin,function(req,res) {
-    let local = {url: req.url, user : req.user};
-    db.User.findAll({ attributes: { exclude: ['password'] }})
-      .then(users=>{
-        local.users = users;
-        res.render('admin.ejs', {message: req.flash('inviteMessage'), local: local});
-      })
-  });
-  // admin user update endpoint
-  app.post('/dash/admin',isLoggedIn,isAdmin,function(req,res,next) {
-    if(req.body.expires) { // expire post
-      db.User.findById(req.body.id)
-        .then(user => {
-          user.tokenExpire();
-          res.redirect('/dash/admin');
-        })
-    } else {
-      if(req.body.id) { // status post
-      db.User.findById(req.body.id)
-        .then(user => {
-          if(req.body.status){
-            log.e.info(user.email + ' changed to ' + req.body.status);
-            user.enable(req.body.status);
-          } else {
-            log.e.info(user.email + ' disabled');
-            user.disable();
-          }
-          res.redirect('/dash/admin');
-        })
-      }
-      if(req.body.email) { // invite post
-        db.User.create({email: req.body.email})
-          .then(user => {
-            let message = `New user: ${req.body.email} has been created. <br>Please provide user with this link to set a password: ${appConfig.url}:${appConfig.port}/new/${user.token} <br>Note: this link expires in 24 hours. It has NOT been sent to the user (emails is not setup).`;
-            req.flash('inviteMessage', message);
-            res.redirect('/dash/admin');
-          })
-      }
-    }
-  });
-  // user impersonation dash view
-  app.get('/dash/admin/user/:id', isLoggedIn, isAdmin, function(req,res) {
-    db.User.findById(req.params.id)
-      .then(user=>{
-        res.render('dash.ejs', {local: {user: user, impersonate: req.user.email }});
-      })
-  });
-  // new user/password view
-  app.get('/new/:token', function(req, res) {
-    db.User.findByToken(req.params.token)
-      .then(user => {
-        if(user instanceof Error || !user.status) { // valid user without a flasey status
-          res.sendStatus(401);
-        } else {
-          if(!user.password) { // empty password == new user
-            res.render('new.ejs', {local: { user : user }});
-          } else {
-            res.redirect('/dash'); // password is already set, go login fool (or home if you are logged in)
-          }
-        }
-      })
-  });
-  // token password reset endpoint
+    // token password reset endpoint
   app.use('/token/password',TokenAuth,function(req,res) {
     const password = app.tools.newPass();
     db.User.findById(req.user.id)
@@ -165,12 +97,85 @@ module.exports = function(app, passport) {
         })
     }
   });
-  // GraphQL API
+  
+  /* views */
+  // login view
+  app.get('/login', function(req, res) {
+    res.render('login.ejs', { message: req.flash('loginMessage'), local: {url: req.url, user : ''} }); 
+  });
+  // dash view
+  app.get('/dash',isLoggedIn,function(req,res) {
+    res.render('dash.ejs', { local: {url: req.url, user : req.user, impersonate: false} }); 
+  });
+  // admin dash view
+  app.get('/dash/admin',isLoggedIn,isAdmin,function(req,res) {
+    let local = {url: req.url, user : req.user};
+    db.User.findAll({ attributes: { exclude: ['password'] }})
+      .then(users=>{
+        local.users = users;
+        res.render('admin.ejs', {message: req.flash('inviteMessage'), local: local});
+      })
+  });
+  // admin user update endpoint
+  app.post('/dash/admin',isLoggedIn,isAdmin,function(req,res,next) {
+    if(req.body.expires) { // expire post
+      db.User.findById(req.body.id)
+        .then(user => {
+          user.tokenExpire();
+          res.redirect('/dash/admin');
+        })
+    } else {
+      if(req.body.id) { // status post
+      db.User.findById(req.body.id)
+        .then(user => {
+          if(req.body.status){
+            log.e.info(user.email + ' changed to ' + req.body.status);
+            user.enable(req.body.status);
+          } else {
+            log.e.info(user.email + ' disabled');
+            user.disable();
+          }
+          res.redirect('/dash/admin');
+        })
+      }
+      if(req.body.email) { // invite post
+        db.User.create({email: req.body.email})
+          .then(user => {
+            let message = `New user: ${req.body.email} has been created. <br>Please provide user with this link to set a password: ${appConfig.url}:${appConfig.port}/new/${user.token} <br>Note: this link expires in 24 hours. It has NOT been sent to the user (emails is not setup).`;
+            req.flash('inviteMessage', message);
+            res.redirect('/dash/admin');
+          })
+      }
+    }
+  });
+  // user impersonation dash view
+  app.get('/dash/admin/user/:id',isLoggedIn,isAdmin,function(req,res) {
+    db.User.findById(req.params.id)
+      .then(user=>{
+        res.render('dash.ejs', {local: {user: user, impersonate: req.user.email }});
+      })
+  });
+  // new user/password view
+  app.get('/new/:token', function(req, res) {
+    db.User.findByToken(req.params.token)
+      .then(user => {
+        if(user instanceof Error || !user.status) { // valid user without a flasey status
+          res.sendStatus(401);
+        } else {
+          if(!user.password) { // empty password == new user
+            res.render('new.ejs', {local: { user: user }});
+          } else {
+            res.redirect('/dash'); // password is already set, go login fool (or home if you are logged in)
+          }
+        }
+      })
+  });
+
+  // User GraphQL API
   app.post('/api', TokenAuth, graphqlExpress({ context: { db }, schema })); // only allow posts
-  // GraphQL API
-  //console.dir(admin);
-  db = admin;
-  schema = require('./schema-admin');
+  // Admin GraphQL API
+  db = admin; // what var is for: need the same variable name, different values
+  schema = require('./schema-admin'); // what var is for: need the same variable name, different values
   app.post('/api/admin', TokenAuth, isAdmin, graphqlExpress({ context: { db }, schema })); // only allow posts
   // GraphiQL - needs token AND login session
   app.get('/docs', isLoggedIn, graphiqlExpress({
@@ -182,7 +187,7 @@ module.exports = function(app, passport) {
     endpointURL: '/api/admin',
     subscriptionsEndpoint: `wss://${appConfig.host}:${appConfig.port}/subscriptions`
   }));
-  // 404 everything else
+  // 404 everything else [note: one too many next() will end here rather than 'Cannot GET...']
     // TODO: 404 view
   app.use('*',(req,res)=>{ res.sendStatus(404); });
 }
