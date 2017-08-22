@@ -24,7 +24,10 @@ module.exports = function(passport) {
     function(req, email, password, next) { 
       db.User.check(email,password)
         .then(user => {
-          if (!user) return next(null, false, req.flash('loginMessage', 'Invalid credentials provided. Please, try again.'));
+          if (!user)
+            return next(null, false, req.flash('loginMessage', 'Invalid credentials provided. Please, try again.'));
+          if(!user.status)
+            return next(null, false, req.flash('loginMessage', 'User account has been disabled. Contact your administrator for more information.'));
           log.e.silly(user);
           return next(null, user);
         })
