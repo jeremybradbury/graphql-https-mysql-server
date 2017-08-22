@@ -5,26 +5,19 @@ const UserInputType = require('../../types/input/user');
 
 module.exports = {
   type: UserType,
+  description: 'Email, token or id is required.',
   args: {
     data: {
       name: 'data',
       type: new GraphQLNonNull(UserInputType)
     }
   },
-  resolve: (root, { data }, { db: { User } }) => {
+  resolve: (root, { data }, {req: {app: {db: {User}}}}) => {
     return new Promise((resolve, reject) => {
-      User.sync()
-        .then(() => {
-          //console.log(data);
-          return User.create(data);
-        })
-        .then(data => {
-/*
-          socket.publish('USER_CREATED', {
-            userCreated: data
-          })
-*/
-          resolve(data)
+      User.findOne({where: data})
+        .then((user) => {
+          user.tokenExpire();
+          resolve(user.dataValues);
         })
         .catch(errors => reject(errors))
     })

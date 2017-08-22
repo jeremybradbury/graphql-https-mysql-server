@@ -10,17 +10,12 @@
                 <input class="pure-u-1" id="mytoken" type="text" readonly="true">
                 <label for="expires">Expires </label>
                 <input class="pure-u-1" id="expires" type="text" readonly="true">
-                <button onclick="<% if(local.impersonate){ %>getToken(true,'<%= local.user.id %>');<% } else { %>getToken(true);<% } %> return false;" id="renew" class="pure-button">Renew Token</button>
+                <button onclick="getMyToken(true); return false;" id="renew" class="pure-button">Renew Token</button>
             </fieldset>
         </form>
         <p class="is-center">Tokens expire after 7 days maximum and must be renewed. Accesing this dashboard is the only way to renew a token after it has expired. Otherwise tokens may be renewed programmatically before their expiration.</p>
     </div>
 </div>
 <script>
-<% if(local.impersonate){ %>
-  getToken(false,'<%= local.user.id %>'); // request token on login
-<% } else { %>
-  getToken(); // request token on login
-<% } %>
+  getMyToken(); // request token on login
 </script>
-

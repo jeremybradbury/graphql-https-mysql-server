@@ -1,26 +1,26 @@
 <%- include ./partials/head %>
 <body>
-  <script src="/private/script.js"></script>
-  <div class="header" id="top">
-    <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
-      <a class="pure-menu-heading" href="/dash#top">Dash</a>
-      <% if (local.user.status == "manage-users" || local.user.status == "invite-only" ) { %>
-        <span class="pure-menu-heading">&bull;</span><a class="pure-menu-heading" href="/dash/admin#top">Admin</a>
-      <% } %>
-      <ul class="pure-menu-list is-right">
-        <li class="pure-menu-item">
-        <% if(local.impersonate){ %>
-          <small>current user: <b><%= local.impersonate %></b></small>
-          <br>impersonating: <b><%= local.user.email %></b>
-        <% } else { %>
-          <a href="/logout" class="pure-menu-link">Logout
-          <br><small><%= local.user.email %></small></a>
-        <% } %>
-        </li>
-        <li class="pure-menu-item"><a href="<%= local.url %>#password" class="pure-menu-link">Password<br>reset</a></li>
-      </ul>
+    <script src="/private/user.js"></script>
+    <div class="header" id="top">
+        <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
+            <a class="pure-menu-heading" href="/dash#top">Dash</a>
+            <% if (local.user.status == "manage-users" || local.user.status == "invite-only" ) { %>
+              <span class="pure-menu-heading">&bull;</span><a class="pure-menu-heading" href="/dash/admin#top">Admin</a>
+            <% } %>
+            <ul class="pure-menu-list is-right">
+              <li class="pure-menu-item">
+              <% if(local.impersonate){ %>
+                <small>current user: <b><%= local.impersonate %></b></small>
+                <br>impersonating: <b><%= local.user.email %></b>
+              <% } else { %>
+                <a href="/logout" class="pure-menu-link">Logout
+                <br><small><%= local.user.email %></small></a>
+              <% } %>
+              </li>
+              <li class="pure-menu-item"><a href="<%= local.url %>#password" class="pure-menu-link">Password<br>reset</a></li>
+            </ul>
+        </div>
     </div>
-  </div>
     <div class="splash-container">
         <div class="splash">
             <h1 class="splash-head">My Dashboard</h1>

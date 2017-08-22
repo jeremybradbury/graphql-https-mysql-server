@@ -53,9 +53,11 @@ User.prototype.tokenExpire = function() {
   this.update({expires: expired.toISOString() } ); // no further API requests will be accepted
   return expired;
 };
-User.prototype.encryptPass = function(pass) {
+User.prototype.resetPass = function() {
+  let pass = tools.newPass();
   let hash = bcrypt.hashSync(pass, 12); // hash pass
-  this.update({password:hash}); 
+  this.update({password:hash});
+  return pass;
 };
 /* class methods */
 User.findByToken = function(token) {

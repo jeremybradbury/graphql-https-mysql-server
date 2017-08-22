@@ -19,23 +19,20 @@
                     <td><a href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%= local.users[i].dataValues.id %></a></td>
                     <td><%= local.users[i].dataValues.email %></td>
                     <td>
-                        <form class="pure-form pure-form-stacked is-center" method="post" >
-                            <select id="status" name="status">
+                        <form class="pure-form pure-form-stacked is-center">
+                            <select id="status-<%= local.users[i].dataValues.id %>" name="status">
                                 <option value=""<% if(!local.users[i].dataValues.status || local.users[i].dataValues.status == '' ) { %>selected="true"<% } %>>Disabled</option>
                                 <option value="active" <% if(local.users[i].dataValues.status == 'active') { %>selected="true"<% } %>>Active</option>
                                 <option value="invite-only" <% if(local.users[i].dataValues.status == 'invite-only') { %>selected="true"<% } %>>Invite New Users</option>
                                 <option value="manage-users" <% if(local.users[i].dataValues.status == 'manage-users') { %>selected="true"<% } %>>Manage Users</option>
                             </select>
-                            <input type="hidden" name="id" value="<%= local.users[i].dataValues.id %>">
-                            <button class="pure-button" type="submit">Update</button>
+                            <button class="pure-button" onclick="updateStatusById('<%= local.users[i].dataValues.id %>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value); return false;">Update Status</button>
                         </form>
                     </td>
                     <td>
-                        <form class="pure-form pure-form-stacked is-center" method="post" >
+                        <form class="pure-form pure-form-stacked is-center">
                             <textarea class="pure-input-1-1" type="text" name="token"><%= local.users[i].dataValues.token %></textarea>
-                            <input type="hidden" name="id" value="<%= local.users[i].dataValues.id %>">
-                            <input type="hidden" name="expires" value="x">
-                            <button class="pure-button" type="submit">Expire</button>
+                            <button class="pure-button" onclick="expireById('<%= local.users[i].dataValues.id %>'); location.reload(); return false;">Expire Token</button>
                         </form>
                     </td>
                     <td><small><%= local.users[i].dataValues.expires %></small></td>

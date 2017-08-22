@@ -17,7 +17,7 @@ module.exports = {
   resolve: (
     root,
     { first = null, skip = null },
-    { db: { Event } },
+    { req: { app: {db: {Event }}} },
     fieldASTs
   ) => {
     return new Promise((resolve, reject) => {
@@ -28,7 +28,7 @@ module.exports = {
         limit: first
       }
       Event.findAll(q)
-        .then(events => { resolve(events); })
+        .then(events => resolve(events))
         .catch(errors => reject(errors));
     })
   }

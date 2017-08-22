@@ -7,12 +7,14 @@ const subscriptions = require('./subscriptions');
 module.exports = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Query',
-    fields: queries
+    fields: queries,
+    description: 'Users: email, id or token required.'
   }),
 
   mutation: new GraphQLObjectType({
     name: 'Mutation',
-    fields: mutations
+    fields: mutations,
+    description: 'Users: email, id or token required. Email only for invites.'
   }),
 
   subscription: new GraphQLObjectType({
