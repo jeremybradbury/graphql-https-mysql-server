@@ -232,10 +232,8 @@ a.pure-button-primary,button.pure-button-primary {
 }
 
 .alert {
-	background-color:#cf2d16;
-	border:solid 2px #df9d96;
+	background-color:#db7711;
 	border-radius:5px;
-	padding:1em;
 	color:#fff;
   overflow-wrap: break-word;
 }
