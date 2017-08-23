@@ -7,6 +7,7 @@ const {
 
 module.exports = new GraphQLObjectType({
   name: "User",
+  description: 'Email, token or id required for lookup.',
   fields: () => ({
     id: {
       type: new GraphQLNonNull(GraphQLID)
@@ -18,12 +19,15 @@ module.exports = new GraphQLObjectType({
       type: GraphQLString
     },
     token: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    password: {
       type: GraphQLString
     },
     expires: {
       type: GraphQLString
     },
-    password: {
+    url: {
       type: GraphQLString
     }
   })

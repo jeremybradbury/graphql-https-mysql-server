@@ -1,5 +1,14 @@
 <% include ./partials/head %>
 <body>
+  <script>
+    function showHide(){
+      if(document.getElementById('showhide').checked){
+        document.getElementById('password').setAttribute('type', 'password');
+      } else {
+        document.getElementById('password').setAttribute('type', 'text');
+      }
+    }
+  </script>
   <div class="header">
     <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
       <a class="pure-menu-heading" href="/dash">Dash</a>
@@ -19,7 +28,9 @@
                         <label for="email">Email</label> 
                         <input class="pure-u-1" id="email" name="email" type="text" placeholder="email">
                         <label for="password">Password</label> 
-                        <input class="pure-u-1" id="password" name="password" type="password" placeholder="password">
+                        <input class="pure-u-1" id="password" name="password" type="text" placeholder="password">
+                        <input id="showhide" onclick="showHide()" name="showhide" type="checkbox" value="hide">Hide Password</input>
+                        <br>
                         <button type="submit" class="pure-button">Enter</button>
                         
                     </fieldset>

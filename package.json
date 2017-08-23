@@ -1,6 +1,6 @@
 {
-  "name": "graphql-mysql-server",
-  "version": "0.0.5",
+  "name": "smagnet",
+  "version": "0.0.1",
   "author": "Jeremy Bradbury",
   "license": "MIT",
   "scripts": {

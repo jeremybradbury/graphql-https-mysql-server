@@ -1,9 +1,13 @@
 'use strict';
+const generateToken = require('../tools/generateToken');
+
 exports.appConfig = {
   host: process.env.API_HOST || 'localhost',
   url: process.env.API_URL || 'https://localhost',
   port: process.env.API_PORT || 3443,
+  secret: process.env.API_SECRET || generateToken(),
 };
+
 exports.dbConfig = {
   user: 'root',
   password: 'root',
@@ -11,8 +15,9 @@ exports.dbConfig = {
   database: 'graphql_api',
   port: 3306
 };
+
 exports.logConfig = {
-  dir: path.normalize(__dirname+'/../log'),
+  dir: __dirname+'/../log',
   access: {
     fn: 'access.log',
     options: {
@@ -34,7 +39,6 @@ exports.logConfig = {
       console: {
         level: 'error',
         handleExceptions: true,
-        //json: true,
         colorize: true
       }
     }

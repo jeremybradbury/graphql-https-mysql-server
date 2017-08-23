@@ -1,7 +1,11 @@
-const createEvent = require('./eventCreate');
-const createUser = require('./userCreate');
+const eventCreate = require('./eventCreate');
+const tokenExpire = require('./tokenExpire');
+const tokenNew = require('./tokenNew');
+const passwordReset = require('./passwordReset');
 
 module.exports = {
-  createEvent,
-  createUser
+  eventCreate,
+  tokenExpire,
+  tokenNew,
+  passwordReset
 }

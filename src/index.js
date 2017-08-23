@@ -20,8 +20,8 @@ const app = express();
 // middleware
 require('./config/passport')(passport);
 app.set('view engine', 'ejs');
-app.use(session({ 
-  secret: 'nv59082340582304t98v2g5erjferwtzpoev9j', 
+app.use(session({
+  secret: appConfig.secret,
   cookie: { secure: true }, 
   resave: false,
   saveUninitialized: false
@@ -49,5 +49,6 @@ server.listen(appConfig.port, err => {
     { schema, execute, subscribe, onConnect: () => app.tools.log.e.debug('Client connected') },
     { server, path: '/subscriptions' }
   );
+  // TODO: admin subscription server
   app.tools.log.e.info(`Listening on ${appConfig.host}:${appConfig.port}`);
 })
