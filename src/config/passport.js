@@ -1,15 +1,21 @@
 const LocalStrategy = require('passport-local').Strategy;
 const TokenStrategy = require("passport-http-bearer").Strategy;
-const db = require('../db');
+const db = require('../db/admin');
 const { log } = require('auto-load')('src/tools');
 
 module.exports = function(passport) {
   // user auth from passport local
   passport.serializeUser(function(user, next) {
-    next(null, user);
+    next(null, user.id); // serialize id
   });
   passport.deserializeUser(function(id, next) {
-    next(null, id);
+    db.User.findById(id) // get user by id
+    .then(user => {
+      next(null, user);
+    })
+    .catch(e => {
+      next(e, false);
+    })
   });
   passport.use(new LocalStrategy({ 
       usernameField : 'email', 
@@ -18,7 +24,10 @@ module.exports = function(passport) {
     function(req, email, password, next) { 
       db.User.check(email,password)
         .then(user => {
-          if (!user) return next(null, false, req.flash('loginMessage', 'Invalid credentials provided. Please, try again.'));
+          if (!user)
+            return next(null, false, req.flash('loginMessage', 'Invalid credentials provided. Please, try again.'));
+          if(!user.status)
+            return next(null, false, req.flash('loginMessage', 'User account has been disabled. Contact your administrator for more information.'));
           log.e.silly(user);
           return next(null, user);
         })

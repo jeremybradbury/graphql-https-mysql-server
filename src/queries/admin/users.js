@@ -1,6 +1,6 @@
 const { GraphQLList, GraphQLInt } = require('graphql')
-const UserType = require('../types/user')
-const getProjection = require('../tools/projection')
+const UserType = require('../../types/user')
+const getProjection = require('../../tools/projection')
 
 module.exports = {
   type: new GraphQLList(UserType),
@@ -17,7 +17,7 @@ module.exports = {
   resolve: (
     root,
     { first = null, skip = null },
-    { db: { User } },
+    { req: {app: {db: {User}}}},
     fieldASTs
   ) => {
     return new Promise((resolve, reject) => {
@@ -28,7 +28,7 @@ module.exports = {
         limit: first
       }
       User.findAll(q)
-        .then(users => { resolve(users); })
+        .then(users => resolve(users))
         .catch(errors => reject(errors));
     })
   }

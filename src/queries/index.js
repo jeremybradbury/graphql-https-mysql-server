@@ -1,11 +1,9 @@
 const Event = require('./event');
 const allEvents = require('./allEvents');
-const User = require('./user');
-const Users = require('./users');
+const tokenCheck = require('./tokenCheck');
 
 module.exports = {
   Event,
   allEvents,
-  User,
-  Users
+  tokenCheck
 }

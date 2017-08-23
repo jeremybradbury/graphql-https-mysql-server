@@ -176,6 +176,7 @@ a.pure-button-primary,button.pure-button-primary {
 
 .content {
 	padding:1em 1em 3em;
+  overflow-y: auto;
 }
 
 /* This is the class used for the main content headers (<h2>) */
@@ -216,8 +217,12 @@ a.pure-button-primary,button.pure-button-primary {
 	background-color:#1f8dd6;
 }
 
-.dark p,.dark a,.dark h2,.dark h3 {
+.dark * {
 	color:#fff;
+}
+
+.dark th, .dark input, .dark select, .dark textarea   {
+	color:#000;
 }
 
 .dark .pure-button {
@@ -227,11 +232,18 @@ a.pure-button-primary,button.pure-button-primary {
 }
 
 .alert {
-	background-color:#cf2d16;
-	border:solid 2px #df9d96;
+	background-color:#db7711;
 	border-radius:5px;
-	padding:1em;
 	color:#fff;
+  overflow-wrap: break-word;
+}
+
+.pure-table thead {
+  background-color: #1f8dd6;
+}
+
+.dark .pure-table thead {
+  background-color: #fff;
 }
 
 /*

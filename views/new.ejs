@@ -1,0 +1,26 @@
+<%- include ./partials/head %>
+<body>
+    <script src="/new.js"></script>
+    <div class="header" id="top">
+      <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
+        <a class="pure-menu-heading" href="/dash#top">Dash</a>
+        <%_ if (local.user.status == "manage-users" || local.user.status == "invite-only" ) { -%>
+          <span class="pure-menu-heading">/</span><a class="pure-menu-heading" href="/dash/admin#top">Admin</a>
+        <%_ } -%>
+        <ul class="pure-menu-list is-right">
+          <li class="pure-menu-item"><a href="/logout" class="pure-menu-link">Logout <small><br><%= local.user.email %></small></a></li>
+          <li class="pure-menu-item"><a href="/dash/admin#manage" class="pure-menu-link">Manage <br>users</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="splash-container">
+        <div class="splash">
+            <h1 class="splash-head">Welcome <%= local.user.email %></h1>
+            <p class="splash-subhead">Where secure, easy to remember passphrases are created for you, rather than complex, insecure passwords. Set a new password imediately or risk being locked out.</p>
+        </div>
+    </div>
+    <div class="content-wrapper" id="top">
+        <div class="content">
+            <%- include ./partials/reqPass %>
+        </div>
+<%- include ./partials/footer %>

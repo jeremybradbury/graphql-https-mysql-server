@@ -10,15 +10,21 @@ module.exports = {
       type: new GraphQLNonNull(GraphQLID)
     }
   },
-  resolve: (root, { id }, { db: { Event } }, fieldASTs) => {
-    return new Promise((resolve, reject) => {
-      const projection = Object.keys(getProjection(fieldASTs));
-      const q = {
-        where: {id: id}, 
-        attributes: projection
-      };
-      Event.find(q).then(events => resolve(events))
-        .catch(errors => reject(errors));
-    })  
-  }
+  resolve: (
+    root, 
+    { id }, 
+    { req: { app: {db: {Event }}} }, 
+    fieldASTs
+  ) => {
+      return new Promise((resolve, reject) => {
+        const projection = Object.keys(getProjection(fieldASTs));
+        const q = {
+          where: {id: id}, 
+          attributes: projection
+        };
+        Event.findOne(q)
+          .then(events => resolve(events))
+          .catch(errors => reject(errors));
+      })  
+    }
 }
