@@ -22,9 +22,11 @@ function getMyToken(renew) {
     function() {
       if (this.readyState == 4 && this.status == 200) {
         let data = JSON.parse(this.responseText).data;
-        let User = (data.tokenCheck != 'undefined') ? data.tokenCheck : data.tokenNew;
-        document.getElementById("mytoken").value = User.token;
-        document.getElementById("expires").value = User.expires;
+        let User = data.tokenCheck || data.tokenNew;
+        if (document.getElementById("mytoken") !== null) { 
+          document.getElementById("mytoken").value = User.token;
+          document.getElementById("expires").value = User.expires;
+        }
         localStorage.setItem('id',User.id);
         localStorage.setItem('token',User.token);
         localStorage.setItem('expires',User.expires);
