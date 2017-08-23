@@ -29,12 +29,12 @@ app.use(session({
 app.use(passport.initialize()); 
 app.use(passport.session());
 app.use(helmet());
-app.tools = require('auto-load')('src/tools');
+const { log } = app.tools = require('auto-load')('src/tools');
 app.db = db;
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(app.tools.log.access("combined",{stream: app.tools.log.aStream})); // add morgan
+app.use(log.access("combined",{stream: log.aStream})); // add morgan
 app.use(flash());
 //app.disable('view cache');
 
@@ -46,9 +46,9 @@ server.listen(appConfig.port, err => {
   if (err) throw err
 
   new SubscriptionServer(
-    { schema, execute, subscribe, onConnect: () => app.tools.log.e.debug('Client connected') },
+    { schema, execute, subscribe, onConnect: () => log.e.debug('Client connected') },
     { server, path: '/subscriptions' }
   );
   // TODO: admin subscription server
-  app.tools.log.e.info(`Listening on ${appConfig.host}:${appConfig.port}`);
+  log.e.info(`Listening on ${appConfig.host}:${appConfig.port}`);
 })
