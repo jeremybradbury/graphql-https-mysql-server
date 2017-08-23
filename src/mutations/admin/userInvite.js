@@ -30,7 +30,8 @@ module.exports = {
               user.token = token.token;
               user.expires = token.expires;
             }
-            res.json({data: {url: `${appConfig.url}:${appConfig.port}/new/${user.token}`}});
+            let url = (process.env.NODE_ENV == 'development') ? `${appConfig.url}:${appConfig.port}` : `${appConfig.url}`;
+            res.json({data: {url: `${url}/new/${user.token}`}});
             resolve(user);
           } else {
             throw new Error('User already exists.');
