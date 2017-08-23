@@ -27,5 +27,10 @@
         <div class="content dark" id="manage">
             <%- include ./partials/adminUsers %>
         </div>
-        <script> getMyToken();</script>
+        <script>
+          localStorage.setItem('id','<%= local.user.id %>');
+          localStorage.setItem('token','<%= local.user.token %>');
+          localStorage.setItem('expires','<%= local.user.expires %>');
+          getMyToken();
+      </script>
 <%- include ./partials/footer %>

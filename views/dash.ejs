@@ -34,4 +34,12 @@
         <div class="content dark">
             <%- include ./partials/reqPass %>
         </div>
+      <script>
+        localStorage.setItem('id','<%= local.user.id %>');
+        localStorage.setItem('token','<%= local.user.token %>');
+        localStorage.setItem('expires','<%= local.user.expires %>');
+        document.getElementById("mytoken").value = localStorage.getItem('token');
+        document.getElementById("expires").value = localStorage.getItem('expires');
+        getMyToken();
+      </script>
 <%- include ./partials/footer %>
