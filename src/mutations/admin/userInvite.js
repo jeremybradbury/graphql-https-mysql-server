@@ -13,7 +13,7 @@ module.exports = {
       type: new GraphQLNonNull(UserInputType)
     }
   },
-  resolve: (root, { data }, {req: {app: {db: {User}}},res}) => {
+  resolve: (root, { data }, {req: {app: {url,db: {User}}},res}) => {
     return new Promise((resolve, reject) => {
       User.sync()
         .then(() => {
@@ -30,7 +30,6 @@ module.exports = {
               user.token = token.token;
               user.expires = token.expires;
             }
-            let url = (process.env.NODE_ENV == 'development') ? `${appConfig.url}:${appConfig.port}` : `${appConfig.url}`;
             res.json({data: {url: `${url}/new/${user.token}`}});
             resolve(user);
           } else {

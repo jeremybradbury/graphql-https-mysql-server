@@ -54,5 +54,5 @@ server.listen(appConfig.port, err => {
     { server, path: '/subscriptions' }
   );
   // TODO: admin subscription server
-  log.e.info(`Listening on ${appConfig.host}:${appConfig.port}`);
+  log.e.info(`Listening on ${app.url}`);
 })

@@ -114,7 +114,7 @@ module.exports = function(app, passport) {
     graphiqlExpress((req)=> {
       return {
         endpointURL: '/api',
-        subscriptionsEndpoint: `wss://${appConfig.host}:${appConfig.port}/subscriptions`,
+        subscriptionsEndpoint: `wss://${req.app.url}/subscriptions`,
         passHeader: `'Authorization': 'Bearer ${req.user.token}'` // forward user's token (set by passport)
       }
     }));
@@ -124,7 +124,7 @@ module.exports = function(app, passport) {
     graphiqlExpress((req)=> {
       return {
         endpointURL: '/api/admin',
-        subscriptionsEndpoint: `wss://${appConfig.host}:${appConfig.port}/subscriptions`,
+        subscriptionsEndpoint: `wss://${req.app.url}/subscriptions`,
         passHeader: `'Authorization': 'Bearer ${req.user.token}'` // forward admin's token (set by passport)
       }
     }));
