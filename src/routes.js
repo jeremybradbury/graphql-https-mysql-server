@@ -12,6 +12,13 @@ module.exports = function(app, passport) {
     isLoggedIn, // hide scripts with ajax code
     express.static(__dirname+'/private')
   );
+  app.get('/',(req,res)=>{
+    if (req.isAuthenticated()) {
+      res.redirect('/dash'); // users welcome
+    }
+    res.end(); // hide from anon
+    // res.redirect('/login'); // or show them the lock
+  });
   
   /* auth endpoints */
   app.post('/login', // login endpoint
@@ -107,10 +114,11 @@ module.exports = function(app, passport) {
     isAdmin, 
     graphqlExpress((req,res)=>({context: { req, res }, schema: schemaAdmin })) // admin schema
   ); // access to req.app.[tools/db] and res
-  // GraphiQL view
-  app.get('/docs', 
+  if (process.env.NODE_ENV != 'development' && appConfig.graphqlIsAdminOnly ) { // [TODO] add to config.
+    app.get('/docs',isAdmin); // admin only GraphiQL in production?
+  }
+  app.get('/docs', // GraphiQL view
     isLoggedIn,
-    // isAdmin, // [TODO] choose in config. ie: admin only prod, open for local/dev
     graphiqlExpress((req)=> {
       let url = req.app.url.replace('https:','wss:');
       return {
