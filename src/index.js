@@ -20,22 +20,26 @@ const app = express();
 // middleware
 require('./config/passport')(passport);
 app.set('view engine', 'ejs');
-app.use(session({
-  secret: appConfig.secret,
-  cookie: { secure: true }, 
-  resave: false,
-  saveUninitialized: false
-}));
-app.use(passport.initialize()); 
-app.use(passport.session());
 app.use(helmet());
 const { log } = app.tools = require('auto-load')('src/tools');
 app.db = db;
 app.use(json());
 app.use(urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(cookieParser(appConfig.secret));
 app.use(log.access("combined",{stream: log.aStream})); // add morgan
 app.use(flash());
+app.use('/', // sessionless static resources (icons,images,css,etc)
+  express.static(__dirname+'/public')
+);
+app.use(session({
+  secret: appConfig.secret,
+  cookie: { secure: true, sameSite: true, maxAge: 604800000/7 }, // 7 days note: (maxAge/7) = 1 day, (maxAge*4) = 28 days
+  resave: false,
+  saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.enable('trust proxy');
 //app.disable('view cache');
 
 // routes

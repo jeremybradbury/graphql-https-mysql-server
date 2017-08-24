@@ -8,9 +8,6 @@ const admin = require('./db/admin');
 module.exports = function(app, passport) {
   const TokenAuth = passport.authenticate("bearer", { session: false }); // token auth middleware
   var { tools: {log} } = app; // extract app.tools.log to log
-  app.use('/', // static resources (icons,images,css,etc
-    express.static(__dirname+'/public')
-  );
   app.use('/private', // authenticated static resources  
     isLoggedIn, // hide scripts with ajax code
     express.static(__dirname+'/private')
