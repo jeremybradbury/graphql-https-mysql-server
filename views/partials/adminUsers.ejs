@@ -17,7 +17,7 @@
               <%_ for(var i=0; i<local.users.length; i++) { -%>
                 <tr>
                     <td><a href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%= local.users[i].dataValues.id %></a></td>
-                    <td><%= local.users[i].dataValues.email %></td>
+                    <td><%- local.users[i].dataValues.email %></td>
                     <td>
                         <form class="pure-form pure-form-stacked is-center">
                             <select id="status-<%= local.users[i].dataValues.id %>" name="status">
@@ -35,9 +35,9 @@
                             <button class="pure-button" onclick="expireById('<%= local.users[i].dataValues.id %>'); location.reload(); return false;">Expire Token</button>
                         </form>
                     </td>
-                    <td><small><%= local.users[i].dataValues.expires %></small></td>
-                    <td><small><%= local.users[i].dataValues.createdAt %></small></td>
-                    <td><small><%= local.users[i].dataValues.updatedAt %></small></td>
+                    <td><%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %></td>
+                    <td><%= new Date(local.users[i].dataValues.createdAt).toISOString().slice(0, 19).replace('T', ' ') %></td>
+                    <td><%= new Date(local.users[i].dataValues.updatedAt).toISOString().slice(0, 19).replace('T', ' ') %></td>
                 <tr>
               <%_ } -%>
             </tbody>
