@@ -112,9 +112,10 @@ module.exports = function(app, passport) {
     isLoggedIn,
     // isAdmin, // [TODO] choose in config. ie: admin only prod, open for local/dev
     graphiqlExpress((req)=> {
+      let url = req.app.url.replace('https:','wss:');
       return {
         endpointURL: '/api',
-        subscriptionsEndpoint: `wss://${req.app.url}/subscriptions`,
+        subscriptionsEndpoint: `${url}/subscriptions`,
         passHeader: `'Authorization': 'Bearer ${req.user.token}'` // forward user's token (set by passport)
       }
     }));
@@ -122,9 +123,10 @@ module.exports = function(app, passport) {
     isLoggedIn, 
     isAdmin, 
     graphiqlExpress((req)=> {
+      let url = req.app.url.replace('https:','wss:');
       return {
         endpointURL: '/api/admin',
-        subscriptionsEndpoint: `wss://${req.app.url}/subscriptions`,
+        subscriptionsEndpoint: `${url}/subscriptions`,
         passHeader: `'Authorization': 'Bearer ${req.user.token}'` // forward admin's token (set by passport)
       }
     }));
