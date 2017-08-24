@@ -7,7 +7,7 @@
         <form class="pure-form pure-form-stacked is-center">
             <fieldset>
                 <label for="token">Token </label>
-                <input class="pure-u-1" id="mytoken" type="text" readonly="true">
+                <input class="pure-u-1" id="mytoken" onfocus="this.select()" type="text" readonly="true">
                 <label for="expires">Expires </label>
                 <input class="pure-u-1" id="expires" type="text" readonly="true">
                 <button onclick="getMyToken(true); return false;" id="renew" class="pure-button">Renew Token</button>
