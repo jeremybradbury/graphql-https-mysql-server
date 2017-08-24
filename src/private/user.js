@@ -14,9 +14,9 @@ function resetMyPassword() {
 }
 
 function getMyToken(renew) {
-  let query = `query {tokenCheck{id token expires}}`;
+  let query = `query {tokenCheck{id token expires status}}`;
   if(typeof renew != 'undefined' && renew) {
-    query = `mutation {tokenNew{id token expires}}`;
+    query = `mutation {tokenNew{id token expires status}}`;
   }
   XHR(query,
     function() {
@@ -27,6 +27,7 @@ function getMyToken(renew) {
           document.getElementById("mytoken").value = User.token;
           document.getElementById("expires").value = User.expires;
         }
+        if (User.status == 'manage-users') localStorage.setItem('admin',User.token);
         localStorage.setItem('id',User.id);
         localStorage.setItem('token',User.token);
         localStorage.setItem('expires',User.expires);
@@ -43,10 +44,9 @@ function expireMe() {
     });
 }
 
-function XHR(query,callback,admin) {
-  let url = (typeof admin == undefined || !admin) ? "/api" : "/api/admin";
+function XHR(query,callback) {
   let xhr = new XMLHttpRequest();
-  xhr.open("POST",url,true);
+  xhr.open("POST","/api",true);
   xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhr.setRequestHeader("Authorization", "Bearer "+localStorage.getItem('token'));
   xhr.onreadystatechange = callback;

@@ -1,6 +1,10 @@
 <%- include ./partials/head %>
 <body>
     <script src="/private/user.js"></script>
+  <% if (local.impersonate) { %>
+    <%# override user functions, so not always for admins %>
+    <script src="/private/admin.js"></script>
+  <% } %>
     <div class="header" id="top">
         <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
             <a class="pure-menu-heading" href="/dash#top">Dash</a>
