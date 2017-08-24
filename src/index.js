@@ -17,7 +17,7 @@ const key = fs.readFileSync("./https/key.pem");
 const cert = fs.readFileSync("./https/cert.pem");
 const app = express();
 require('./config/passport')(passport);
-app.url = (process.env.NODE_ENV == 'development') ? `${appConfig.url}:${appConfig.port}` : `${appConfig.url}`;
+app.url = (process.env.NODE_ENV == 'development' || process.env.API_URL) ? `${appConfig.url}:${appConfig.port}` : `${appConfig.url}`;
 const { log } = app.tools = require('auto-load')('src/tools');
 app.db = db;
 
