@@ -16,14 +16,13 @@ const db = require('./db');
 const key = fs.readFileSync("./https/key.pem");
 const cert = fs.readFileSync("./https/cert.pem");
 const app = express();
-
-// middleware
 require('./config/passport')(passport);
-app.set('view engine', 'ejs');
-app.use(helmet());
 app.url = (process.env.NODE_ENV == 'development') ? `${appConfig.url}:${appConfig.port}` : `${appConfig.url}`;
 const { log } = app.tools = require('auto-load')('src/tools');
 app.db = db;
+
+// middleware
+app.use(helmet());
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser(appConfig.secret));
@@ -41,6 +40,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.enable('trust proxy');
+app.set('view engine', 'ejs');
 //app.disable('view cache');
 
 // routes
