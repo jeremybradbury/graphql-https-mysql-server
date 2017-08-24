@@ -20,21 +20,16 @@ module.exports = {
           return User.findOrCreate({where: data});
         })
         .spread((result,created) => { // like .then() splitting results
-          if(created){
-            user = result.dataValues
-            console.log(user);
-            var expires = new Date(user.expires);
-            var now = new Date();
-            if (expires.getTime() <= now.getTime()) { // expired 
-              var token = result.tokenNew(1); // new 24 hour token
-              user.token = token.token;
-              user.expires = token.expires;
-            }
-            res.json({data: {url: `${url}/new/${user.token}`}});
-            resolve(user);
-          } else {
-            throw new Error('User already exists.');
+          user = result.dataValues
+          var expires = new Date(user.expires);
+          var now = new Date();
+          if (expires.getTime() <= now.getTime()) { // expired 
+            var token = result.tokenNew(1); // new 24 hour token
+            user.token = token.token;
+            user.expires = token.expires;
           }
+          res.json({data: {url: `${url}/new/${user.token}`}});
+          resolve(user);
         })
         .catch(errors => reject(errors))
     })
