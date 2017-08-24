@@ -1,16 +1,19 @@
-const { GraphQLNonNull } = require('graphql');
+const { 
+  GraphQLString,
+  GraphQLID,
+  GraphQLNonNull 
+} = require('graphql');
 const UserType = require('../../types/user');
-const UserInputType = require('../../types/input/user');
-const { appConfig } = require('../../config');
 //const socket = require('../../socket');
 
 module.exports = {
   type: UserType,
-  description: 'Email is required',
+  description: 'Email required',
   args: {
-    data: {
-      name: 'data',
-      type: new GraphQLNonNull(UserInputType)
+    email: {
+      name: 'email',
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'Email required'
     }
   },
   resolve: (root, { data }, {req: {app: {url,db: {User}}},res}) => {

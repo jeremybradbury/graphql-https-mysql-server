@@ -9,7 +9,7 @@ function XHR(query,callback) {
   return xhr;
 }
 function expireById(id) {
-  XHR(`mutation {userTokenExpire(data:{id:"${id}"}){email expires}}`, // query
+  XHR(`mutation {userTokenExpire(id:"${id}"){email expires}}`, // query
     function() { // callback
       if (this.readyState == 4 && this.status == 200) {
         let User = JSON.parse(this.responseText).data.userTokenExpire;
@@ -22,7 +22,7 @@ function expireById(id) {
 }
 // impersonate user override 
 function resetMyPassword() { 
-  XHR(`mutation {userPasswordReset(data:{id:"${localStorage.getItem('id')}"}){password}}`,  // query
+  XHR(`mutation {userPasswordReset(id:"${localStorage.getItem('id')}"){password}}`,  // query
     function() { // callback
       if (this.readyState == 4 && this.status == 200) {
         let data = JSON.parse(this.responseText).data;
@@ -58,7 +58,7 @@ function getMyToken(renew) {
     });
 }
 function updateStatusById(id,status) {
-    XHR(`mutation {userSetStatus(data:{id:"${id}",status:"${status}"}){email status}}`,  // query
+    XHR(`mutation {userSetStatus(id:"${id}",status:"${status}"){email status}}`,  // query
     function() { // callback
       if (this.readyState == 4 && this.status == 200) {
         let email = JSON.parse(this.responseText).data.userSetStatus.email;
@@ -71,7 +71,7 @@ function updateStatusById(id,status) {
 }
 function inviteByEmail() {
   let email = document.getElementById("email").value;
-  XHR(`mutation {userInvite(data:{email:"${email}"}){url}}`,  // query
+  XHR(`mutation {userInvite(email:"${email}"){url}}`,  // query
     function() { // callback
       if (this.readyState == 4 && this.status == 200) {
         let url = JSON.parse(this.responseText).data.url;
