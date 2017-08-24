@@ -21,6 +21,7 @@ const app = express();
 require('./config/passport')(passport);
 app.set('view engine', 'ejs');
 app.use(helmet());
+app.url = (process.env.NODE_ENV == 'development') ? `${appConfig.url}:${appConfig.port}` : `${appConfig.url}`;
 const { log } = app.tools = require('auto-load')('src/tools');
 app.db = db;
 app.use(json());
