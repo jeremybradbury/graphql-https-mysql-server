@@ -16,6 +16,7 @@
     "cookie-parser": "^1.4.3",
     "ejs": "^2.5.7",
     "express": "^4.15.3",
+    "express-sequelize-session": "^0.4.0",
     "express-session": "^1.15.5",
     "graphql": "^0.10.3",
     "graphql-server-express": "^1.0.0",
