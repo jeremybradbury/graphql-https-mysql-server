@@ -33,6 +33,7 @@ app.use('/', // sessionless static resources (icons,images,css,etc)
 );
 app.set('trust proxy',1);
 app.set('view engine', 'ejs');
+app.set('views','./src/views');
 require('./config/passport')(passport);
 app.use(session({
   key: 'sid',
