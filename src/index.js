@@ -20,7 +20,6 @@ const app = express();
 app.url = (process.env.NODE_ENV == 'development' || process.env.API_URL) ? `${appConfig.url}:${appConfig.port}` : `${appConfig.url}`;
 const { log } = app.tools = require('auto-load')('src/tools');
 app.db = db;
-app.Store = new Store(db.connection);
 
 // middleware
 app.use(helmet());
@@ -38,7 +37,7 @@ require('./config/passport')(passport);
 app.use(session({
   key: 'sid',
   secret: appConfig.secret,
-  store: app.Store,
+  store: new Store(db.connection),
   cookie: { secure: true, sameSite: true, maxAge: 604800000/7 }, // 7 days note: (maxAge/7) = 1 day, (maxAge*4) = 28 days
   resave: false,
   saveUninitialized: true
