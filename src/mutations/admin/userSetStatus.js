@@ -23,19 +23,26 @@ module.exports = {
       name: 'token',
       type: GraphQLString,
       description: 'Email, token or id is required.'
+    },
+    status: {
+      name: 'status',
+      type: GraphQLString,
+      description: 'If no status supplied, user is disabled'
     }
   },
-  resolve: (root, { data }, {req: {app: {db: {User}}}}) => {
+  resolve: (root, args, {req: {app: {db: {User}}}}) => {
     return new Promise((resolve, reject) => {
-      let status = data.status; // save this for setting
-      delete data.status; // remove from the query
-      User.findOne({where: data})
+      let status = args.status; // save this for setting
+      delete args.status; // remove from the query
+      User.findOne({where: args})
         .then((user) => {
-          let expires = user.disable();
-          if(status){
+          let expires, result;
+          if(status) {
             expires = user.enable(status);
+          } else {
+            expires = user.disable();
           }
-          let result = user.dataValues;
+          result = user.dataValues;
           return Object.assign(result,expires);
         })
         .then((user)=>{
