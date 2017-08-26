@@ -2,7 +2,7 @@
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
-const Store = require('express-sequelize-session')(session.Store);
+const Store = require('express-session-sequelize')(session.Store);
 const passport = require("passport");
 const helmet = require('helmet');
 const flash = require('connect-flash');
@@ -35,17 +35,20 @@ app.set('trust proxy',1);
 app.set('view engine', 'ejs');
 app.set('views','./src/views');
 require('./config/passport')(passport);
+const store = new Store({ db: db.sequelize, checkExpirationInterval: 300000, expires: 900000 }); // cleanup every 5m, logout if inactive 15m
 app.use(session({
   key: 'sid',
   secret: appConfig.secret,
-  store: new Store(db.connection),
-  cookie: { secure: true, sameSite: true, maxAge: 604800000/7 }, // 7 days note: (maxAge/7) = 1 day, (maxAge*4) = 28 days
+  store: store,
+  cookie: { secure: true, sameSite: true, maxAge: 604800000/7 }, // 7days/7 = 24 hours; 7days*4 = 28 days
   resave: false,
   saveUninitialized: true
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-//app.disable('view cache');
+//app.disable('view cache'); // not recommended
+
+db.Sessions.sync({force: true}); // destroy existing sessions on deploy/restart
 
 // routes
 require('./routes')(app, passport); 

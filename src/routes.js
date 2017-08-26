@@ -34,8 +34,10 @@ module.exports = function(app, passport) {
     });
   app.get('/logout',   // logout endpoint
     function(req, res) {
-      req.logout();
-      res.redirect('/dash');
+      req.logOut(); 
+      req.session.destroy(() => {
+        res.redirect('/dash');
+      });
     });
     
   /* views */
