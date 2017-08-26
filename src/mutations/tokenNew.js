@@ -5,12 +5,12 @@ const UserInputType = require('../types/input/user');
 
 module.exports = {
   type: UserType,
-  resolve: (root, { }, { User, user }) => {
+  resolve: (root, { }, { Users, user }) => {
     return new Promise((resolve, reject) => {
-      User.findOne({where: {id: user.id}}) // reset MY token
+      Users.findOne({where: {id: user.id}}) // reset MY token
         .then((User) => {
-          let token = User.tokenNew();
-          let result = User.dataValues;
+          let token = Users.tokenNew();
+          let result = Users.dataValues;
           return Object.assign(result,token);
         })
         .then((user)=>{

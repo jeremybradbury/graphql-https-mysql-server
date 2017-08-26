@@ -16,11 +16,11 @@ module.exports = {
       description: 'Email required'
     }
   },
-  resolve: (root, args, {req: {app: {url,db: {User}}},res}) => {
+  resolve: (root, args, {req: {app: {url,db: {Users}}},res}) => {
     return new Promise((resolve, reject) => {
-      User.sync()
+      Users.sync()
         .then(() => {
-          return User.findOrCreate({where: args});
+          return Users.findOrCreate({where: args});
         })
         .spread((result,created) => { // like .then() splitting results
           user = result.dataValues

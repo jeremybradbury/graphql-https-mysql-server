@@ -25,9 +25,9 @@ module.exports = {
       description: 'Email, token or id is required.'
     }
   },
-  resolve: (root, args, {req: {app: {db: {User}}}}) => {
+  resolve: (root, args, {req: {app: {db: {Users}}}}) => {
     return new Promise((resolve, reject) => {
-      User.findOne({where: args})
+      Users.findOne({where: args})
         .then((user) => {
           user.tokenExpire();
           resolve(user.dataValues);

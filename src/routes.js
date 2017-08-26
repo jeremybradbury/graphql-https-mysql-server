@@ -3,7 +3,7 @@ const schema = require('./schema');
 const schemaAdmin = require('./schema-admin');
 const { appConfig } = require('./config');
 const express = require('express');
-const admin = require('./db/admin');
+const db = require('./db');
 
 module.exports = function(app, passport) {
   const TokenAuth = passport.authenticate("bearer", { session: false }); // token auth middleware
@@ -20,14 +20,14 @@ module.exports = function(app, passport) {
     // res.redirect('/login'); // or show them the lock
   });
   
-  /* auth endpoints */
+  /* auth endpoints */ // TODO auth controller
   app.post('/login', // login endpoint
     function(req, res, next) {
       passport.authenticate('local', function(err, user, info) {
         if (err) { return next(err); }
         if (!user) { return res.redirect('/login'); }
         req.logIn(user, function(err) {
-          if (err) { return next(err); }
+          if (err) { return next(err,null); }
           return res.redirect(req.session.returnTo || '/dash');
         });
       })(req, res, next);
@@ -67,27 +67,30 @@ module.exports = function(app, passport) {
     isAdmin,
     function(req,res) {
       let local = {url: req.url, user : req.user};
-      app.db.User.findAll({ attributes: { exclude: ['password'] }})
-        .then(users => {
-          local.users = users;
-          res.render('admin.ejs', {
-            message: req.flash('inviteMessage'), 
-            local: local
-          });
+      app.db.Users.findAll({ 
+        attributes: { exclude: ['password'] }, 
+        order: [['createdAt', 'DESC']],
+        limit: 5
+      }).then(users => {
+        local.users = users;
+        res.render('admin.ejs', {
+          message: req.flash('inviteMessage'), 
+          local: local
         });
+      });
     }); 
   app.get('/dash/admin/user/:id', // user impersonation dash view
     isLoggedIn,
     isAdmin,
     function(req,res) {
-      app.db.User.findById(req.params.id)
+      app.db.Users.findById(req.params.id)
         .then(user => {
           res.render('dash.ejs', {local: {user: user, impersonate: req.user.email }});
         })
     });
   app.get('/new/:token', // new user/password view
     function(req, res) {
-      app.db.User.findByToken(req.params.token)
+      app.db.Users.findByToken(req.params.token)
         .then(user => {
           if(user instanceof Error || !user.status) { // valid user without a flasey status
             res.sendStatus(401);
@@ -101,16 +104,15 @@ module.exports = function(app, passport) {
         })
     });
   
-  /* GraphQL endpoints/views */
+  /* GraphQL endpoints/views */ // TODO graphql controller
   app.post('/api', // User GraphQL API endpoint
     TokenAuth, 
     graphqlExpress((req, res)=>{
-      let User = req.app.db.User; // model
+      let Users = req.app.db.Users; // model
       let user = req.user; // self
-      return { context: { req, res, User, user }, schema: schema } // user schema
+      return { context: { req, res, Users, user }, schema: schema } // user schema
     }) // restricted db context in req.app.db. pass only User from admin. user = self from auth. res for response overrides.
   );
-  app.db = admin; // reassign app.db for admin operations (added security)
   app.post('/api/admin', // Admin GraphQL API endpoint
     TokenAuth, 
     isAdmin, 

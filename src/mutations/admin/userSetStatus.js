@@ -30,11 +30,11 @@ module.exports = {
       description: 'If no status supplied, user is disabled'
     }
   },
-  resolve: (root, args, {req: {app: {db: {User}}}}) => {
+  resolve: (root, args, {req: {app: {db: {Users}}}}) => {
     return new Promise((resolve, reject) => {
       let status = args.status; // save this for setting
       delete args.status; // remove from the query
-      User.findOne({where: args})
+      Users.findOne({where: args})
         .then((user) => {
           let expires, result;
           if(status) {
