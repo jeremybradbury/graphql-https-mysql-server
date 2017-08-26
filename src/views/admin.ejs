@@ -24,6 +24,7 @@
         <div class="content" id="invite">
             <%- include ./partials/adminInvite %>
         </div>
+        <div class="alert is-center" id="alert-message"><% if (message.length > 0) { %><%- message %><% } %></div>
         <div class="content dark" id="manage">
             <%- include ./partials/adminUsers %>
         </div>

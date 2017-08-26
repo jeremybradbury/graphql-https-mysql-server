@@ -246,6 +246,9 @@ a.pure-button-primary,button.pure-button-primary {
   background-color: #fff;
 }
 
+.pure-table tbody {
+  border-bottom: 1px solid #cbcbcb;
+}
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
  * On tablets and other medium-sized devices, we want to customize some
