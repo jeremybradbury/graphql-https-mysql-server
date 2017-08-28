@@ -91,8 +91,10 @@ module.exports = function(app, passport) {
     isLoggedIn,
     isAdmin,
     function(req,res) {
-      if (parseInt(req.params.page) < 1) 
-        return res.sendStatus(400);
+      let page = parseInt(req.params.page);
+      if (isNaN(page) || page < 1) {
+        return res.sendStatus(400); 
+      }
       let limit = 3;
       let offset = (req.params.page-1) * limit;
       let local = {url: req.url, user : req.user};
@@ -102,10 +104,12 @@ module.exports = function(app, passport) {
         offset: offset,
         limit: limit
       }).then(users => {
-        if (users.length < 1 || offset>=users.count) return res.sendStatus(400);
+        if (users.length < 1 || offset>=users.count) { 
+          return res.sendStatus(400); 
+        }
         local.page = {
-          prev: ((offset-1) > 0) ? parseInt(req.params.page)-1 : false, 
-          next: (offset+limit<users.count) ? parseInt(req.params.page)+1 : false
+          prev: ((offset-1) > 0) ? page-1 : false, 
+          next: (offset+limit<users.count) ? page+1 : false
         };        
         local.users = users.rows;
         res.render('admin.ejs', {
