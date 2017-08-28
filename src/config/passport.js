@@ -5,33 +5,32 @@ const { log } = require('auto-load')('src/tools');
 
 module.exports = function(passport) {
   // user auth from passport local
-  passport.serializeUser(function(user, next) {
-    next(null, user.id); // serialize id
+  passport.serializeUser(function(user, done) {
+    return done(null, user.id); // serialize id
   });
-  passport.deserializeUser(function(id, next) {
+  passport.deserializeUser(function(id, done) {
     db.Users.findById(id) // get user by id
-    .then(user => {
-      next(null, user);
-    })
-    .catch(e => {
-      next(e, false);
-    })
+      .then(user => {
+        return done(null, user.get());
+      })
+      .catch(e => {
+        return done(e);
+      })
   });
   passport.use(new LocalStrategy({ 
-      usernameField : 'email', 
+      usernameField : 'email',
+      passwordField : 'password', 
       passReqToCallback : true 
     },
-    function(req, email, password, next) { 
+    function(req, email, password, done) { 
       db.Users.check(email,password)
         .then(user => {
-          if (!user)
-            return next(null, false, req.flash('loginMessage', 'Invalid credentials provided. Please, try again.'));
-          if(!user.status)
-            return next(null, false, req.flash('loginMessage', 'User account has been disabled. Contact your administrator for more information.'));
-          return next(null, user);
+          if (!user) return done(null, false, req.flash('loginMessage', 'Invalid credentials provided. Please, try again.'));
+          if(!user.status) return done(null, false, req.flash('loginMessage', 'User account has been disabled. Contact your administrator for more information.'));
+          return done(null, user);
         })
         .catch(e => {
-          return next(e, null);
+          return done(e);
         });
     }
   ));

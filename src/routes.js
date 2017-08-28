@@ -27,7 +27,7 @@ module.exports = function(app, passport) {
         if (err) { return next(err); }
         if (!user) { return res.redirect('/login'); }
         req.logIn(user, function(err) {
-          if (err) { return next(err,null); }
+          if (err) { return next(err); }
           return res.redirect(req.session.returnTo || '/dash');
         });
       })(req, res, next);
