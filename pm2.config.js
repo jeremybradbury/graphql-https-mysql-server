@@ -4,8 +4,8 @@ module.exports = {
     name        : "api-local",
     script      : "./src",
     cwd         : "./",
-    "out_file": "/dev/null",
-    "error_file": "/dev/null",
+    "error_file": "./logs/api-local.log",
+    "out_file"  : "/dev/null",
     watch       : true,
     "ignore_watch" : ["node_modules", "src/log"],
     "watch_options": {
