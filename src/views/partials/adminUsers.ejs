@@ -1,4 +1,14 @@
-<h2 class="content-head is-center">Manage Users</h2>
+<div class="pure-u-1 is-center">
+    <h2 class="content-head is-center">Manage Users</h2>
+    <p>
+    <%_ if (local.page.prev) { _%> 
+       <a class="pure-button" href="/dash/admin/<%= local.page.prev %>#manage">Back</a>
+    <%_ } _%>
+    <%_ if (local.page.next) { _%> 
+        <a class="pure-button" href="/dash/admin/<%= local.page.next %>#manage">Next</a>
+    <%_ } _%>
+    </p>
+<div>
 <table class="pure-table">
     <thead>
         <tr>
@@ -40,4 +50,14 @@
       <%_ } _%>
     </tbody>
 </table>
+<div class="pure-u-1 is-center">
+    <p>
+    <%_ if (local.page.prev) { _%> 
+       <a class="pure-button" href="/dash/admin/<%= local.page.prev %>#manage">Back</a>
+    <%_ } _%>
+    <%_ if (local.page.next) { _%> 
+        <a class="pure-button" href="/dash/admin/<%= local.page.next %>#manage">Next</a>
+    <%_ } _%>
+    </p>
+<div>
 <br>

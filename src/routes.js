@@ -67,12 +67,48 @@ module.exports = function(app, passport) {
     isAdmin,
     function(req,res) {
       let local = {url: req.url, user : req.user};
-      app.db.Users.findAll({ 
+      app.db.Users.findAndCountAll({ 
         attributes: { exclude: ['password'] }, 
         order: [['createdAt', 'DESC']],
-        limit: 5
+        limit: 3
       }).then(users => {
-        local.users = users;
+        local.page = {
+          next: 2,
+          prev: false
+        };
+        local.users = users.rows;
+        res.render('admin.ejs', {
+          message: req.flash('inviteMessage'), 
+          local: local
+        });
+      });
+    }); 
+  app.get('/dash/admin/1', // don't use page 1
+    function(req,res) {
+      res.redirect('/dash/admin'); 
+    });
+  app.get('/dash/admin/:page',  // admin dash pagination
+    isLoggedIn,
+    isAdmin,
+    function(req,res) {
+      if (parseInt(req.params.page) < 1) 
+        return res.sendStatus(400);
+      let limit = 3;
+      let offset = (req.params.page-1) * limit;
+      let local = {url: req.url, user : req.user};
+      app.db.Users.findAndCountAll({ 
+        attributes: { exclude: ['password'] }, 
+        order: [['createdAt', 'DESC']],
+        offset: offset,
+        limit: limit
+      }).then(users => {
+        if (users.length < 1 || offset>=users.count) return res.sendStatus(400);
+        console.log(offset,users.count);
+        local.page = {
+          prev: ((offset-1) > 0) ? parseInt(req.params.page)-1 : false, 
+          next: (offset+limit<users.count) ? parseInt(req.params.page)+1 : false
+        };        
+        local.users = users.rows;
         res.render('admin.ejs', {
           message: req.flash('inviteMessage'), 
           local: local

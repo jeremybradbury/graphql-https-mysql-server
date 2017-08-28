@@ -28,8 +28,12 @@ module.exports = {
         offset: skip,
         limit: first
       }
-      Users.findAll(q)
-        .then(users => resolve(users))
+      Users.findAndCountAll(q)
+        .then((users) => {
+          let page = {prev: ((q.offset/5)-1 >= 0) ? q.offset/5-1 : false, next: (q.offset<users.count) ? (q.offset/5)+1 : false};
+          let u = users.rows;
+          resolve(Object.assign(u,page));
+        })
         .catch(errors => reject(errors));
     })
   }
