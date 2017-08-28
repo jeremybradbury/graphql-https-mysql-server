@@ -1,3 +1,5 @@
+const limit = 3;
+
 exports.logout = function(req,res) {
   req.logOut(); 
   req.session.destroy(() => {
@@ -55,7 +57,7 @@ exports.views.admin.dash = function(req,res) { // admin dash view
   req.app.db.Users.findAndCountAll({ 
     attributes: { exclude: ['password'] }, 
     order: [['createdAt', 'DESC']],
-    limit: 3
+    limit: limit
   }).then(users => {
     local.page = {
       next: 2,
@@ -73,7 +75,6 @@ exports.views.admin.dashPaged = function(req,res) {  // admin dash pagination
   if (isNaN(page) || page < 1) {
     return res.sendStatus(400); 
   }
-  let limit = 3;
   let offset = (req.params.page-1) * limit;
   let local = {url: req.url, user : req.user};
   req.app.db.Users.findAndCountAll({ 
