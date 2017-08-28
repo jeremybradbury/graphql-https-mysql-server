@@ -48,7 +48,8 @@ h1,h2,h3,h4,h5,h6,label {
 	font-size:100%;
 }
 
-.pure-form input[type] {
+.pure-form input[type], 
+.pure-form select  {
 	border:2px solid #ddd;
 	box-shadow:none;
 	font-size:100%;
@@ -87,8 +88,7 @@ a.pure-button-primary,button.pure-button-primary {
 
 .pure-menu.pure-menu-fixed {
 	border-bottom:none;
-/* I need a higher z-index here because of the scroll-over effect. */
-	z-index:4;
+	max-height: 5em;
 }
 
 .home-menu .pure-menu-heading {
@@ -175,7 +175,7 @@ a.pure-button-primary,button.pure-button-primary {
 }
 
 .content {
-	padding:1em 1em 3em;
+	padding: 2em;
   overflow-y: auto;
 }
 

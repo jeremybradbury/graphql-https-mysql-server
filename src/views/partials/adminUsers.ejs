@@ -8,7 +8,7 @@
         <a class="pure-button" href="/dash/admin/<%= local.page.next %>#manage">Next</a>
     <%_ } _%>
     </p>
-<div>
+</div>
 <table class="pure-table">
     <thead>
         <tr>
@@ -28,19 +28,19 @@
             <td><%- local.users[i].dataValues.email %></td>
             <td>
                 <form class="pure-form pure-form-stacked is-center">
-                    <select id="status-<%= local.users[i].dataValues.id %>" name="status">
+                    <select id="status-<%= local.users[i].dataValues.id _%>" name="status">
                         <option value=""<% if(!local.users[i].dataValues.status || local.users[i].dataValues.status == '' ) { %>selected="true"<% } %>>Disabled</option>
                         <option value="active" <% if(local.users[i].dataValues.status == 'active') { %>selected="true"<% } %>>Active</option>
                         <option value="invite-only" <% if(local.users[i].dataValues.status == 'invite-only') { %>selected="true"<% } %>>Invite New Users</option>
                         <option value="manage-users" <% if(local.users[i].dataValues.status == 'manage-users') { %>selected="true"<% } %>>Manage Users</option>
                     </select>
-                    <button class="pure-button" onclick="updateStatusById('<%= local.users[i].dataValues.id %>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value); return false;">Update Status</button>
+                    <button class="pure-button" onclick="updateStatusById('<%= local.users[i].dataValues.id _%>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value); return false;">Save Status</button>
                 </form>
             </td>
             <td>
                 <form class="pure-form pure-form-stacked is-center">
-                    <textarea class="pure-input-1-1" type="text" name="token"><%= local.users[i].dataValues.token %></textarea>
-                    <button class="pure-button" onclick="expireById('<%= local.users[i].dataValues.id %>'); location.reload(); return false;">Expire Token</button>
+                    <input class="pure-input-1-1" type="text" onclick="this.select()" name="token" value="<%= local.users[i].dataValues.token _%>">
+                    <button class="pure-button" onclick="expireById('<%= local.users[i].dataValues.id _%>'); location.reload(); return false;">Expire Token</button>
                 </form>
             </td>
             <td><%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %></td>
@@ -59,5 +59,5 @@
         <a class="pure-button" href="/dash/admin/<%= local.page.next %>#manage">Next</a>
     <%_ } _%>
     </p>
-<div>
-<br>
+</div>
+<big>&nbsp;</big>
