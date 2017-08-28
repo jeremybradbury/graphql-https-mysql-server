@@ -11,9 +11,9 @@ module.exports = {
       type: new GraphQLNonNull(EventInputType)
     }
   },
-  resolve: (root, { data }, {req: {app: {db: {Event}}}}) => {
+  resolve: (root, { data }, {req: {app: {db: {Events}}}}) => {
     return new Promise((resolve, reject) => {
-      Event.sync().then(() => {
+      Events.sync().then(() => {
         console.log(data);
         return Event.create(data);
       }).then(data => {
