@@ -103,7 +103,6 @@ module.exports = function(app, passport) {
         limit: limit
       }).then(users => {
         if (users.length < 1 || offset>=users.count) return res.sendStatus(400);
-        console.log(offset,users.count);
         local.page = {
           prev: ((offset-1) > 0) ? parseInt(req.params.page)-1 : false, 
           next: (offset+limit<users.count) ? parseInt(req.params.page)+1 : false
