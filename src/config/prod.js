@@ -17,7 +17,7 @@ exports.dbConfig = {
 };
 
 exports.logConfig = {
-  dir: __dirname+'/../log',
+  dir: __dirname+'/../../log',
   access: {
     fn: 'access.log',
     options: {

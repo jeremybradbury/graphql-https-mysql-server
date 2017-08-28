@@ -5,9 +5,9 @@ module.exports = {
     script         : "./src",
     cwd            : "./",
     "out_file"     : "/dev/null",
-    "error_file"   : "./logs/api-local.log",
+    "error_file"   : "./log/api-local.log",
     watch          : true,
-    "ignore_watch" : ["node_modules", "src/log"],
+    "ignore_watch" : ["node_modules", "log"],
     "watch_options": {
       "followSymlinks": false
     },
