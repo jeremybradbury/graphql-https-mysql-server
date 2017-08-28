@@ -4,7 +4,7 @@ const schemaAdmin = require('./schema-admin');
 const { appConfig } = require('./config');
 const express = require('express');
 const db = require('./db');
-
+// todo: const { AuthController, GraphQLController } = require('./controllers'); 
 module.exports = function(app, passport) {
   const TokenAuth = passport.authenticate("bearer", { session: false }); // token auth middleware
   var { tools: {log} } = app; // extract app.tools.log to log
@@ -12,17 +12,18 @@ module.exports = function(app, passport) {
     isLoggedIn, // hide scripts with ajax code
     express.static(__dirname+'/private')
   );
-  app.get('/',(req,res)=>{
-    if (req.isAuthenticated()) {
-      res.redirect('/dash'); // users welcome
-    }
-    res.end(); // hide from anon
-    // res.redirect('/login'); // or show them the lock
-  });
-  
+  app.get('/', // hidden home. what? it's an API
+    (req,res) => {
+      if (req.isAuthenticated()) {
+        res.redirect('/dash'); // users welcome
+      }
+      res.end(); // hide from anon
+      // res.redirect('/login'); // or show them the lock
+    });
+
   /* auth endpoints */ // TODO auth controller
   app.post('/login', // login endpoint
-    function(req, res, next) {
+    (req, res, next) => {
       passport.authenticate('local', function(err, user, info) {
         if (err) { return next(err); }
         if (!user) { return res.redirect('/login'); }
@@ -33,7 +34,7 @@ module.exports = function(app, passport) {
       })(req, res, next);
     });
   app.get('/logout',   // logout endpoint
-    function(req, res) {
+    (req, res) => {
       req.logOut(); 
       req.session.destroy(() => {
         res.redirect('/dash');
@@ -42,7 +43,7 @@ module.exports = function(app, passport) {
     
   /* views */
   app.get('/login',   // login view
-    function(req, res) {
+    (req, res) => {
       res.render('login.ejs', { 
           message: req.flash('loginMessage'), 
           local: {
@@ -53,7 +54,7 @@ module.exports = function(app, passport) {
     });
   app.get('/dash', // dash view
     isLoggedIn,
-    function(req,res) {
+    (req,res) => {
       res.render('dash.ejs', { 
         local: {
           url: req.url, 
@@ -65,7 +66,7 @@ module.exports = function(app, passport) {
   app.get('/dash/admin',  // admin dash view
     isLoggedIn,
     isAdmin,
-    function(req,res) {
+    (req,res) => {
       let local = {url: req.url, user : req.user};
       app.db.Users.findAndCountAll({ 
         attributes: { exclude: ['password'] }, 
@@ -84,13 +85,13 @@ module.exports = function(app, passport) {
       });
     }); 
   app.get('/dash/admin/1', // don't use page 1
-    function(req,res) {
+    (req,res) => {
       res.redirect('/dash/admin'); 
     });
   app.get('/dash/admin/:page',  // admin dash pagination
     isLoggedIn,
     isAdmin,
-    function(req,res) {
+    (req,res) => {
       let page = parseInt(req.params.page);
       if (isNaN(page) || page < 1) {
         return res.sendStatus(400); 
@@ -121,7 +122,7 @@ module.exports = function(app, passport) {
   app.get('/dash/admin/user/:id', // user impersonation dash view
     isLoggedIn,
     isAdmin,
-    function(req,res) {
+    (req,res) => {
       app.db.Users.findById(req.params.id)
         .then(user => {
           res.render('dash.ejs', {local: {user: user, impersonate: req.user.email }});
@@ -146,7 +147,7 @@ module.exports = function(app, passport) {
   /* GraphQL endpoints/views */ // TODO graphql controller
   app.post('/api', // User GraphQL API endpoint
     TokenAuth, 
-    graphqlExpress((req, res)=>{
+    graphqlExpress((req, res) => {
       let Users = req.app.db.Users; // model
       let user = req.user; // self
       return { context: { req, res, Users, user }, schema: schema } // user schema
@@ -155,14 +156,14 @@ module.exports = function(app, passport) {
   app.post('/api/admin', // Admin GraphQL API endpoint
     TokenAuth, 
     isAdmin, 
-    graphqlExpress((req,res)=>({context: { req, res }, schema: schemaAdmin })) // admin schema
+    graphqlExpress((req,res) => ({context: { req, res }, schema: schemaAdmin })) // admin schema
   ); // access to req.app.[tools/db] and res
   if (process.env.NODE_ENV != 'development' && appConfig.graphqlIsAdminOnly ) { // [TODO] add to config.
     app.get('/docs',isAdmin); // admin only GraphiQL in production?
   }
   app.get('/docs', // GraphiQL view
     isLoggedIn,
-    graphiqlExpress((req)=> {
+    graphiqlExpress((req) => {
       let url = req.app.url.replace('https:','wss:');
       return {
         endpointURL: '/api',
@@ -173,7 +174,7 @@ module.exports = function(app, passport) {
   app.get('/docs/admin', // Admin GraphiQL view
     isLoggedIn, 
     isAdmin, 
-    graphiqlExpress((req)=> {
+    graphiqlExpress((req) => {
       let url = req.app.url.replace('https:','wss:');
       return {
         endpointURL: '/api/admin',
@@ -183,7 +184,7 @@ module.exports = function(app, passport) {
     }));
     
   /* 404 everything else */
-  app.use('*',(req,res)=>{ res.sendStatus(404); });  // [TODO] 404 view
+  app.use('*',(req,res) => { res.sendStatus(404); });  // [TODO] 404 view
 }
 function isLoggedIn(req, res, next) { // user auth middleware
   if (req.isAuthenticated()) return next(); // proceed to next middleware
