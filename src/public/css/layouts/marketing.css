@@ -48,8 +48,8 @@ h1,h2,h3,h4,h5,h6,label {
 	font-size:100%;
 }
 
-.pure-form input[type], 
-.pure-form select  {
+.pure-form input[type],
+.pure-form select {
 	border:2px solid #ddd;
 	box-shadow:none;
 	font-size:100%;
@@ -221,16 +221,28 @@ a.pure-button-primary,button.pure-button-primary {
 	color:#fff;
 }
 
-.dark th, .dark input, .dark select, .dark textarea   {
+.dark th, .dark input, .dark select, .dark textarea, .dark i   {
 	color:#000;
 }
 
+td .pure-form select, 
+td .pure-form input {
+  width: 65%;
+  display: inline;
+  margin-right: 0.25em;
+  height: 2.35em;
+}
 .dark .pure-button {
 	background:#fff;
 	color:#1f8dd6;
 	border-radius:5px;
+	padding: 0.5em 0.75em;
 }
-
+td .pure-form .pure-button {
+  display: inline;
+  margin-bottom:1em;
+  border: 2px solid #ddd;
+}
 .alert {
 	background-color:#db7711;
 	border-radius:5px;

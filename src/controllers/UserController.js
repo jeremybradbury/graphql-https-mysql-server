@@ -1,4 +1,4 @@
-const limit = 3;
+const limit = 5;
 
 exports.logout = function(req,res) {
   req.logOut(); 
