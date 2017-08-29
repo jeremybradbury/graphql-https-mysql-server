@@ -42,7 +42,7 @@
                 </form>
             </td>
             <td>
-                <%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %>
+                <span class="<% if(new Date(local.users[i].dataValues.expires).getTime() < new Date().getTime()) { _%>red<% } %>"><%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %>
                 <form class="pure-form">
                     <button class="pure-button" title="Expire Token" onclick="expireById('<%= local.users[i].dataValues.id _%>'); location.reload();"><i class="fa fa-remove"></i></button>
                 </form>
