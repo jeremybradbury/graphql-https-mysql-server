@@ -12,10 +12,9 @@
 <table class="pure-table">
     <thead>
         <tr>
-            <th>#</th>
-            <th>Email</th>
+            <th>Email / Impersonate</th>
             <th>Status</th>
-            <th>Token</th>
+            <th style="width:40%">Token</th>
             <th>Token Expires</th>
             <th>Created</th>
             <th>Modified</th>
@@ -24,11 +23,10 @@
     <tbody>
       <%_ for(var i=0; i<local.users.length; i++) { _%>
         <tr id="<%- local.users[i].dataValues.id _%>">
-            <td><a href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%= local.users[i].dataValues.id %></a></td>
-            <td><%- local.users[i].dataValues.email %></td>
+            <td><a href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%- local.users[i].dataValues.email %></a></td>
             <td>
                 <form class="pure-form is-center">
-                    <select id="status-<%= local.users[i].dataValues.id _%>" name="status" onchange="updateStatusById('<%= local.users[i].dataValues.id _%>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value);">
+                    <select class="pure-input-1" id="status-<%= local.users[i].dataValues.id _%>" name="status" onchange="updateStatusById('<%= local.users[i].dataValues.id _%>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value);">
                         <option value=""<% if(!local.users[i].dataValues.status || local.users[i].dataValues.status == '' ) { %>selected="true"<% } %>>Disabled</option>
                         <option value="active" <% if(local.users[i].dataValues.status == 'active') { %>selected="true"<% } %>>Active</option>
                         <option value="invite-only" <% if(local.users[i].dataValues.status == 'invite-only') { %>selected="true"<% } %>>Invite New Users</option>
@@ -38,7 +36,7 @@
             </td>
             <td>
                 <form class="pure-form is-center">
-                    <input class="pure-input-1-1" type="text" onclick="this.select()" name="token" readonly="true" value="<%= local.users[i].dataValues.token _%>">
+                    <input class="pure-input-1" type="text" onclick="this.select()" name="token" readonly="true" value="<%= local.users[i].dataValues.token _%>">
                 </form>
             </td>
             <td>
