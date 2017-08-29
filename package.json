@@ -5,12 +5,12 @@
   "license": "MIT",
   "scripts": {
     "start": "pm2 restart pm2.config.js --env production",
-    "stop" : "pm2 stop pm2.config.js",
-    "kill" : "pm2 delete pm2.config.js",
-    "logs" : "pm2 logs",
+    "stop": "pm2 stop pm2.config.js",
+    "kill": "pm2 delete pm2.config.js",
+    "logs": "pm2 logs",
     "flush": "pm2 flush",
-    "lst"  : "pm2 list",
-    "dev"  : "nodemon src"
+    "lst": "pm2 list",
+    "dev": "nodemon src"
   },
   "main": "index.js",
   "dependencies": {
