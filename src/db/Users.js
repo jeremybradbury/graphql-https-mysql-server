@@ -39,7 +39,8 @@ const Users = function(sequelize, DataTypes) {
         unique: true,
         fields: ['token']
       }
-    ]
+    ],
+    paranoid: true // undelete power for removed users
   });
   /* instance methods */
   User.prototype.disable = function() { this.update({status: null}); };

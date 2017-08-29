@@ -9,16 +9,28 @@ function XHR(query,callback) {
   return xhr;
 }
 function expireById(id) {
-  XHR(`mutation {userTokenExpire(id:"${id}"){email expires}}`, // query
-    function() { // callback
-      if (this.readyState == 4 && this.status == 200) {
-        let User = JSON.parse(this.responseText).data.userTokenExpire;
-        let alert = document.querySelector("#alert-message");
-        alert.style = "padding:1em;"
-        alert.innerHTML = `${User.email}'s API token is now expired.`;
+  if(confirm('Are you sure you want to expire this token?')) {
+    XHR(`mutation {userTokenExpire(id:"${id}"){email expires}}`, // query
+      function() { // callback
+        if (this.readyState == 4 && this.status == 200) {
+          location.reload();
+        }
       }
-    }
-  );
+    );
+  }
+  return false;
+}
+function deleteById(id) {
+  if(confirm(`Are you sure you want to delete ${id}?`)) {
+    return XHR(`mutation {userDeleteById(id:"${id}"){id email}}`, // query
+      function() { // callback
+        if (this.readyState == 4 && this.status == 200) {
+          location.reload();
+        }
+      }
+    );
+  }
+  return false;
 }
 // impersonate user override 
 function resetMyPassword() { 
@@ -34,6 +46,7 @@ function resetMyPassword() {
         password.select();
       }
     });
+  return false;
 }
 // impersonate user override 
 function getMyToken(renew) { 
@@ -56,6 +69,7 @@ function getMyToken(renew) {
         localStorage.setItem('expires',User.expires);
       }
     });
+  return false;
 }
 function updateStatusById(id,status) {
     XHR(`mutation {userSetStatus(id:"${id}",status:"${status}"){email status}}`,  // query
@@ -68,6 +82,7 @@ function updateStatusById(id,status) {
       }
     }
   );
+  return false;
 }
 function inviteByEmail() {
   let email = document.getElementById("email").value;
@@ -81,4 +96,5 @@ function inviteByEmail() {
       }
     }
   );
+  return false;
 }
