@@ -86,7 +86,7 @@ function updateStatusById(id,status) {
   return false;
 }
 function inviteByEmail() {
-  let email = document.getElementById("email").value;
+  let email = document.getElementById("email").value.replace('+','%2b');
   XHR(`mutation {userInvite(email:"${email}"){url}}`,  // query
     function() { // callback
       if (this.readyState == 4 && this.status == 200) {
