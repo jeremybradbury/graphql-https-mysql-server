@@ -225,24 +225,26 @@ a.pure-button-primary,button.pure-button-primary {
 	color:#000;
 }
 
-td .pure-form select, 
-td .pure-form input {
-  width: 65%;
+td .pure-form {
   display: inline;
-  margin-right: 0.25em;
-  height: 2.35em;
 }
+
 .dark .pure-button {
 	background:#fff;
 	color:#1f8dd6;
 	border-radius:5px;
 	padding: 0.5em 0.75em;
 }
+
 td .pure-form .pure-button {
   display: inline;
-  margin-bottom:1em;
-  border: 2px solid #ddd;
+  padding: 0.2em 0.25em;
 }
+
+td {
+  word-wrap: break-word;
+}
+
 .alert {
 	background-color:#db7711;
 	border-radius:5px;
