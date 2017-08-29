@@ -1,5 +1,5 @@
 const limit = 5;
-
+exports.limit = limit;
 exports.logout = function(req,res) {
   req.logOut(); 
   req.session.destroy(() => {
@@ -97,7 +97,6 @@ exports.views.admin.dashPaged = function(req,res) {  // admin dash pagination
     });
   });
 }; 
-
 exports.views.admin.userImpersonate = function(req,res) { // user impersonation dash view
   req.app.db.Users.findById(req.params.id)
     .then(user => {

@@ -23,7 +23,7 @@
     </thead>
     <tbody>
       <%_ for(var i=0; i<local.users.length; i++) { _%>
-        <tr>
+        <tr id="<%- local.users[i].dataValues.id _%>">
             <td><a href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%= local.users[i].dataValues.id %></a></td>
             <td><%- local.users[i].dataValues.email %></td>
             <td>
@@ -44,18 +44,18 @@
             <td>
                 <%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %>
                 <form class="pure-form">
-                    <button class="pure-button" title="Expire Token" onclick="expireById('<%= local.users[i].dataValues.id _%>'); location.reload(); return false;"><i class="fa fa-remove"></i></button>
+                    <button class="pure-button" title="Expire Token" onclick="expireById('<%= local.users[i].dataValues.id _%>'); location.reload();"><i class="fa fa-remove"></i></button>
                 </form>
             </td>
             <td>
                 <%= new Date(local.users[i].dataValues.createdAt).toISOString().slice(0, 19).replace('T', ' ') %>
                 <form class="pure-form">
-                    <button class="pure-button" title="Delete User" onclick="return confirm('are you sure?');"><i class="fa fa-remove"></i></button>
+                    <button class="pure-button" title="Delete User" onclick="deleteById('<%= local.users[i].dataValues.id %>');"><i class="fa fa-remove"></i></button>
                 </form>
             </td>
             <td>
                 <%= new Date(local.users[i].dataValues.updatedAt).toISOString().slice(0, 19).replace('T', ' ') %>
-                <form class="pure-form"><button class="pure-button" title="Save" onclick="updateStatusById('<%= local.users[i].dataValues.id _%>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value); return false;"><i class="fa fa-save"></i></button></form>
+                <form class="pure-form"><button class="pure-button" title="Save" onclick="updateStatusById('<%= local.users[i].dataValues.id _%>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value);"><i class="fa fa-save"></i></button></form>
             </td>
         <tr>
       <%_ } _%>

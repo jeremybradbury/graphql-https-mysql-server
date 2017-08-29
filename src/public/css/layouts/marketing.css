@@ -242,7 +242,7 @@ td .pure-form .pure-button {
 }
 
 td {
-  word-wrap: break-word;
+  word-wrap: break-all;
 }
 
 .alert {
