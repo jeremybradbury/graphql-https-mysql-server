@@ -80,6 +80,8 @@ function updateStatusById(id,status) {
         alert.style = "padding:1em;";
         status = (status) ? status : 'disabled';
         alert.innerHTML = `${email} is now ${status}.`;
+        location.hash = '';
+        location.hash = '#invite-user';
       }
     }
   );
@@ -94,6 +96,8 @@ function inviteByEmail() {
         let alert = document.querySelector("#alert-message");
         alert.style = "padding:1em;"
         alert.innerHTML = `Please provide ${email} with this link to set a password: ${url}<br><strong>Note: this link <em>expires in 24 hours</em>. It has NOT been automatically sent to the user (automated emailing hasn't been added).</strong>`;
+        location.hash = '';
+        location.hash = '#invite-user';
       }
     }
   );
