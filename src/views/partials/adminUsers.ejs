@@ -48,7 +48,7 @@
             <td>
                 <%= new Date(local.users[i].dataValues.createdAt).toISOString().slice(0, 19).replace('T', ' ') %>
                 <form class="pure-form">
-                    <button class="pure-button" title="Delete User" onclick="deleteById('<%= local.users[i].dataValues.id %>');"><i class="fa fa-remove"></i></button>
+                    <button class="pure-button" title="Delete User" onclick="deleteById('<%= local.users[i].dataValues.id %>');"><i class="fa fa-minus"></i></button>
                 </form>
             </td>
             <td>
