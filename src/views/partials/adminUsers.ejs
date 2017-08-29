@@ -1,10 +1,11 @@
+<%_ if(local.users.length > 0) { _%>
 <div class="pure-u-1 is-center">
-    <h2 class="content-head is-center">Manage Users</h2>
+    <h2 id="title" class="content-head is-center">Manage Users</h2>
     <p>
-    <%_ if (local.page.prev) { _%> 
+    <%_ if (local.page.prev) { _%>
        <a class="pure-button" href="/dash/admin/<%= local.page.prev %>#manage">Back</a>
     <%_ } _%>
-    <%_ if (local.page.next) { _%> 
+    <%_ if (local.page.next) { _%>
         <a class="pure-button" href="/dash/admin/<%= local.page.next %>#manage">Next</a>
     <%_ } _%>
     </p>
@@ -15,7 +16,7 @@
             <th>Email / Impersonate</th>
             <th>Status</th>
             <th style="width:40%">Token</th>
-            <th>Token Expires</th>
+            <th id="txda">Token Expires</th>
             <th>Created</th>
             <th>Modified</th>
         </tr>
@@ -23,37 +24,60 @@
     <tbody>
       <%_ for(var i=0; i<local.users.length; i++) { _%>
         <tr id="<%- local.users[i].dataValues.id _%>">
-            <td><a href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%- local.users[i].dataValues.email %></a></td>
+            <td>
+              <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
+                <a href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%- local.users[i].dataValues.email -%></a>
+              <%_ } else { _%>
+                <%- local.users[i].dataValues.email -%>
+              <%_ } _%>
+            </td>
             <td>
                 <form class="pure-form is-center">
-                    <select class="pure-input-1" id="status-<%= local.users[i].dataValues.id _%>" name="status" onchange="updateStatusById('<%= local.users[i].dataValues.id _%>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value);">
-                        <option value=""<% if(!local.users[i].dataValues.status || local.users[i].dataValues.status == '' ) { %>selected="true"<% } %>>Disabled</option>
-                        <option value="active" <% if(local.users[i].dataValues.status == 'active') { %>selected="true"<% } %>>Active</option>
-                        <option value="invite-only" <% if(local.users[i].dataValues.status == 'invite-only') { %>selected="true"<% } %>>Invite New Users</option>
-                        <option value="manage-users" <% if(local.users[i].dataValues.status == 'manage-users') { %>selected="true"<% } %>>Manage Users</option>
+                    <select class="pure-input-1" id="status-<%= local.users[i].dataValues.id %>" name="status" <%_ if(local.users[i].dataValues.deletedAt == null) { _%>onchange="updateStatusById('<%= local.users[i].dataValues.id %>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value);"<% } else { %> disabled="disabled"<% }%>>
+                        <option value=""<%_ if(!local.users[i].dataValues.status || local.users[i].dataValues.status == '' ) { _%>selected="true"<%_ } _%>>Disabled</option>
+                        <option value="active" <%_ if(local.users[i].dataValues.status == 'active') { _%>selected="true"<%_ } _%>>Active</option>
+                        <option value="invite-only" <%_ if(local.users[i].dataValues.status == 'invite-only') { _%>selected="true"<%_ } _%>>Invite New Users</option>
+                        <option value="manage-users" <%_ if(local.users[i].dataValues.status == 'manage-users') { _%>selected="true"<%_ } _%>>Manage Users</option>
                     </select>
                 </form>
             </td>
             <td>
                 <form class="pure-form is-center">
-                    <input class="pure-input-1" type="text" onclick="this.select()" name="token" readonly="true" value="<%= local.users[i].dataValues.token _%>">
+                    <input class="pure-input-1" type="text" onclick="this.select()" name="token" readonly="true" value="<%= local.users[i].dataValues.token %>">
                 </form>
             </td>
             <td>
-                <span class="<% if(new Date(local.users[i].dataValues.expires).getTime() < new Date().getTime()) { _%>red<% } %>"><%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %>
+              <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
+                <span class="<%_ if(new Date(local.users[i].dataValues.expires).getTime() < new Date().getTime()) { _%>red<%_ } _%>"><%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %>
                 <form class="pure-form">
-                    <button class="pure-button" title="Expire Token" onclick="expireById('<%= local.users[i].dataValues.id _%>'); return false;"><i class="fa fa-remove"></i></button>
+                    <button class="pure-button" title="Expire Token" onclick="expireById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-remove"></i></button>
                 </form>
+              <%_ } else { _%>
+                <span><%= new Date(local.users[i].dataValues.deletedAt).toISOString().slice(0, 19).replace('T', ' ') %>
+                <form class="pure-form">
+                    <button class="pure-button" title="Recover User" onclick="recoverById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-undo"></i></button>
+                </form>
+                <script>
+                  document.getElementById("txda").innerHTML = "Deleted";
+                  document.getElementById("title").innerHTML = "Recover Users";
+                  let invite = document.getElementById("invite");
+                  invite.parentElement.removeChild(invite);
+                </script>
+              <%_ } _%>
             </td>
             <td>
-                <%= new Date(local.users[i].dataValues.createdAt).toISOString().slice(0, 19).replace('T', ' ') %>
+                <%= new Date(local.users[i].dataValues.createdAt).toISOString().slice(0, 19).replace('T', ' ') _%>
+              <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
                 <form class="pure-form">
                     <button class="pure-button" title="Delete User" onclick="deleteById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-minus"></i></button>
                 </form>
+              <%_ } _%>
             </td>
             <td>
-                <%= new Date(local.users[i].dataValues.updatedAt).toISOString().slice(0, 19).replace('T', ' ') %>
-                <form class="pure-form"><button class="pure-button" title="Save" onclick="updateStatusById('<%= local.users[i].dataValues.id _%>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value); return false;"><i class="fa fa-save"></i></button></form>
+                <%= new Date(local.users[i].dataValues.updatedAt).toISOString().slice(0, 19).replace('T', ' ') _%>
+              <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
+                <form class="pure-form"><button class="pure-button" title="Save" onclick="updateStatusById('<%= local.users[i].dataValues.id %>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value); return false;"><i class="fa fa-save"></i></button></form>
+              <%_ } _%>
             </td>
         <tr>
       <%_ } _%>
@@ -61,12 +85,13 @@
 </table>
 <div class="pure-u-1 is-center">
     <p>
-    <%_ if (local.page.prev) { _%> 
+    <%_ if (local.page.prev) { _%>
        <a class="pure-button" href="/dash/admin/<%= local.page.prev %>#manage">Back</a>
     <%_ } _%>
-    <%_ if (local.page.next) { _%> 
+    <%_ if (local.page.next) { _%>
         <a class="pure-button" href="/dash/admin/<%= local.page.next %>#manage">Next</a>
     <%_ } _%>
     </p>
 </div>
 <big>&nbsp;</big>
+<%_ } _%>

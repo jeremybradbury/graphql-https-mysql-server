@@ -97,3 +97,13 @@ function inviteByEmail() {
     }
   );
 }
+function recoverById(id) {
+  if(confirm('Are you sure recover this user?')) {
+    XHR(`mutation {userRecoverById(id:"${id}") {id email}}`,  // query
+    function() { // callback
+      if (this.readyState == 4 && this.status == 200) {
+        location.reload();
+      }
+    });
+  }
+}

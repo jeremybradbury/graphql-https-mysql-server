@@ -64,6 +64,10 @@ const Users = function(sequelize, DataTypes) {
     this.update({password:hash});
     return pass;
   };
+  User.prototype.recover = function() {
+    this.setDataValue('deletedAt', null);
+    return this.save({ paranoid: false });
+  };
   /* class methods */
   User.findByToken = function(token) {
     // auth and return user promise (user.id)

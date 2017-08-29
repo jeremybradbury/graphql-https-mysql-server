@@ -96,6 +96,55 @@ exports.views.admin.dashPaged = function(req,res) {  // admin dash pagination
       local: local
     });
   });
+};
+exports.views.admin.recover = function(req,res) { // recover delted users
+  let local = {url: req.url, user : req.user};
+  req.app.db.Users.findAndCountAll({ 
+    where: {deletedAt: {$ne: null }},
+    attributes: { exclude: ['password'] }, 
+    order: [['deletedAt', 'DESC']],
+    limit: limit,
+    paranoid: false
+  }).then(users => {
+    local.page = {
+      next: (users.count>limit) ? 2 : false,
+      prev: false
+    };
+    local.users = users.rows;
+    res.render('admin.ejs', {
+      message: req.flash('inviteMessage'), 
+      local: local
+    });
+  });
+};
+exports.views.admin.recoverPaged = function(req,res) { // recover delted users pagination
+  let page = parseInt(req.params.page);
+  if (isNaN(page) || page < 1) {
+    return res.sendStatus(400); 
+  }
+  let offset = (req.params.page-1) * limit;
+  let local = {url: req.url, user : req.user};
+  req.app.db.Users.findAndCountAll({
+    where: {deletedAt: {$ne: null }}, 
+    attributes: { exclude: ['password'] }, 
+    order: [['deletedAt', 'DESC']],
+    offset: offset,
+    limit: limit,
+    paranoid: false
+  }).then(users => {
+    if (users.length < 1 || offset>=users.count) { 
+      return res.sendStatus(400); 
+    }
+    local.page = {
+      prev: ((offset-1) > 0) ? page-1 : false, 
+      next: (offset+limit<users.count) ? page+1 : false
+    };        
+    local.users = users.rows;
+    res.render('admin.ejs', {
+      message: req.flash('inviteMessage'), 
+      local: local
+    });
+  });
 }; 
 exports.views.admin.userImpersonate = function(req,res) { // user impersonation dash view
   req.app.db.Users.findById(req.params.id)

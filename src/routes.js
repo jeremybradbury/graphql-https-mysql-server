@@ -21,6 +21,9 @@ module.exports = function(app, passport) {
   app.get('/logout', User.logout );// logout
   app.get('/login', User.views.login); // login view
   app.get('/dash', User.isLoggedIn, User.views.dash); // dash view
+  app.get('/dash/admin/recover', User.isLoggedIn, User.isAdmin, User.views.admin.recover); // recover delted users view
+  app.get('/dash/admin/recover/1', (req,res) => { res.redirect('/dash/admin/recover'); }); // dont use page 1
+  app.get('/dash/admin/recover/:page', User.isLoggedIn, User.isAdmin, User.views.admin.recoverPaged); // recover delted users pagination
   app.get('/dash/admin', User.isLoggedIn, User.isAdmin, User.views.admin.dash); // admin dash view
   app.get('/dash/admin/1', (req,res) => { res.redirect('/dash/admin'); }); // dont use page 1
   app.get('/dash/admin/:page', User.isLoggedIn, User.isAdmin, User.views.admin.dashPaged);  // admin dash pagination
