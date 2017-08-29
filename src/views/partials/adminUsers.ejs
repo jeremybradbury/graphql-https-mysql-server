@@ -28,7 +28,7 @@
             <td><%- local.users[i].dataValues.email %></td>
             <td>
                 <form class="pure-form is-center">
-                    <select id="status-<%= local.users[i].dataValues.id _%>" name="status">
+                    <select id="status-<%= local.users[i].dataValues.id _%>" name="status" onchange="updateStatusById('<%= local.users[i].dataValues.id _%>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value);">
                         <option value=""<% if(!local.users[i].dataValues.status || local.users[i].dataValues.status == '' ) { %>selected="true"<% } %>>Disabled</option>
                         <option value="active" <% if(local.users[i].dataValues.status == 'active') { %>selected="true"<% } %>>Active</option>
                         <option value="invite-only" <% if(local.users[i].dataValues.status == 'invite-only') { %>selected="true"<% } %>>Invite New Users</option>
