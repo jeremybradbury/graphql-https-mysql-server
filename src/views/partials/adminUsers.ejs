@@ -42,18 +42,18 @@
             <td>
                 <span class="<% if(new Date(local.users[i].dataValues.expires).getTime() < new Date().getTime()) { _%>red<% } %>"><%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %>
                 <form class="pure-form">
-                    <button class="pure-button" title="Expire Token" onclick="expireById('<%= local.users[i].dataValues.id _%>');"><i class="fa fa-remove"></i></button>
+                    <button class="pure-button" title="Expire Token" onclick="expireById('<%= local.users[i].dataValues.id _%>'); return false;"><i class="fa fa-remove"></i></button>
                 </form>
             </td>
             <td>
                 <%= new Date(local.users[i].dataValues.createdAt).toISOString().slice(0, 19).replace('T', ' ') %>
                 <form class="pure-form">
-                    <button class="pure-button" title="Delete User" onclick="deleteById('<%= local.users[i].dataValues.id %>');"><i class="fa fa-minus"></i></button>
+                    <button class="pure-button" title="Delete User" onclick="deleteById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-minus"></i></button>
                 </form>
             </td>
             <td>
                 <%= new Date(local.users[i].dataValues.updatedAt).toISOString().slice(0, 19).replace('T', ' ') %>
-                <form class="pure-form"><button class="pure-button" title="Save" onclick="updateStatusById('<%= local.users[i].dataValues.id _%>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value);"><i class="fa fa-save"></i></button></form>
+                <form class="pure-form"><button class="pure-button" title="Save" onclick="updateStatusById('<%= local.users[i].dataValues.id _%>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value); return false;"><i class="fa fa-save"></i></button></form>
             </td>
         <tr>
       <%_ } _%>

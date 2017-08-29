@@ -18,7 +18,6 @@ function expireById(id) {
       }
     );
   }
-  return false;
 }
 function deleteById(id) {
   if(confirm(`Are you sure you want to delete ${id}?`)) {
@@ -30,7 +29,6 @@ function deleteById(id) {
       }
     );
   }
-  return false;
 }
 // impersonate user override 
 function resetMyPassword() { 
@@ -46,7 +44,6 @@ function resetMyPassword() {
         password.select();
       }
     });
-  return false;
 }
 // impersonate user override 
 function getMyToken(renew) { 
@@ -69,7 +66,6 @@ function getMyToken(renew) {
         localStorage.setItem('expires',User.expires);
       }
     });
-  return false;
 }
 function updateStatusById(id,status) {
     XHR(`mutation {userSetStatus(id:"${id}",status:"${status}"){email status}}`,  // query
@@ -85,7 +81,6 @@ function updateStatusById(id,status) {
       }
     }
   );
-  return false;
 }
 function inviteByEmail() {
   let email = document.getElementById("email").value.replace('+','%2b');
@@ -101,5 +96,4 @@ function inviteByEmail() {
       }
     }
   );
-  return false;
 }
