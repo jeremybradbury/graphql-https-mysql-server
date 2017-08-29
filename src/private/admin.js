@@ -77,8 +77,9 @@ function updateStatusById(id,status) {
       if (this.readyState == 4 && this.status == 200) {
         let email = JSON.parse(this.responseText).data.userSetStatus.email;
         let alert = document.querySelector("#alert-message");
-        alert.style = "padding:1em;"; 
-        alert.innerHTML = `${email} has been changed to ${status}.`;
+        alert.style = "padding:1em;";
+        status = (status) ? status : 'disabled';
+        alert.innerHTML = `${email} is now ${status}.`;
       }
     }
   );
