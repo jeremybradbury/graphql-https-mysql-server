@@ -60,7 +60,7 @@ exports.views.admin.dash = function(req,res) { // admin dash view
     limit: limit
   }).then(users => {
     local.page = {
-      next: 2,
+      next: (users.count>limit) ? 2 : false,
       prev: false
     };
     local.users = users.rows;
