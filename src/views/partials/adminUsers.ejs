@@ -1,6 +1,6 @@
 <%_ if(local.users.length > 0) { _%>
 <div class="pure-u-1 is-center">
-    <h2 id="title" class="content-head is-center">Manage Users</h2>
+    <h2 class="content-head is-center"><%_ if(local.url.indexOf('/recover') < 0) { _%>Manage<%_ } else { _%>Recover<% } %> Users</h2>
     <p>
     <%_ if (local.page.prev) { _%>
        <a class="pure-button" href="/dash/admin/<%= local.page.prev %>#manage">Back</a>
@@ -8,15 +8,20 @@
     <%_ if (local.page.next) { _%>
         <a class="pure-button" href="/dash/admin/<%= local.page.next %>#manage">Next</a>
     <%_ } _%>
+    <%_ if(local.url.indexOf('/recover') < 0) { _%>
+        <a class="pure-button" href="/dash/admin/recover/#manage">Recover</a>
+    <%_ } else { _%>
+        <a class="pure-button" href="/dash/admin/#manage">Manage</a>
+    <%_ } _%>  
     </p>
 </div>
 <table class="pure-table">
     <thead>
         <tr>
-            <th>Email / Impersonate</th>
+            <th>Email</th>
             <th>Status</th>
             <th style="width:40%">Token</th>
-            <th id="txda">Token Expires</th>
+            <th> <%_ if(local.url.indexOf('/recover') < 0) { _%>Token Expires<%_ } else { _%>Deleted<% } %></th>
             <th>Created</th>
             <th>Modified</th>
         </tr>
@@ -26,7 +31,7 @@
         <tr id="<%- local.users[i].dataValues.id _%>">
             <td>
               <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
-                <a href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%- local.users[i].dataValues.email -%></a>
+                <a title="Impersonate <%- local.users[i].dataValues.email -%>" href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%- local.users[i].dataValues.email -%></a>
               <%_ } else { _%>
                 <%- local.users[i].dataValues.email -%>
               <%_ } _%>
@@ -58,8 +63,6 @@
                     <button class="pure-button" title="Recover User" onclick="recoverById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-undo"></i></button>
                 </form>
                 <script>
-                  document.getElementById("txda").innerHTML = "Deleted";
-                  document.getElementById("title").innerHTML = "Recover Users";
                   let invite = document.getElementById("invite");
                   invite.parentElement.removeChild(invite);
                 </script>
@@ -91,6 +94,11 @@
     <%_ if (local.page.next) { _%>
         <a class="pure-button" href="/dash/admin/<%= local.page.next %>#manage">Next</a>
     <%_ } _%>
+    <%_ if(local.url.indexOf('/recover') < 0) { _%>
+        <a class="pure-button" href="/dash/admin/recover/#manage">Recover</a>
+    <%_ } else { _%>
+        <a class="pure-button" href="/dash/admin/#manage">Manage</a>
+    <%_ } _%>  
     </p>
 </div>
 <big>&nbsp;</big>
