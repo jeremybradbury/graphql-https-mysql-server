@@ -23,8 +23,7 @@ const { log } = app.tools = require('auto-load')('src/tools');
 app.db = db;
 
 // destroy existing sessions on deploy/restart
-db.Sessions.sync({force: true})
-  .then(()=>{log.e.info('Cleaned sessions'); return null;});
+db.Sessions.sync({force: true}).then(()=>log.e.debug('Cleaned sessions'));
 
 // configure
 require('./config/passport')(passport);
