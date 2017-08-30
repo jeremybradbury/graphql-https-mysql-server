@@ -1,4 +1,5 @@
 const eventCreate = require('../eventCreate');
+const eventUpdate = require('../eventUpdate');
 const userDeleteById = require('./userDeleteById');
 const userRecoverById = require('./userRecoverById');
 const userInvite = require('./userInvite');
@@ -9,6 +10,7 @@ const userSetStatus = require('./userSetStatus');
 
 module.exports = {
   eventCreate,
+  eventUpdate,
   userDeleteById,
   userRecoverById,
   userInvite,

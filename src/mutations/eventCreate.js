@@ -13,10 +13,9 @@ module.exports = {
   },
   resolve: (root, { data }, {req: {app: {db: {Events}}}}) => {
     return new Promise((resolve, reject) => {
-      Events.sync().then(() => {
-        console.log(data);
-        return Event.create(data);
-      }).then(data => {
+      Events.sync()
+        .then(()=>Event.create(data))
+        .then(data => {
           socket.publish('EVENT_CREATED', {
             eventCreated: data
           })
