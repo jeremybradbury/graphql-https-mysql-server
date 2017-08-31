@@ -17,13 +17,11 @@ module.exports = {
     }
   },
   resolve: (root, args, {req: {app: {db: {Users}}}}) => {
-    console.log({where: args});
     return new Promise((resolve, reject) => {
       let status = args.status; // save this for setting
       delete args.status; // remove from the query
       Users.findOne({where: args})
         .then((user) => {
-          console.log(user);
           resolve(user.destroy());
         })
         .catch(errors => reject(errors));
