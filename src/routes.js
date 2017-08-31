@@ -22,10 +22,10 @@ module.exports = function(app, passport) {
   app.get('/login', User.views.login); // login view
   app.get('/dash', User.isLoggedIn, User.views.dash); // dash view
   app.get('/dash/admin/recover', User.isLoggedIn, User.isAdmin, User.views.admin.recover); // recover delted users view
-  app.get('/dash/admin/recover/1', (req,res) => { res.redirect('/dash/admin/recover'); }); // dont use page 1
+  app.get('/dash/admin/recover/1', User.views.admin.recover1); // dont use page 1
   app.get('/dash/admin/recover/:page', User.isLoggedIn, User.isAdmin, User.views.admin.recoverPaged); // recover delted users pagination
   app.get('/dash/admin', User.isLoggedIn, User.isAdmin, User.views.admin.dash); // admin dash view
-  app.get('/dash/admin/1', (req,res) => { res.redirect('/dash/admin'); }); // dont use page 1
+  app.get('/dash/admin/1', User.views.admin.dash1); // dont use page 1
   app.get('/dash/admin/:page', User.isLoggedIn, User.isAdmin, User.views.admin.dashPaged);  // admin dash pagination
   app.get('/dash/admin/user/:id', User.isLoggedIn, User.isAdmin, User.views.admin.userImpersonate); // user impersonation dash view
   app.get('/new/:token', User.views.new); // new user/password view

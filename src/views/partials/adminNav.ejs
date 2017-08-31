@@ -1,0 +1,17 @@
+<%_ if(local.url.indexOf('/recover') < 0) { _%>
+  <%_ if (local.page.prev) { _%>
+    <a class="pure-button prev" href="/dash/admin/<%= local.page.prev  %>">Back</a>
+  <%_ } _%>
+  <%_ if (local.page.next) { _%>
+    <a class="pure-button next" href="/dash/admin/<%= local.page.next %>">Next</a>
+  <%_ } _%>
+    <a class="pure-button" href="/dash/admin/recover/#manage">Recover</a>
+<%_ } else { _%>
+  <%_ if (local.page.prev) { _%>
+    <a class="pure-button prev" href="/dash/admin/recover/<%= local.page.prev  %>">Back</a>
+  <%_ } _%>
+  <%_ if (local.page.next) { _%>
+      <a class="pure-button next" href="/dash/admin/recover/<%= local.page.next %>">Next</a>
+  <%_ } _%>
+      <a class="pure-button" href="/dash/admin/#manage">Manage</a>
+<%_ } _%>  

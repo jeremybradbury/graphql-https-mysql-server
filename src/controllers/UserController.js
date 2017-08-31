@@ -54,22 +54,37 @@ exports.views.new = function(req,res) { // new user/password view
 exports.views.admin = {};
 exports.views.admin.dash = function(req,res) { // admin dash view
   let local = {url: req.url, user : req.user};
-  req.app.db.Users.findAndCountAll({ 
+  let query = { 
     attributes: { exclude: ['password'] }, 
     order: [['createdAt', 'DESC']],
     limit: limit
-  }).then(users => {
-    local.page = {
-      next: (users.count>limit) ? 2 : false,
-      prev: false
-    };
-    local.users = users.rows;
-    res.render('admin.ejs', {
-      message: req.flash('inviteMessage'), 
-      local: local
+  };
+  if(Object.keys(req.query).length>0) {
+    let filter = req.query.filter;
+    var where = {};
+    for(i in filter) {
+      where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+    }
+    query.where = where;
+  }
+  req.app.db.Users.findAndCountAll(query)
+    .then(users => {
+      local.page = {
+        next: (users.count>limit) ? 2 : false,
+        prev: false
+      };
+      local.users = users.rows;
+      res.render('admin.ejs', {
+        message: req.flash('inviteMessage'), 
+        local: local
+      });
     });
-  });
 }; 
+exports.views.admin.dash1 = function(req,res) { 
+  let q = req.url.split('?')[1]; // forward query
+  let url = (!q) ? '/dash/admin/' : '/dash/admin/?'+q; 
+  res.redirect(url);
+}
 exports.views.admin.dashPaged = function(req,res) {  // admin dash pagination
   let page = parseInt(req.params.page);
   if (isNaN(page) || page < 1) {
@@ -77,46 +92,75 @@ exports.views.admin.dashPaged = function(req,res) {  // admin dash pagination
   }
   let offset = (req.params.page-1) * limit;
   let local = {url: req.url, user : req.user};
-  req.app.db.Users.findAndCountAll({ 
+  let query = { 
     attributes: { exclude: ['password'] }, 
     order: [['createdAt', 'DESC']],
-    offset: offset,
-    limit: limit
-  }).then(users => {
-    if (users.length < 1 || offset>=users.count) { 
-      return res.sendStatus(400); 
+    limit: limit,
+    offset: offset
+  };
+  if(Object.keys(req.query).length>0) {
+    let filter = req.query.filter;
+    var where = {};
+    for(i in filter) {
+      where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
     }
-    local.page = {
-      prev: ((offset-1) > 0) ? page-1 : false, 
-      next: (offset+limit<users.count) ? page+1 : false
-    };        
-    local.users = users.rows;
-    res.render('admin.ejs', {
-      message: req.flash('inviteMessage'), 
-      local: local
+    query.where = where;
+  }
+  req.app.db.Users.findAndCountAll(query)
+    .then(users => {
+      if (users.count < 1) { 
+        return res.sendStatus(400); 
+      }
+      local.page = {
+        prev: ((offset-1) > 0) ? page-1 : false, 
+        next: (offset+limit<users.count) ? page+1 : false
+      };
+      local.users = users.rows;
+      res.render('admin.ejs', {
+        message: req.flash('inviteMessage'), 
+        local: local
+      });
     });
-  });
 };
 exports.views.admin.recover = function(req,res) { // recover delted users
   let local = {url: req.url, user : req.user};
-  req.app.db.Users.findAndCountAll({ 
-    where: {deletedAt: {$ne: null }},
+  let deleted = {deletedAt: {$ne: null }};
+  let query = { 
+    where: deleted, 
     attributes: { exclude: ['password'] }, 
     order: [['deletedAt', 'DESC']],
     limit: limit,
     paranoid: false
-  }).then(users => {
-    local.page = {
-      next: (users.count>limit) ? 2 : false,
-      prev: false
-    };
-    local.users = users.rows;
-    res.render('admin.ejs', {
-      message: req.flash('inviteMessage'), 
-      local: local
+  };
+  if(Object.keys(req.query).length>0) {
+    let filter = req.query.filter;
+    var where = {};
+    let and = []; 
+    for(i in filter) {
+      where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+    }
+    and.push(deleted);
+    and.push(where);
+    query.where = {$and: and};
+  }
+  req.app.db.Users.findAndCountAll(query)    
+    .then(users => {
+      local.page = {
+        next: (users.count>limit) ? 2 : false,
+        prev: false
+      };
+      local.users = users.rows;
+      res.render('admin.ejs', {
+        message: req.flash('inviteMessage'), 
+        local: local
+      });
     });
-  });
 };
+exports.views.admin.recover1 = function (req,res) { // redirect /recover/1 to /recover/
+  let q = req.url.split('?')[1]; // forward query 
+  let url = (!q) ? '/dash/admin/recover/' : '/dash/admin/recover/?'+q; // if exists
+  res.redirect(url);
+}
 exports.views.admin.recoverPaged = function(req,res) { // recover delted users pagination
   let page = parseInt(req.params.page);
   if (isNaN(page) || page < 1) {
@@ -124,15 +168,30 @@ exports.views.admin.recoverPaged = function(req,res) { // recover delted users p
   }
   let offset = (req.params.page-1) * limit;
   let local = {url: req.url, user : req.user};
-  req.app.db.Users.findAndCountAll({
-    where: {deletedAt: {$ne: null }}, 
+  let deleted = {deletedAt: {$ne: null }};
+  let query = { 
+    where: deleted, 
     attributes: { exclude: ['password'] }, 
     order: [['deletedAt', 'DESC']],
     offset: offset,
     limit: limit,
     paranoid: false
-  }).then(users => {
-    if (users.length < 1 || offset>=users.count) { 
+  };
+  if(Object.keys(req.query).length>0) {
+    let filter = req.query.filter;
+    var where = {};
+    let and = [];
+    for(i in filter) {
+      where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+    }
+    and.push(deleted);
+    and.push(where);
+    query.where = {$and: and};
+  }
+  console.dir(query.where);
+  req.app.db.Users.findAndCountAll(query)
+  .then(users => {
+    if (users.rows.length < 1 || offset>=users.count) { 
       return res.sendStatus(400); 
     }
     local.page = {

@@ -2,17 +2,7 @@
 <div class="pure-u-1 is-center">
     <h2 class="content-head is-center"><%_ if(local.url.indexOf('/recover') < 0) { _%>Manage<%_ } else { _%>Recover<% } %> Users</h2>
     <p>
-    <%_ if (local.page.prev) { _%>
-       <a class="pure-button" href="/dash/admin/<%= local.page.prev %>#manage">Back</a>
-    <%_ } _%>
-    <%_ if (local.page.next) { _%>
-        <a class="pure-button" href="/dash/admin/<%= local.page.next %>#manage">Next</a>
-    <%_ } _%>
-    <%_ if(local.url.indexOf('/recover') < 0) { _%>
-        <a class="pure-button" href="/dash/admin/recover/#manage">Recover</a>
-    <%_ } else { _%>
-        <a class="pure-button" href="/dash/admin/#manage">Manage</a>
-    <%_ } _%>  
+        <%- include ./adminNav %>
     </p>
 </div>
 <table class="pure-table">
@@ -63,8 +53,9 @@
                     <button class="pure-button" title="Recover User" onclick="recoverById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-undo"></i></button>
                 </form>
                 <script>
-                  let invite = document.getElementById("invite");
-                  invite.parentElement.removeChild(invite);
+                  try{ 
+                    document.getElementById("invite").parentElement.removeChild(document.getElementById("invite"));
+                  } catch(ex) {}
                 </script>
               <%_ } _%>
             </td>
@@ -88,18 +79,21 @@
 </table>
 <div class="pure-u-1 is-center">
     <p>
-    <%_ if (local.page.prev) { _%>
-       <a class="pure-button" href="/dash/admin/<%= local.page.prev %>#manage">Back</a>
-    <%_ } _%>
-    <%_ if (local.page.next) { _%>
-        <a class="pure-button" href="/dash/admin/<%= local.page.next %>#manage">Next</a>
-    <%_ } _%>
-    <%_ if(local.url.indexOf('/recover') < 0) { _%>
-        <a class="pure-button" href="/dash/admin/recover/#manage">Recover</a>
-    <%_ } else { _%>
-        <a class="pure-button" href="/dash/admin/#manage">Manage</a>
-    <%_ } _%>  
+        <%- include ./adminNav %>
     </p>
 </div>
 <big>&nbsp;</big>
+<script>
+  try{
+    let next = document.querySelectorAll(".next");
+    next[0].setAttribute('href', next[0].getAttribute('href') + window.location.search + window.location.hash);
+    next[1].setAttribute('href', next[1].getAttribute('href') + window.location.search + window.location.hash);
+  } catch(ex){
+    try {
+      let prev = document.querySelectorAll(".prev");
+      prev[0].setAttribute('href', prev[0].getAttribute('href') + window.location.search + window.location.hash);
+      prev[1].setAttribute('href', prev[1].getAttribute('href') + window.location.search + window.location.hash);
+    } catch(ex){}
+  }
+</script>
 <%_ } _%>
