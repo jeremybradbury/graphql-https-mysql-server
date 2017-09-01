@@ -30,6 +30,12 @@ require('./config/passport')(passport);
 app.use(helmet());
 app.use(json());
 app.use(urlencoded({ extended: true }));
+app.use(['/api','/api/admin'], // CORS for APIs
+  function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 app.use(log.access("combined",{stream: log.aStream})); // add morgan
 app.use('/', // sessionless static resources (icons,images,css,etc)
   express.static(__dirname+'/public')
