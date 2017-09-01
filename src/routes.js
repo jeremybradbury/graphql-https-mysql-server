@@ -1,6 +1,13 @@
 const express = require('express');
 const { User, GraphQL } = require('./controllers'); 
+const { appConfig } = require('./config');
+const session = require('express-session');
+const Store = require('express-session-sequelize')(session.Store);
+const cookieParser = require('cookie-parser');
+
 module.exports = function(app, passport) {
+  const store = new Store({ db: app.db.sequelize, checkExpirationInterval: 300000, expires: 900000 }); // cleanup every 5m, logout if inactive 15m
+  
   /* middleware */
   hasValidToken = passport.authenticate("bearer", { session: false }); // token auth middleware pure sessionless
   hasTokenOrSession = function(req,res,next) { // less secure
@@ -17,13 +24,42 @@ module.exports = function(app, passport) {
     res.sendStatus(403); // not allowed
   }
   
-  /* authenticated static resources */
+  /* sessionless routes */
+  app.use('/', // icons,images,css,etc
+    express.static(__dirname+'/public')
+  );
+  // CORS for APIs
+  app.use(['/api','/api/admin'], 
+    function(req, res, next) {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      res.header("Access-Control-Allow-Method", "POST");
+      next();
+    });
+  app.post('/api', hasValidToken, GraphQL.api); // User GraphQL API endpoint
+  app.post('/api/admin', hasValidToken, isAdmin, GraphQL.admin.api); // Admin GraphQL API endpoint
+  
+  /* sessions for routes below */
+  app.use(session({ 
+    key: 'sid',
+    secret: appConfig.secret,
+    store: store,
+    cookie: { secure: true, sameSite: true, maxAge: 604800000/7 }, // 7days/7 = 24 hours; 7days*4 = 28 days
+    resave: false,
+    saveUninitialized: true
+    })
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(cookieParser(appConfig.secret));
+  
+  /* sessioned static resources */
   app.use('/private',
-    isLoggedIn,
+    isLoggedIn, // authenticated static resources
     express.static(__dirname+'/private')
   );
   
-  /* endpoints */
+  /* sessioned endpoints */
   app.post('/login', (req, res, next) => { // login endpoint
     passport.authenticate('local', function(err, user, info) {
       if (err) { return next(err); }
@@ -38,7 +74,7 @@ module.exports = function(app, passport) {
   app.get('/token', hasTokenOrSession, User.getMyToken);
   app.get('/token/renew', hasTokenOrSession, User.renewMyToken);
   
-  /* views */
+  /* sessioned views */
   app.get('/', User.views.homeHide); // hidden home. what? it's an API
   app.get('/logout', User.logout );// logout
   app.get('/login', User.views.login); // login view
@@ -51,12 +87,9 @@ module.exports = function(app, passport) {
   app.get('/dash/admin/:page', isLoggedIn, isAdmin, User.admin.views.dashPaged);  // admin dash pagination
   app.get('/dash/admin/user/:id', isLoggedIn, isAdmin, User.admin.views.userImpersonate); // user impersonation dash view
   app.get('/new/:token', User.views.new); // new user/password view
-  
-  /* GraphQL endpoints/views */
-  app.post('/api', hasValidToken, GraphQL.api); // User GraphQL API endpoint
   app.get('/docs', isLoggedIn, GraphQL.docs); // GraphiQL view
-  app.post('/api/admin', hasValidToken, isAdmin, GraphQL.admin.api); // Admin GraphQL API endpoint
   app.get('/docs/admin', isLoggedIn, isAdmin, GraphQL.admin.docs); // Admin GraphiQL view
+
   /* 404 everything else */
   app.use('*',(req,res) => { res.sendStatus(404); });  // [TODO] error view  
 }

@@ -1,12 +1,9 @@
 'use strict';
 const fs = require('fs');
 const express = require('express');
-const session = require('express-session');
-const Store = require('express-session-sequelize')(session.Store);
 const passport = require("passport");
 const helmet = require('helmet');
 const flash = require('connect-flash');
-const cookieParser = require('cookie-parser');
 const { json, urlencoded  } = require('body-parser');
 const { createServer } = require('https');
 const { SubscriptionServer } = require('subscriptions-transport-ws');
@@ -30,29 +27,8 @@ require('./config/passport')(passport);
 app.use(helmet());
 app.use(json());
 app.use(urlencoded({ extended: true }));
-app.use(['/api','/api/admin'], // CORS for APIs
-  function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
 app.use(log.access("combined",{stream: log.aStream})); // add morgan
-app.use('/', // sessionless static resources (icons,images,css,etc)
-  express.static(__dirname+'/public')
-);
 app.use(flash());
-app.use(cookieParser(appConfig.secret));
-const store = new Store({ db: db.sequelize, checkExpirationInterval: 300000, expires: 900000 }); // cleanup every 5m, logout if inactive 15m
-app.use(session({
-  key: 'sid',
-  secret: appConfig.secret,
-  store: store,
-  cookie: { secure: true, sameSite: true, maxAge: 604800000/7 }, // 7days/7 = 24 hours; 7days*4 = 28 days
-  resave: false,
-  saveUninitialized: true
-}));
-app.use(passport.initialize());
-app.use(passport.session());
 app.set('trust proxy',1);
 app.set('view engine', 'ejs');
 app.set('views','./src/views');
