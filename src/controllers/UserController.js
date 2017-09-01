@@ -1,6 +1,10 @@
 const limit = 5;
 exports.limit = limit;
+exports.admin = {};
+exports.views = {};
+exports.admin.views = {};
 
+/* json endpoints */
 exports.logout = function(req,res) {
   req.logOut(); 
   req.session.destroy(() => {
@@ -8,8 +12,37 @@ exports.logout = function(req,res) {
   });
 };
 
-exports.views = {};
+exports.getMyToken = function(req,res) {
+  req.app.db.Users.getTokenById(req.user.id)
+    .then(user => {
+      let data = user.get();
+      res.json({data: { // user's dataa
+        id: req.user.id,
+        token: data.token,
+        expires: data.expires,
+        status: data.status 
+      }});
+    });
+};
 
+exports.renewMyToken = function(req,res) {
+  req.app.db.Users.findById(req.user.id)
+    .then(user => {
+      let data = user.tokenNew();
+      data.status = user.status; // user's status
+      data.id = req.user.id;
+      res.json({data: data});
+    });
+};
+
+exports.resetMyPassword = function(req,res) {
+  req.app.db.Users.findById(req.user.id)
+    .then(user => {
+      res.json({data: {password: user.resetPass()}});
+    });
+};
+
+/* ejs views */
 exports.views.login = function(req,res) { // login view
   res.render('login.ejs', { 
       message: req.flash('loginMessage'), 
@@ -59,15 +92,13 @@ exports.views.new = function(req,res) { // new user/password view
     })
 };
 
-exports.views.admin = {};
-
-exports.views.admin.dash1 = function(req,res) { 
+exports.admin.views.dash1 = function(req,res) { 
   let q = req.url.split('?')[1]; // forward query
   let url = (!q) ? '/dash/admin/' : '/dash/admin/?'+q; 
   res.redirect(url);
 }
 
-exports.views.admin.dash = function(req,res) { // admin dash view
+exports.admin.views.dash = function(req,res) { // admin dash view
   let local = {url: req.url, user : req.user};
   let query = { 
     attributes: { exclude: ['password'] }, 
@@ -96,7 +127,7 @@ exports.views.admin.dash = function(req,res) { // admin dash view
     });
 };
 
-exports.views.admin.dashPaged = function(req,res) {  // admin dash pagination
+exports.admin.views.dashPaged = function(req,res) {  // admin dash pagination
   let page = parseInt(req.params.page);
   if (isNaN(page) || page < 1) {
     return res.sendStatus(400); 
@@ -134,13 +165,13 @@ exports.views.admin.dashPaged = function(req,res) {  // admin dash pagination
     });
 };
 
-exports.views.admin.recover1 = function (req,res) { // redirect /recover/1 to /recover/
+exports.admin.views.recover1 = function (req,res) { // redirect /recover/1 to /recover/
   let q = req.url.split('?')[1]; // forward query 
   let url = (!q) ? '/dash/admin/recover/' : '/dash/admin/recover/?'+q; // if exists
   res.redirect(url);
 };
 
-exports.views.admin.recover = function(req,res) { // recover delted users
+exports.admin.views.recover = function(req,res) { // recover delted users
   let local = {url: req.url, user : req.user};
   let deleted = {deletedAt: {$ne: null }};
   let query = { 
@@ -175,7 +206,7 @@ exports.views.admin.recover = function(req,res) { // recover delted users
     });
 };
 
-exports.views.admin.recoverPaged = function(req,res) { // recover delted users pagination
+exports.admin.views.recoverPaged = function(req,res) { // recover delted users pagination
   let page = parseInt(req.params.page);
   if (isNaN(page) || page < 1) {
     return res.sendStatus(400); 
@@ -202,7 +233,6 @@ exports.views.admin.recoverPaged = function(req,res) { // recover delted users p
     and.push(where);
     query.where = {$and: and};
   }
-  console.dir(query.where);
   req.app.db.Users.findAndCountAll(query)
   .then(users => {
     if (users.rows.length < 1 || offset>=users.count) { 
@@ -220,21 +250,9 @@ exports.views.admin.recoverPaged = function(req,res) { // recover delted users p
   });
 };
 
-exports.views.admin.userImpersonate = function(req,res) { // user impersonation dash view
+exports.admin.views.userImpersonate = function(req,res) { // user impersonation dash view
   req.app.db.Users.findById(req.params.id)
     .then(user => {
       res.render('dash.ejs', {local: {user: user, impersonate: req.user.email }});
     })
 };
-
-/* middleware */
-exports.isLoggedIn = function (req, res, next) { // user auth middleware
-  if (req.isAuthenticated()) return next(); // proceed to next middleware
-  req.session.returnTo = req.url; // dont forget where we came
-  res.redirect('/login'); // not authenticated
-};
-
-exports.isAdmin = function (req, res, next) { // admin middleware
-  if(req.user.status == 'manage-users') return next(); // proceed to next middleware
-  res.sendStatus(403); // not allowed
-}

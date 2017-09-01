@@ -73,6 +73,10 @@ const Users = function(sequelize, DataTypes) {
     // auth and return user promise (user.id)
     return tools.findByToken(this,token);
   };
+  User.getTokenById = function(id) {
+    // auth and return user promise (user.id)
+    return User.findById(id);
+  };
   User.check = function(email,pass) {
     // auth and return user promise (user.token) 
     return tools.userAuth(this,email,pass);
