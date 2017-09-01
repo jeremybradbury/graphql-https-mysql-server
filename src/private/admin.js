@@ -107,3 +107,23 @@ function recoverById(id) {
     });
   }
 }
+function filter(field) {
+  field = (typeof field == 'undefined') ? 'clear' : field;
+  let value = document.getElementById(`filter-${field}`).value;
+  if (field == 'clear'
+      || (field != 'status' && value=='') 
+      || (field == 'status' && value=='*')) {
+    window.location.href = window.location.pathname;
+  } else {
+    location.search = `?filter[${field}]=${value}`;
+  }
+}
+function getQuery() {	
+  var pairs = location.search.slice(1).split('&');
+  var result = {};
+  pairs.forEach(function(pair) {
+  	pair = pair.split('=');
+  	result[pair[0]] = decodeURIComponent(pair[1] || '');
+  });
+  return result;
+}

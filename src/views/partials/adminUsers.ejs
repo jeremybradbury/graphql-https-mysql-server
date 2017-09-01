@@ -14,6 +14,29 @@
             <th>Created</th>
             <th>Modified</th>
         </tr>
+        <tr>
+            <th>
+                <form class="pure-form is-center" onsubmit="filter('email'); return false;">
+                    <input class="pure-input" type="text" placeholder="filter" id="filter-email" name="filter[email]">
+                </form>
+            </th>
+            <th>                
+                <form class="pure-form is-center" >
+                    <select class="pure-input" id="filter-status" name="filter[status]" onchange="filter('status'); return false;">
+                        <option value="*">All</option>
+                        <option value="">Enabled</option>
+                        <option value="null">Disabled</option>
+                        <option value="active">Active</option>
+                        <option value="invite-only">Invite New Users</option>
+                        <option value="manage-users">Manage Users</option>
+                    </select>
+                </form>
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
       <%_ for(var i=0; i<local.users.length; i++) { _%>
@@ -88,6 +111,18 @@
   if(prev && prev.length > 0){
     prev[0].setAttribute('href', prev[0].getAttribute('href') + window.location.search + window.location.hash);
     prev[1].setAttribute('href', prev[1].getAttribute('href') + window.location.search + window.location.hash);
+  }
+  if(location.search){
+    document.getElementById('filter-clear').removeAttribute('style');
+    var q = getQuery();
+    let filter = 'filter[email]';
+    if (filter in q){
+      document.getElementById('filter-email').value = q[filter];
+    }
+    filter = 'filter[status]';
+    if (filter in q){
+      document.getElementById('filter-status').value = q[filter];
+    }
   }
 </script>
 <%_ }else { _%>
