@@ -115,7 +115,10 @@ function filter(field) {
       || (field == 'status' && value=='*')) {
     window.location.href = window.location.pathname;
   } else {
-    location.search = `?filter[${field}]=${value}`;
+    let url = location.protocol + '//' + location.hostname + ((location.port) ? ':'+location.port : '');
+    url += location.pathname.replace(/\d+$/, ''); // always search page 1
+    let query = `?filter[${field}]=${value}`;
+    location.href = url + query + location.hash;
   }
 }
 function getQuery() {	
