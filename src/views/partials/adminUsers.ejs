@@ -1,9 +1,8 @@
 <%_ if(local.users.length > 0) { _%>
 <div class="pure-u-1 is-center">
     <h2 class="content-head is-center"><%_ if(local.url.indexOf('/recover') < 0) { _%>Manage<%_ } else { _%>Recover<% } %> Users</h2>
-    <p>
-        <%- include ./adminNav %>
-    </p>
+    <p><%- include ./adminNav %></p>
+    <p><%- include ./adminPaging %></p>
 </div>
 <table class="pure-table">
     <thead>
@@ -52,11 +51,6 @@
                 <form class="pure-form">
                     <button class="pure-button" title="Recover User" onclick="recoverById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-undo"></i></button>
                 </form>
-                <script>
-                  try{ 
-                    document.getElementById("invite").parentElement.removeChild(document.getElementById("invite"));
-                  } catch(ex) {}
-                </script>
               <%_ } _%>
             </td>
             <td>
@@ -74,26 +68,30 @@
               <%_ } _%>
             </td>
         <tr>
-      <%_ } _%>
+      <%_ } _%> 
     </tbody>
 </table>
 <div class="pure-u-1 is-center">
     <p>
-        <%- include ./adminNav %>
+        <%- include ./adminPaging %>
     </p>
 </div>
 <big>&nbsp;</big>
 <script>
-  try{
-    let next = document.querySelectorAll(".next");
+  // eff jQuery
+  let next = document.querySelectorAll(".next");
+  if(next && next.length > 0){
     next[0].setAttribute('href', next[0].getAttribute('href') + window.location.search + window.location.hash);
     next[1].setAttribute('href', next[1].getAttribute('href') + window.location.search + window.location.hash);
-  } catch(ex){
-    try {
-      let prev = document.querySelectorAll(".prev");
-      prev[0].setAttribute('href', prev[0].getAttribute('href') + window.location.search + window.location.hash);
-      prev[1].setAttribute('href', prev[1].getAttribute('href') + window.location.search + window.location.hash);
-    } catch(ex){}
+  }
+  let prev = document.querySelectorAll(".prev");
+  if(prev && prev.length > 0){
+    prev[0].setAttribute('href', prev[0].getAttribute('href') + window.location.search + window.location.hash);
+    prev[1].setAttribute('href', prev[1].getAttribute('href') + window.location.search + window.location.hash);
   }
 </script>
+<%_ }else { _%>
+<div class="pure-u-1 is-center" id="manage">
+    <h2 class="content-head is-center">No results<br><br><br><br></h2>
+</div>
 <%_ } _%>
