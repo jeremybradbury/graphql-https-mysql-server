@@ -121,14 +121,37 @@ function filter(field) {
     })(jQuery);
   }
 }
+function sort(field,dir) {
+  dir = (typeof dir == 'undefined') ? false : dir;
+  if (field == 'clear') {
+    window.location.href = window.location.pathname;
+  } else {
+    window.qUrl = location.protocol + '//' + location.hostname + ((location.port) ? ':'+location.port : '');
+    window.qUrl += location.pathname.replace(/\d+$/, '') + location.search + location.hash; // always search page 1
+    window.qParams = `sort=${field}`;
+    window.qParams += (dir) ? `&dir=${dir}` : '&dir=';
+    console.log(window.qParams);
+    (function($){ 
+      window.location.href = $.param.querystring(window.qUrl,window.qParams);
+    })(jQuery);
+  }
+}
 function getQuery() {
   (function($){
     window.qParams = $.deparam.querystring();
-    if (typeof window.qParams.email != 'undefined'){
+    if (typeof window.qParams.email != 'undefined') {
       $('#filter-email').val(window.qParams.email);
     }
-    if(typeof window.qParams.status != 'undefined'){
+    if(typeof window.qParams.status != 'undefined') {
       $('#filter-status').val(window.qParams.status);
+    }
+    if (typeof window.qParams.sort != 'undefined') {
+      let dir = (typeof window.qParams.dir != 'undefined') ? window.qParams.dir : 'asc';
+      let hide = (dir=='asc') ? 'desc' : 'asc';
+      $(`[id$='-asc'], [id$='-desc']`).hide();
+      $(`#${window.qParams.sort}-${dir}`).show();
+      $(`[id$='-label']`).show();
+      $(`[id$='-${hide}-label']`).hide();
     }
   })(jQuery);
 }

@@ -1,6 +1,6 @@
 <%_ if(local.users.length > 0) { _%>
 <div class="pure-u-1 is-center">
-    <h2 class="content-head is-center"><%_ if(local.url.indexOf('/recover') < 0) { _%>Manage<%_ } else { _%>Recover<% } %> Users</h2>
+    <h2 class="content-head is-center"><%_ if(local.url.indexOf('/recover') < 0) { _%>Manage<%_ } else { _%>Recover Deleted<% } %> Users</h2>
     <p><%- include ./adminNav %></p>
     <p><%- include ./adminPaging %></p>
 </div>
@@ -9,12 +9,47 @@
     <table class="pure-table">
         <thead>
             <tr>
-                <th>Email</th>
-                <th>Status</th>
+                <th> 
+                    <form class="pure-form">
+                        <a id="email-desc-label" class="pure-button" title="Click to sort ascending by Email" onclick="sort('email','asc'); return false;">Email</a>
+                        <a id="email-asc-label" class="pure-button" style="display: none;" title="Click to sort descending by Email" onclick="sort('email','desc'); return false;">Email</a>
+                        <button id="email-desc" class="pure-button" style="display: none;" title="Descending: click to sort ascending by Email" onclick="sort('email','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
+                        <button id="email-asc" class="pure-button" style="display: none;" title="Ascending: click to sort descending by Email" onclick="sort('email','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
+                    </form>
+                </th>
+                <th>                    
+                    <form class="pure-form">
+                        <a id="status-desc-label" class="pure-button" title="Click to sort ascending by Status" onclick="sort('status','asc'); return false;">Status</a>
+                        <a id="status-asc-label" class="pure-button" style="display: none;" title="Click to sort descending by Status" onclick="sort('status','desc'); return false;">Status</a>
+                        <button id="status-desc" class="pure-button" style="display: none;" title="Descending: click to sort ascending by Status" onclick="sort('status','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
+                        <button id="status-asc" class="pure-button" style="display: none;" title="Ascending: click to sort descending by Status" onclick="sort('status','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
+                    </form>
+                </th>
                 <th><%_ if(local.url.indexOf('/recover') < 0) { _%>Token<%_ } else { _%>Deleted<% } %></th>
-                <th>Expires</th>
-                <th>Created</th>
-                <th>Modified</th>
+                <th>
+                    <form class="pure-form">
+                        <a id="expires-desc-label" class="pure-button" title="Click to sort ascending by Expires" onclick="sort('expires','asc'); return false;">Expires</a>
+                        <a id="expires-asc-label" class="pure-button" style="display: none;" title="Click to sort ascending by Expires" onclick="sort('expires','desc'); return false;">Expires</a>
+                        <button id="expires-desc" class="pure-button" style="display: none;" title="Descending: click to sort ascending by Expires" onclick="sort('expires','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
+                        <button id="expires-asc" class="pure-button" style="display: none;" title="Ascending: click to sort descending by Expires" onclick="sort('expires','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
+                    </form>
+                </th>
+                <th>
+                    <form class="pure-form">
+                        <a id="createdAt-desc-label" class="pure-button" title="Click to sort ascending by Created date" onclick="sort('createdAt','asc'); return false;">Created</a>
+                        <a id="createdAt-asc-label" class="pure-button" style="display: none;" title="Click to sort ascending by Created date" onclick="sort('createdAt','desc'); return false;">Created</a>
+                        <button id="createdAt-desc" class="pure-button" title="Descending: click to sort ascending by Created date" onclick="sort('createdAt','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
+                        <button id="createdAt-asc" class="pure-button" style="display: none;" title="Ascending: click to sort descending by Created date" onclick="sort('createdAt','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
+                    </form>
+                </th>
+                <th>
+                    <form class="pure-form">
+                        <a id="updatedAt-desc-label" class="pure-button" title="Click to sort ascending by Modifed date" onclick="sort('updatedAt','asc'); return false;">Modifed</a>
+                        <a id="updatedAt-asc-label" class="pure-button" style="display: none;" title="Click to sort ascending by Modifed date" onclick="sort('updatedAt','desc'); return false;">Modifed</a>
+                        <button id="updatedAt-desc" class="pure-button" style="display: none;" title="Descending: click to sort ascending by Modifed date" onclick="sort('updatedAt','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
+                        <button id="updatedAt-asc" class="pure-button" style="display: none;" title="Ascending: click to sort descending by Modifed date" onclick="sort('updatedAt','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
+                    </form>
+                </th>
             </tr>
             <tr>
                 <th>
@@ -61,7 +96,7 @@
                     </form>
                 </td>
               <%_ if(local.users[i].dataValues.deletedAt == null) { _%>  
-                <td style="width:40%">
+                <td>
                   
                     <form class="pure-form is-center">
                         <input class="pure-input-1" type="text" onclick="this.select()" name="token" readonly="true" value="<%= local.users[i].dataValues.token %>">

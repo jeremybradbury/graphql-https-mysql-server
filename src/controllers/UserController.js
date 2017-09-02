@@ -108,10 +108,20 @@ exports.admin.views.dash = function(req,res) { // admin dash view
   if(Object.keys(req.query).length>0) {
     let filter = req.query;
     var where = {};
+    var order = {};
     for(i in filter) {
-      where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+      if (i == 'sort' || i == "dir") {
+        order[i] = filter[i];
+      } else {
+        where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+      }
     }
     query.where = where;
+    if (Object.keys(order).length>0) {
+      if(order.sort){ query.order = [order.sort]; }
+      if(order.dir){ query.order.push(order.dir); }
+      query.order = [query.order];
+    }
   }
   req.app.db.Users.findAndCountAll(query)
     .then(users => {
@@ -143,10 +153,20 @@ exports.admin.views.dashPaged = function(req,res) {  // admin dash pagination
   if(Object.keys(req.query).length>0) {
     let filter = req.query;
     var where = {};
+    var order = {};
     for(i in filter) {
-      where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+      if (i == 'sort' || i == "dir") {
+        order[i] = filter[i];
+      } else {
+        where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+      }
     }
     query.where = where;
+    if (Object.keys(order).length>0) {
+      if(order.sort){ query.order = [order.sort]; }
+      if(order.dir){ query.order.push(order.dir); }
+      query.order = [query.order];
+    }
   }
   req.app.db.Users.findAndCountAll(query)
     .then(users => {
@@ -184,13 +204,23 @@ exports.admin.views.recover = function(req,res) { // recover delted users
   if(Object.keys(req.query).length>0) {
     let filter = req.query;
     var where = {};
+    var order = {};
     let and = []; 
     for(i in filter) {
-      where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+      if (i == 'sort' || i == "dir") {
+        order[i] = filter[i];
+      } else {
+        where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+      }
     }
     and.push(deleted);
     and.push(where);
     query.where = {$and: and};
+    if (Object.keys(order).length>0) {
+      if(order.sort){ query.order = [order.sort]; }
+      if(order.dir){ query.order.push(order.dir); }
+      query.order = [query.order];
+    }
   }
   req.app.db.Users.findAndCountAll(query)    
     .then(users => {
@@ -225,13 +255,23 @@ exports.admin.views.recoverPaged = function(req,res) { // recover delted users p
   if(Object.keys(req.query).length>0) {
     let filter = req.query;
     var where = {};
+    var order = {};
     let and = [];
     for(i in filter) {
-      where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+      if (i == 'sort' || i == "dir") {
+        order[i] = filter[i];
+      } else {
+        where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+      }
     }
     and.push(deleted);
     and.push(where);
     query.where = {$and: and};
+    if (Object.keys(order).length>0) {
+      if(order.sort){ query.order = [order.sort]; }
+      if(order.dir){ query.order.push(order.dir); }
+      query.order = [query.order];
+    }
   }
   req.app.db.Users.findAndCountAll(query)
   .then(users => {

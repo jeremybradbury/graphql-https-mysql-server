@@ -220,12 +220,17 @@ a.pure-button-primary,button.pure-button-primary {
 	color:#fff;
 }
 
-.dark th, .dark input, .dark select, .dark textarea, .dark i   {
+.dark th, .dark input, .dark select, .dark textarea, .dark i, .dark th a {
 	color:#000;
 }
 
-td .pure-form {
+td .pure-form,
+th .pure-form {
   display: inline;
+}
+
+th .pure-form button {
+  float: right;
 }
 
 .dark .pure-button {
@@ -235,9 +240,15 @@ td .pure-form {
 	padding: 0.5em 0.75em;
 }
 
-td .pure-form .pure-button {
+td .pure-form .pure-button,
+th .pure-form .pure-button, {
   display: inline;
   padding: 0.2em 0.25em;
+}
+
+th .pure-form a {
+  color: #000 !important;
+  text-decoration: underline;
 }
 
 .red {
@@ -274,6 +285,14 @@ td {
 
 .pure-table td {
   text-align: left;
+}
+
+.pure-table th {
+  white-space: nowrap;
+}
+
+#manage {
+  margin-bottom: 3em;
 }
 
 /*
