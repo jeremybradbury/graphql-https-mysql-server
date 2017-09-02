@@ -110,23 +110,25 @@ function recoverById(id) {
 function filter(field) {
   field = (typeof field == 'undefined') ? 'clear' : field;
   let value = document.getElementById(`filter-${field}`).value;
-  if (field == 'clear'
-      || (field != 'status' && value=='') 
-      || (field == 'status' && value=='*')) {
+  if (field == 'clear' || (field == 'status' && value=='*')) {
     window.location.href = window.location.pathname;
   } else {
-    let url = location.protocol + '//' + location.hostname + ((location.port) ? ':'+location.port : '');
-    url += location.pathname.replace(/\d+$/, ''); // always search page 1
-    let query = `?filter[${field}]=${value}`;
-    location.href = url + query + location.hash;
+    window.qUrl = location.protocol + '//' + location.hostname + ((location.port) ? ':'+location.port : '');
+    window.qUrl += location.pathname.replace(/\d+$/, '') + location.search + location.hash; // always search page 1
+    window.qParams = `${field}=${value}`;
+    (function($){ 
+      window.location.href = $.param.querystring(window.qUrl,window.qParams);
+    })(jQuery);
   }
 }
-function getQuery() {	
-  var pairs = location.search.slice(1).split('&');
-  var result = {};
-  pairs.forEach(function(pair) {
-  	pair = pair.split('=');
-  	result[pair[0]] = decodeURIComponent(pair[1] || '');
-  });
-  return result;
+function getQuery() {
+  (function($){
+    window.qParams = $.deparam.querystring();
+    if (typeof window.qParams.email != 'undefined'){
+      $('#filter-email').val(window.qParams.email);
+    }
+    if(typeof window.qParams.status != 'undefined'){
+      $('#filter-status').val(window.qParams.status);
+    }
+  })(jQuery);
 }

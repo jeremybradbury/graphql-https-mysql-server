@@ -106,7 +106,7 @@ exports.admin.views.dash = function(req,res) { // admin dash view
     limit: limit
   };
   if(Object.keys(req.query).length>0) {
-    let filter = req.query.filter;
+    let filter = req.query;
     var where = {};
     for(i in filter) {
       where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
@@ -141,7 +141,7 @@ exports.admin.views.dashPaged = function(req,res) {  // admin dash pagination
     offset: offset
   };
   if(Object.keys(req.query).length>0) {
-    let filter = req.query.filter;
+    let filter = req.query;
     var where = {};
     for(i in filter) {
       where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
@@ -182,7 +182,7 @@ exports.admin.views.recover = function(req,res) { // recover delted users
     paranoid: false
   };
   if(Object.keys(req.query).length>0) {
-    let filter = req.query.filter;
+    let filter = req.query;
     var where = {};
     let and = []; 
     for(i in filter) {
@@ -223,7 +223,7 @@ exports.admin.views.recoverPaged = function(req,res) { // recover delted users p
     paranoid: false
   };
   if(Object.keys(req.query).length>0) {
-    let filter = req.query.filter;
+    let filter = req.query;
     var where = {};
     let and = [];
     for(i in filter) {

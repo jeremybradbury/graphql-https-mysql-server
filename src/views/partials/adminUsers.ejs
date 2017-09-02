@@ -17,13 +17,13 @@
         <tr>
             <th>
                 <form class="pure-form is-center" onsubmit="filter('email'); return false;">
-                    <input class="pure-input" type="text" placeholder="filter" id="filter-email" name="filter[email]">
+                    <input class="pure-input" type="text" placeholder="filter email" title="Type a search and press enter/return" id="filter-email" name="filter[email]">
                 </form>
             </th>
             <th>                
                 <form class="pure-form is-center" >
-                    <select class="pure-input" id="filter-status" name="filter[status]" onchange="filter('status'); return false;">
-                        <option value="*">All</option>
+                    <select class="pure-input" id="filter-status" name="filter[status]" title="Select a status to filter" onchange="filter('status'); return false;">
+                        <option value="*">Clear Filters</option>
                         <option value="">Enabled</option>
                         <option value="null">Disabled</option>
                         <option value="active">Active</option>
@@ -114,15 +114,7 @@
   }
   if(location.search){
     document.getElementById('filter-clear').removeAttribute('style');
-    var q = getQuery();
-    let filter = 'filter[email]';
-    if (filter in q){
-      document.getElementById('filter-email').value = q[filter];
-    }
-    filter = 'filter[status]';
-    if (filter in q){
-      document.getElementById('filter-status').value = q[filter];
-    }
+    getQuery();
   }
 </script>
 <%_ }else { _%>
