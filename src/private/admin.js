@@ -127,7 +127,6 @@ function sort(field,dir) {
   window.qUrl += location.pathname.replace(/\d+$/, '') + location.search + '#manage'; // always search page 1
   window.qParams = `sort=${field}`;
   window.qParams += (dir) ? `&dir=${dir}` : '&dir=';
-  console.log(window.qParams);
   (function($){ 
     window.location.href = $.param.querystring(window.qUrl,window.qParams);
   })(jQuery);
