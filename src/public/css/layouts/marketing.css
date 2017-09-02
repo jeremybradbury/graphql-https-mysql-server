@@ -229,7 +229,12 @@ th .pure-form {
   display: inline;
 }
 
-th .pure-form button {
+th .pure-form button.pure-button,
+td .pure-form button.pure-button {
+  background: #1f8dd6;
+}
+
+th .pure-form button.pure-button { 
   float: right;
 }
 
