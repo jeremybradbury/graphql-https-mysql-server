@@ -114,7 +114,7 @@ function filter(field) {
     window.location.href = window.location.pathname + '#manage';
   } else {
     window.qUrl = location.protocol + '//' + location.hostname + ((location.port) ? ':'+location.port : '');
-    window.qUrl += location.pathname.replace(/\d+$/, '') + location.search + location.hash; // always search page 1
+    window.qUrl += location.pathname.replace(/\d+$/, '') + location.search + '#manage'; // always search page 1
     window.qParams = `${field}=${value}`;
     (function($){ 
       window.location.href = $.param.querystring(window.qUrl,window.qParams);
@@ -124,7 +124,7 @@ function filter(field) {
 function sort(field,dir) {
   dir = (typeof dir == 'undefined') ? false : dir;
   window.qUrl = location.protocol + '//' + location.hostname + ((location.port) ? ':'+location.port : '');
-  window.qUrl += location.pathname.replace(/\d+$/, '') + location.search + location.hash; // always search page 1
+  window.qUrl += location.pathname.replace(/\d+$/, '') + location.search + '#manage'; // always search page 1
   window.qParams = `sort=${field}`;
   window.qParams += (dir) ? `&dir=${dir}` : '&dir=';
   console.log(window.qParams);
