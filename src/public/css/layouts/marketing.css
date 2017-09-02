@@ -53,7 +53,6 @@ h1,h2,h3,h4,h5,h6,label {
 	border:2px solid #ddd;
 	box-shadow:none;
 	font-size:100%;
-	margin-bottom:1em;
 }
 
 /*
@@ -175,7 +174,7 @@ a.pure-button-primary,button.pure-button-primary {
 }
 
 .content {
-	padding: 2em;
+	padding: 1em;
   overflow-y: auto;
 }
 
@@ -272,6 +271,11 @@ td {
 .pure-table tbody {
   border-bottom: 1px solid #cbcbcb;
 }
+
+.pure-table td {
+  text-align: left;
+}
+
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
  * On tablets and other medium-sized devices, we want to customize some
@@ -282,7 +286,10 @@ td {
 	body {
 		font-size:16px;
 	}
-	
+	.wrapper div { 
+  	margin: 0;
+  	display: block;
+  }
 	/* We can align the menu header to the left, but float the
 	    menu items to the right. */
 	.home-menu {
@@ -317,4 +324,23 @@ td {
 	.splash-head {
 		font-size:300%;
 	}
+	.wrapper {
+    height: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .wrapper:before {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-left: -1em;
+  }
+  
+  .wrapper div {
+    vertical-align: middle;
+    display: inline-block;
+    margin-left: 1em;
+  }
 }

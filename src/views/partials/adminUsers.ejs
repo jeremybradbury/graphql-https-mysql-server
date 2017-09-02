@@ -4,102 +4,106 @@
     <p><%- include ./adminNav %></p>
     <p><%- include ./adminPaging %></p>
 </div>
-<table class="pure-table">
-    <thead>
-        <tr>
-            <th>Email</th>
-            <th>Status</th>
-            <th><%_ if(local.url.indexOf('/recover') < 0) { _%>Token<%_ } else { _%>Deleted<% } %></th>
-            <th>Expires</th>
-            <th>Created</th>
-            <th>Modified</th>
-        </tr>
-        <tr>
-            <th>
-                <form class="pure-form is-center" onsubmit="filter('email'); return false;">
-                    <input class="pure-input" type="text" placeholder="filter email" title="Type a search and press enter/return" id="filter-email" name="filter[email]">
-                </form>
-            </th>
-            <th>                
-                <form class="pure-form is-center" >
-                    <select class="pure-input" id="filter-status" name="filter[status]" title="Select a status to filter" onchange="filter('status'); return false;">
-                        <option value="*">Clear Filters</option>
-                        <option value="">Enabled</option>
-                        <option value="null">Disabled</option>
-                        <option value="active">Active</option>
-                        <option value="invite-only">Invite New Users</option>
-                        <option value="manage-users">Manage Users</option>
-                    </select>
-                </form>
-            </th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-      <%_ for(var i=0; i<local.users.length; i++) { _%>
-        <tr id="<%- local.users[i].dataValues.id _%>">
-            <td>
-              <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
-                <a title="Impersonate <%- local.users[i].dataValues.email -%>" href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%- local.users[i].dataValues.email -%></a>
+<div class="pure-u-1 wrapper">
+    <div>
+    <table class="pure-table">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Status</th>
+                <th><%_ if(local.url.indexOf('/recover') < 0) { _%>Token<%_ } else { _%>Deleted<% } %></th>
+                <th>Expires</th>
+                <th>Created</th>
+                <th>Modified</th>
+            </tr>
+            <tr>
+                <th>
+                    <form class="pure-form is-center" onsubmit="filter('email'); return false;">
+                        <input class="pure-input" type="text" placeholder="filter email" title="Type a search and press enter/return" id="filter-email" name="filter[email]">
+                    </form>
+                </th>
+                <th>                
+                    <form class="pure-form is-center" >
+                        <select class="pure-input" id="filter-status" name="filter[status]" title="Select a status to filter" onchange="filter('status'); return false;">
+                            <option value="*">Clear Filters</option>
+                            <option value="">Enabled</option>
+                            <option value="null">Disabled</option>
+                            <option value="active">Active</option>
+                            <option value="invite-only">Invite New Users</option>
+                            <option value="manage-users">Manage Users</option>
+                        </select>
+                    </form>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+          <%_ for(var i=0; i<local.users.length; i++) { _%>
+            <tr id="<%- local.users[i].dataValues.id _%>">
+                <td>
+                  <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
+                    <a title="Impersonate <%- local.users[i].dataValues.email -%>" href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%- local.users[i].dataValues.email -%></a>
+                  <%_ } else { _%>
+                    <%- local.users[i].dataValues.email -%>
+                  <%_ } _%>
+                </td>
+                <td>
+                    <form class="pure-form is-center">
+                        <select class="pure-input-1" id="status-<%= local.users[i].dataValues.id %>" name="status" <%_ if(local.users[i].dataValues.deletedAt == null) { _%>onchange="updateStatusById('<%= local.users[i].dataValues.id %>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value);"<% } else { %> disabled="disabled"<% }%>>
+                            <option value=""<%_ if(!local.users[i].dataValues.status || local.users[i].dataValues.status == '' ) { _%>selected="true"<%_ } _%>>Disabled</option>
+                            <option value="active" <%_ if(local.users[i].dataValues.status == 'active') { _%>selected="true"<%_ } _%>>Active</option>
+                            <option value="invite-only" <%_ if(local.users[i].dataValues.status == 'invite-only') { _%>selected="true"<%_ } _%>>Invite New Users</option>
+                            <option value="manage-users" <%_ if(local.users[i].dataValues.status == 'manage-users') { _%>selected="true"<%_ } _%>>Manage Users</option>
+                        </select>
+                    </form>
+                </td>
+              <%_ if(local.users[i].dataValues.deletedAt == null) { _%>  
+                <td style="width:40%">
+                  
+                    <form class="pure-form is-center">
+                        <input class="pure-input-1" type="text" onclick="this.select()" name="token" readonly="true" value="<%= local.users[i].dataValues.token %>">
+                    </form>
+                </td>
               <%_ } else { _%>
-                <%- local.users[i].dataValues.email -%>
+                <td>
+                    <span><%= new Date(local.users[i].dataValues.deletedAt).toISOString().slice(0, 19).replace('T', ' ') %>
+                    <form class="pure-form">
+                        <button class="pure-button" title="Recover User" onclick="recoverById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-undo"></i></button>
+                    </form>
+                </td>
               <%_ } _%>
-            </td>
-            <td>
-                <form class="pure-form is-center">
-                    <select class="pure-input-1" id="status-<%= local.users[i].dataValues.id %>" name="status" <%_ if(local.users[i].dataValues.deletedAt == null) { _%>onchange="updateStatusById('<%= local.users[i].dataValues.id %>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value);"<% } else { %> disabled="disabled"<% }%>>
-                        <option value=""<%_ if(!local.users[i].dataValues.status || local.users[i].dataValues.status == '' ) { _%>selected="true"<%_ } _%>>Disabled</option>
-                        <option value="active" <%_ if(local.users[i].dataValues.status == 'active') { _%>selected="true"<%_ } _%>>Active</option>
-                        <option value="invite-only" <%_ if(local.users[i].dataValues.status == 'invite-only') { _%>selected="true"<%_ } _%>>Invite New Users</option>
-                        <option value="manage-users" <%_ if(local.users[i].dataValues.status == 'manage-users') { _%>selected="true"<%_ } _%>>Manage Users</option>
-                    </select>
-                </form>
-            </td>
-          <%_ if(local.users[i].dataValues.deletedAt == null) { _%>  
-            <td style="width:40%">
-              
-                <form class="pure-form is-center">
-                    <input class="pure-input-1" type="text" onclick="this.select()" name="token" readonly="true" value="<%= local.users[i].dataValues.token %>">
-                </form>
-            </td>
-          <%_ } else { _%>
-            <td>
-                <span><%= new Date(local.users[i].dataValues.deletedAt).toISOString().slice(0, 19).replace('T', ' ') %>
-                <form class="pure-form">
-                    <button class="pure-button" title="Recover User" onclick="recoverById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-undo"></i></button>
-                </form>
-            </td>
-          <%_ } _%>
-            </td>
-            <td>
-                <span class="<%_ if(new Date(local.users[i].dataValues.expires).getTime() < new Date().getTime()) { _%>red<%_ } _%>"><%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %>
-              <%_ if(local.url.indexOf('/recover') < 0) { _%>
-                <form class="pure-form">
-                    <button class="pure-button" title="Expire Token" onclick="expireById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-remove"></i></button>
-                </form>
-              <%_ } _%>
-            </td>
-            <td>
-                <%= new Date(local.users[i].dataValues.createdAt).toISOString().slice(0, 19).replace('T', ' ') _%>
-              <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
-                <form class="pure-form">
-                    <button class="pure-button" title="Delete User" onclick="deleteById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-minus"></i></button>
-                </form>
-              <%_ } _%>
-            </td>
-            <td>
-                <%= new Date(local.users[i].dataValues.updatedAt).toISOString().slice(0, 19).replace('T', ' ') _%>
-              <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
-                <form class="pure-form"><button class="pure-button" title="Save" onclick="updateStatusById('<%= local.users[i].dataValues.id %>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value); return false;"><i class="fa fa-save"></i></button></form>
-              <%_ } _%>
-            </td>
-        <tr>
-      <%_ } _%> 
-    </tbody>
-</table>
+                </td>
+                <td>
+                    <span class="<%_ if(new Date(local.users[i].dataValues.expires).getTime() < new Date().getTime()) { _%>red<%_ } _%>"><%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %>
+                  <%_ if(local.url.indexOf('/recover') < 0) { _%>
+                    <form class="pure-form">
+                        <button class="pure-button" title="Expire Token" onclick="expireById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-remove"></i></button>
+                    </form>
+                  <%_ } _%>
+                </td>
+                <td>
+                    <%= new Date(local.users[i].dataValues.createdAt).toISOString().slice(0, 19).replace('T', ' ') _%>
+                  <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
+                    <form class="pure-form">
+                        <button class="pure-button" title="Delete User" onclick="deleteById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-minus"></i></button>
+                    </form>
+                  <%_ } _%>
+                </td>
+                <td>
+                    <%= new Date(local.users[i].dataValues.updatedAt).toISOString().slice(0, 19).replace('T', ' ') _%>
+                  <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
+                    <form class="pure-form"><button class="pure-button" title="Save" onclick="updateStatusById('<%= local.users[i].dataValues.id %>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value); return false;"><i class="fa fa-save"></i></button></form>
+                  <%_ } _%>
+                </td>
+            <tr>
+          <%_ } _%> 
+        </tbody>
+    </table>
+    </div>
+</div>
 <div class="pure-u-1 is-center">
     <p>
         <%- include ./adminPaging %>
