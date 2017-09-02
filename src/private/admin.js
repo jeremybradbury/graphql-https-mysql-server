@@ -123,18 +123,14 @@ function filter(field) {
 }
 function sort(field,dir) {
   dir = (typeof dir == 'undefined') ? false : dir;
-  if (field == 'clear') {
-    window.location.href = window.location.pathname;
-  } else {
-    window.qUrl = location.protocol + '//' + location.hostname + ((location.port) ? ':'+location.port : '');
-    window.qUrl += location.pathname.replace(/\d+$/, '') + location.search + location.hash; // always search page 1
-    window.qParams = `sort=${field}`;
-    window.qParams += (dir) ? `&dir=${dir}` : '&dir=';
-    console.log(window.qParams);
-    (function($){ 
-      window.location.href = $.param.querystring(window.qUrl,window.qParams);
-    })(jQuery);
-  }
+  window.qUrl = location.protocol + '//' + location.hostname + ((location.port) ? ':'+location.port : '');
+  window.qUrl += location.pathname.replace(/\d+$/, '') + location.search + location.hash; // always search page 1
+  window.qParams = `sort=${field}`;
+  window.qParams += (dir) ? `&dir=${dir}` : '&dir=';
+  console.log(window.qParams);
+  (function($){ 
+    window.location.href = $.param.querystring(window.qUrl,window.qParams);
+  })(jQuery);
 }
 function getQuery() {
   (function($){
