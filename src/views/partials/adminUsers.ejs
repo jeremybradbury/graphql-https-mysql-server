@@ -9,8 +9,8 @@
         <tr>
             <th>Email</th>
             <th>Status</th>
-            <th style="width:40%">Token</th>
-            <th> <%_ if(local.url.indexOf('/recover') < 0) { _%>Expires<%_ } else { _%>Deleted<% } %></th>
+            <th><%_ if(local.url.indexOf('/recover') < 0) { _%>Token<%_ } else { _%>Deleted<% } %></th>
+            <th>Expires</th>
             <th>Created</th>
             <th>Modified</th>
         </tr>
@@ -58,21 +58,27 @@
                     </select>
                 </form>
             </td>
-            <td>
+          <%_ if(local.users[i].dataValues.deletedAt == null) { _%>  
+            <td style="width:40%">
+              
                 <form class="pure-form is-center">
                     <input class="pure-input-1" type="text" onclick="this.select()" name="token" readonly="true" value="<%= local.users[i].dataValues.token %>">
                 </form>
             </td>
+          <%_ } else { _%>
             <td>
-              <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
-                <span class="<%_ if(new Date(local.users[i].dataValues.expires).getTime() < new Date().getTime()) { _%>red<%_ } _%>"><%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %>
-                <form class="pure-form">
-                    <button class="pure-button" title="Expire Token" onclick="expireById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-remove"></i></button>
-                </form>
-              <%_ } else { _%>
                 <span><%= new Date(local.users[i].dataValues.deletedAt).toISOString().slice(0, 19).replace('T', ' ') %>
                 <form class="pure-form">
                     <button class="pure-button" title="Recover User" onclick="recoverById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-undo"></i></button>
+                </form>
+            </td>
+          <%_ } _%>
+            </td>
+            <td>
+                <span class="<%_ if(new Date(local.users[i].dataValues.expires).getTime() < new Date().getTime()) { _%>red<%_ } _%>"><%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %>
+              <%_ if(local.url.indexOf('/recover') < 0) { _%>
+                <form class="pure-form">
+                    <button class="pure-button" title="Expire Token" onclick="expireById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-remove"></i></button>
                 </form>
               <%_ } _%>
             </td>
