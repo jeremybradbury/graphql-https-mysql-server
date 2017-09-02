@@ -232,10 +232,7 @@ th .pure-form {
 th .pure-form button.pure-button,
 td .pure-form button.pure-button {
   background: #1f8dd6;
-}
-
-th .pure-form button.pure-button { 
-  float: right;
+  padding: 0.25em 0.5em;
 }
 
 .dark .pure-button {
@@ -348,6 +345,12 @@ td {
 	.splash-head {
 		font-size:300%;
 	}
+	
+	th .pure-form button.pure-button { 
+    float: right;
+    padding: 0.5em 0.75em;
+  }
+	
 	.wrapper {
     height: 100%;
     margin: 0 auto;
