@@ -111,7 +111,7 @@ function filter(field) {
   field = (typeof field == 'undefined') ? 'clear' : field;
   let value = document.getElementById(`filter-${field}`).value;
   if (field == 'clear' || (field == 'status' && value=='*')) {
-    window.location.href = window.location.pathname;
+    window.location.href = window.location.pathname + '#manage';
   } else {
     window.qUrl = location.protocol + '//' + location.hostname + ((location.port) ? ':'+location.port : '');
     window.qUrl += location.pathname.replace(/\d+$/, '') + location.search + location.hash; // always search page 1
