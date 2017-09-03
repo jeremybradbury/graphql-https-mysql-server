@@ -85,9 +85,12 @@ a.pure-button-primary,button.pure-button-primary {
 	text-shadow:0 0 .5em #000;
 }
 
-.pure-menu.pure-menu-fixed {
-	border-bottom:none;
-	max-height: 5em;
+.pure-menu.pure-menu-vertical {
+  position: relative;
+  left: -150px;
+  padding: 1em;
+  width: 150px;
+  overflow: hidden;
 }
 
 .home-menu .pure-menu-heading {
@@ -103,7 +106,7 @@ a.pure-button-primary,button.pure-button-primary {
 }
 
 .home-menu a {
-	color:#6FBEF3;
+	color:#white;
 }
 
 .home-menu li a:hover,.home-menu li a:focus {
@@ -121,12 +124,7 @@ a.pure-button-primary,button.pure-button-primary {
 	background-position:center;
 	z-index:1;
 	overflow:hidden;
-/* The following styles are required for the "scroll-over" effect */
 	width:100%;
-	height:88%;
-	top:0;
-	left:0;
-	position:fixed!important;
 }
 
 .splash {
@@ -134,11 +132,6 @@ a.pure-button-primary,button.pure-button-primary {
 	width:80%;
 	height:50%;
 	margin:auto;
-	position:absolute;
-	top:100px;
-	left:0;
-	bottom:0;
-	right:0;
 	text-align:center;
 	text-shadow:0 0 .5em #000;
 }
@@ -164,10 +157,6 @@ a.pure-button-primary,button.pure-button-primary {
  * -- CONTENT STYLES --
  */
 .content-wrapper {
-/* These styles are required for the "scroll-over" effect */
-	position:absolute;
-	top:87%;
-	width:100%;
 	min-height:12%;
 	z-index:2;
 	background:#fff;
@@ -266,6 +255,11 @@ td {
   word-wrap: break-all;
 }
 
+
+#menu {
+  background-color: #111;
+}
+
 .alert {
 	background-color:#db7711;
 	border-radius:5px;
@@ -297,6 +291,9 @@ td {
   margin-bottom: 3em;
 }
 
+.footer {
+	height: 65px;
+}
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
  * On tablets and other medium-sized devices, we want to customize some
@@ -335,6 +332,10 @@ td {
 	.l-box-lrg {
 		border:none;
 	}
+	
+	.footer {
+  	display: block
+	}
 }
 
 /*
@@ -370,4 +371,8 @@ td {
     display: inline-block;
     margin-left: 1em;
   }
+  
+  .footer {
+  	display: block
+	}
 }

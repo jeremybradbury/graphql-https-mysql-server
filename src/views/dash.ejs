@@ -1,49 +1,54 @@
 <%- include ./partials/head %>
 <body>
-    <script src="/private/user.js"></script>
+  <script src="/private/user.js"></script>
   <% if (local.impersonate) { %>
-    <%# override user functions, so not always for admins %>
-    <script src="/private/admin.js"></script>
+  <%# override user functions, so not always for admins %>
+  <script src="/private/admin.js"></script>
   <% } %>
-    <div class="header" id="top">
-        <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
+  <div id="layout">
+      <div class="splash-container" id="top">
+          <div class="splash">
+              <h1 class="splash-head">My Dashboard</h1>
+              <p class="splash-subhead">Here you can manage your user profile, including reset your passphrase, view and refresh your token.</p>
+          </div>
+      </div>
+      <div>
+          <a href="#menu" id="menuLink" class="menu-link">
+            <i class="fa fa-bars"></i>
+          </a>
+          <div id="menu" class="menu pure-menu pure-menu-vertical">
             <a class="pure-menu-heading" href="/dash#top">Dash</a>
-            <% if (local.user.status == "manage-users" || local.user.status == "invite-only" ) { %>
-              <span class="pure-menu-heading">&bull;</span><a class="pure-menu-heading" href="/dash/admin#top">Admin</a>
-            <% } %>
-            <ul class="pure-menu-list is-right">
-              <li class="pure-menu-item">
-              <% if(local.impersonate){ %>
-                <small>current user: <b><%= local.impersonate %></b></small>
-                <br>impersonating: <b><%= local.user.email %></b>
-              <% } else { %>
-                <a href="/logout" class="pure-menu-link">Logout
-                <br><small><%= local.user.email %></small></a>
-              <% } %>
-              </li>
-              <li class="pure-menu-item"><a href="<%= local.url %>#password" class="pure-menu-link">Password<br>reset</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="splash-container">
-        <div class="splash">
-            <h1 class="splash-head">My Dashboard</h1>
-            <p class="splash-subhead">Here you can manage your user profile, including reset your passphrase, view and refresh your token.</p>
-        </div>
-    </div>
-    <div class="content-wrapper">
-        <div class="content" id="token">
-            <%- include ./partials/apiToken %>
-        </div>
-        <div class="content dark">
-            <%- include ./partials/reqPass %>
-        </div>
-      <script>
-        localStorage.setItem('id','<%= local.user.id %>');
-        localStorage.setItem('token','<%= local.user.token %>');
-        localStorage.setItem('expires','<%= local.user.expires %>');
-        document.getElementById("mytoken").value = localStorage.getItem('token');
-        document.getElementById("expires").value = localStorage.getItem('expires');
-        getMyToken();
-      </script>
+              <ul class="pure-menu-list is-right">
+              <%_ if (local.user.status == "manage-users" || local.user.status == "invite-only" ) { -%>
+                <li class="pure-menu-item"><a class="pure-menu-link" href="/dash/admin#top">Admin</a></li>
+              <%_ } -%>
+                <li class="pure-menu-item">
+                  <% if(local.impersonate){ %>
+                    <small><b><%= local.impersonate %></b></small>
+                    <br>impersonating: <br><b><%= local.user.email %></b>
+                  <% } else { %>
+                    <a href="/logout" class="pure-menu-link">Logout
+                    <br><small><%= local.user.email %></small></a>
+                  <% } %>
+                </li>
+                <li class="pure-menu-item"><a href="<%= local.url %>#password" class="pure-menu-link">Password<br>reset</a></li>
+              </ul>
+          </div>
+      </div>
+      <div id="main" class="content-wrapper">
+          <div class="content" id="token">
+              <%- include ./partials/apiToken %>
+          </div>
+          <div class="content dark">
+              <%- include ./partials/reqPass %>
+          </div>
+        <script>
+          localStorage.setItem('id','<%= local.user.id %>');
+          localStorage.setItem('token','<%= local.user.token %>');
+          localStorage.setItem('expires','<%= local.user.expires %>');
+          document.getElementById("mytoken").value = localStorage.getItem('token');
+          document.getElementById("expires").value = localStorage.getItem('expires');
+          getMyToken();
+        </script>
+    <br><br>
 <%- include ./partials/footer %>
