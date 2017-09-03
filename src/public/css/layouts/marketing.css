@@ -293,6 +293,7 @@ td {
 
 .footer {
 	height: 65px;
+	z-index: 1001;
 }
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
