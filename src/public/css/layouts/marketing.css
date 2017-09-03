@@ -48,13 +48,6 @@ h1,h2,h3,h4,h5,h6,label {
 	font-size:100%;
 }
 
-.pure-form input[type],
-.pure-form select {
-	border:2px solid #ddd;
-	box-shadow:none;
-	font-size:100%;
-}
-
 /*
  * -- PURE BUTTON STYLES --
  */
