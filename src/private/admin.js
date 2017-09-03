@@ -131,6 +131,14 @@ function sort(field,dir) {
     window.location.href = $.param.querystring(window.qUrl,window.qParams);
   })(jQuery);
 }
+function lim(limit) {
+  window.qUrl = location.protocol + '//' + location.hostname + ((location.port) ? ':'+location.port : '');
+  window.qUrl += location.pathname.replace(/\d+$/, '') + location.search + '#manage'; // always search page 1
+  window.qParams = `limit=${limit}`;
+  (function($){ 
+    window.location.href = $.param.querystring(window.qUrl,window.qParams);
+  })(jQuery);
+}
 function getQuery() {
   (function($){
     window.qParams = $.deparam.querystring();
@@ -139,6 +147,9 @@ function getQuery() {
     }
     if(typeof window.qParams.status != 'undefined') {
       $('#filter-status').val(window.qParams.status);
+    }
+    if(typeof window.qParams.limit != 'undefined') {
+      $('#filter-limit').val(window.qParams.limit);
     }
     if (typeof window.qParams.sort != 'undefined') {
       let dir = (typeof window.qParams.dir != 'undefined') ? window.qParams.dir : 'asc';

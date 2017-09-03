@@ -4,3 +4,16 @@
   <a class="pure-button" href="/dash/admin/#manage">Manage Users</a>
 <%_ } _%>
   <button class="pure-button" id="filter-clear" onclick="filter()" style="display:none;">Clear Filters</button>
+<form class="pure-form" style="display:inline">
+    <label for="filter-limit" >Page size:</label>
+    <select class="pure-input" id="filter-limit" name="limit" title="Select how many Users to view per page" onchange="lim(this.value); return false;">
+        <option>5</option>
+        <option>10</option>
+        <option>25</option>
+        <option>50</option>
+        <option>100</option>
+        <option>250</option>
+        <option>500</option>
+        <option>1000</option>
+    </select>
+</form>

@@ -110,10 +110,17 @@ exports.admin.views.dash = function(req,res) { // admin dash view
     var where = {};
     var order = {};
     for(i in filter) {
-      if (i == 'sort' || i == "dir") {
-        order[i] = filter[i];
-      } else {
-        where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+      switch (i) {
+        case 'sort':
+        case 'dir':
+          order[i] = filter[i];
+          break;
+        case 'limit':
+          query.limit = parseInt(filter[i]) || limit;
+          break;
+        default:
+          where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+          break;
       }
     }
     query.where = where;
@@ -126,7 +133,7 @@ exports.admin.views.dash = function(req,res) { // admin dash view
   req.app.db.Users.findAndCountAll(query)
     .then(users => {
       local.page = {
-        next: (users.count>limit) ? 2 : false,
+        next: (users.count>query.limit) ? 2 : false,
         prev: false
       };
       local.users = users.rows;
@@ -155,10 +162,18 @@ exports.admin.views.dashPaged = function(req,res) {  // admin dash pagination
     var where = {};
     var order = {};
     for(i in filter) {
-      if (i == 'sort' || i == "dir") {
-        order[i] = filter[i];
-      } else {
-        where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+      switch (i) {
+        case 'sort':
+        case 'dir':
+          order[i] = filter[i];
+          break;
+        case 'limit':
+          query.limit = parseInt(filter[i]) || limit;
+          query.offset = (req.params.page-1) * query.limit;
+          break;
+        default:
+          where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+          break;
       }
     }
     query.where = where;
@@ -174,8 +189,8 @@ exports.admin.views.dashPaged = function(req,res) {  // admin dash pagination
         return res.sendStatus(400); 
       }
       local.page = {
-        prev: ((offset-1) > 0) ? page-1 : false, 
-        next: (offset+limit<users.count) ? page+1 : false
+        prev: ((query.offset-1) > 0) ? page-1 : false, 
+        next: (query.offset+query.limit<users.count) ? page+1 : false
       };
       local.users = users.rows;
       res.render('admin.ejs', {
@@ -207,11 +222,18 @@ exports.admin.views.recover = function(req,res) { // recover delted users
     var order = {};
     let and = []; 
     for(i in filter) {
-      if (i == 'sort' || i == "dir") {
-        order[i] = filter[i];
-      } else {
-        where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
-      }
+      switch (i) {
+        case 'sort':
+        case 'dir':
+          order[i] = filter[i];
+          break;
+        case 'limit':
+          query.limit = parseInt(filter[i]) || limit;
+          break;
+        default:
+          where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+          break;
+      }  
     }
     and.push(deleted);
     and.push(where);
@@ -225,7 +247,7 @@ exports.admin.views.recover = function(req,res) { // recover delted users
   req.app.db.Users.findAndCountAll(query)    
     .then(users => {
       local.page = {
-        next: (users.count>limit) ? 2 : false,
+        next: (users.count>query.limit) ? 2 : false,
         prev: false
       };
       local.users = users.rows;
@@ -258,10 +280,18 @@ exports.admin.views.recoverPaged = function(req,res) { // recover delted users p
     var order = {};
     let and = [];
     for(i in filter) {
-      if (i == 'sort' || i == "dir") {
-        order[i] = filter[i];
-      } else {
-        where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+      switch (i) {
+        case 'sort':
+        case 'dir':
+          order[i] = filter[i];
+          break;
+        case 'limit':
+          query.limit = parseInt(filter[i]) || limit;
+          query.offset = (req.params.page-1) * query.limit;
+          break;
+        default:
+          where[i] = (filter[i]=='null') ? {$eq: null} : {$like: `%${filter[i]}%`};
+          break;
       }
     }
     and.push(deleted);
@@ -279,8 +309,8 @@ exports.admin.views.recoverPaged = function(req,res) { // recover delted users p
       return res.sendStatus(400); 
     }
     local.page = {
-      prev: ((offset-1) > 0) ? page-1 : false, 
-      next: (offset+limit<users.count) ? page+1 : false
+      prev: ((query.offset-1) > 0) ? page-1 : false, 
+      next: (query.offset+query.limit<users.count) ? page+1 : false
     };        
     local.users = users.rows;
     res.render('admin.ejs', {

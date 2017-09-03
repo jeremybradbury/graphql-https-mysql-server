@@ -1,7 +1,7 @@
 <%_ if(local.users.length > 0) { _%>
 <div class="pure-u-1 is-center">
     <h2 class="content-head is-center"><%_ if(local.url.indexOf('/recover') < 0) { _%>Manage<%_ } else { _%>Recover Deleted<% } %> Users</h2>
-    <p><%- include ./adminNav %></p>
+    <%- include ./adminNav %>
     <p><%- include ./adminPaging %></p>
 </div>
 <div class="pure-u-1 wrapper">
