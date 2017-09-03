@@ -197,10 +197,8 @@ small screens.
 
 /* -- Responsive Styles (Media Queries) ------------------------------------- */
 
-/*
-Hides the menu at `48em`, but modify this based on your app's needs.
-*/
-@media (min-width: 48em) {
+/*  @ 1440px always show menu */
+@media (min-width: 1440px) { 
 
     .header,
     .content {
