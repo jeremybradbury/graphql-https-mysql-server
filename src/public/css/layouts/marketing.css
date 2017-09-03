@@ -81,7 +81,6 @@ a.pure-button-primary,button.pure-button-primary {
 .pure-menu.pure-menu-vertical {
   position: relative;
   left: -150px;
-  padding: 1em;
   width: 150px;
   overflow: hidden;
 }
