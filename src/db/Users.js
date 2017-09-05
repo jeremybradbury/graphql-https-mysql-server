@@ -1,5 +1,4 @@
 'use strict';
-const Sequelize = require('sequelize');
 const tools = require('auto-load')('src/tools');
 const bcrypt = require('bcryptjs');
 
@@ -8,7 +7,7 @@ const Users = function(sequelize, DataTypes) {
   let User = sequelize.define('user', {
     id: { 
       type: DataTypes.CHAR(36),
-      defaultValue: Sequelize.UUIDV4, // noSQL style ids
+      defaultValue: DataTypes.UUIDV4, // noSQL style ids
       primaryKey: true
     },
     email: {
