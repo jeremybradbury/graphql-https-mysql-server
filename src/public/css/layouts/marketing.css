@@ -211,7 +211,7 @@ th .pure-form {
 }
 
 th .pure-form button.pure-button,
-td .pure-form button.pure-button {
+td .pure-form .pure-button {
   background: #1f8dd6;
   padding: 0.25em 0.5em;
 }

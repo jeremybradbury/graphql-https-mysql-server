@@ -13,41 +13,51 @@
                     <form class="pure-form">
                         <a id="email-desc-label" class="pure-button" title="Click to sort ascending by Email" onclick="sort('email','asc'); return false;">Email</a>
                         <a id="email-asc-label" class="pure-button" style="display: none;" title="Click to sort descending by Email" onclick="sort('email','desc'); return false;">Email</a>
-                        <button id="email-desc" class="pure-button" style="display: none;" title="Descending: click to sort ascending by Email" onclick="sort('email','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
-                        <button id="email-asc" class="pure-button" style="display: none;" title="Ascending: click to sort descending by Email" onclick="sort('email','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
+                        <button id="email-desc" class="pure-button" style="display: none;" title="Descending" onclick="sort('email','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
+                        <button id="email-asc" class="pure-button" style="display: none;" title="Ascending" onclick="sort('email','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
                     </form>
                 </th>
                 <th>                    
                     <form class="pure-form">
                         <a id="status-desc-label" class="pure-button" title="Click to sort ascending by Status" onclick="sort('status','asc'); return false;">Status</a>
                         <a id="status-asc-label" class="pure-button" style="display: none;" title="Click to sort descending by Status" onclick="sort('status','desc'); return false;">Status</a>
-                        <button id="status-desc" class="pure-button" style="display: none;" title="Descending: click to sort ascending by Status" onclick="sort('status','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
-                        <button id="status-asc" class="pure-button" style="display: none;" title="Ascending: click to sort descending by Status" onclick="sort('status','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
+                        <button id="status-desc" class="pure-button" style="display: none;" title="Descending" onclick="sort('status','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
+                        <button id="status-asc" class="pure-button" style="display: none;" title="Ascending" onclick="sort('status','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
                     </form>
                 </th>
-                <th><%_ if(local.url.indexOf('/recover') < 0) { _%>Token<%_ } else { _%>Deleted<% } %></th>
+                <th>
+                <%_ if(local.url.indexOf('/recover') < 0) { _%>Token
+                <%_ } else { _%>
+                    <form class="pure-form">
+                        <a id="deletedAt-desc-label" class="pure-button" title="Click to sort ascending by Deleted" onclick="sort('deletedAt','asc'); return false;">Deleted</a>
+                        <a id="deletedAt-asc-label" class="pure-button" style="display: none;" title="Click to sort ascending by Deleted" onclick="sort('deletedAt','desc'); return false;">Deleted</a>
+                        <button id="deletedAt-desc" class="pure-button" style="display: none;" title="Descending" onclick="sort('deletedAt','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
+                        <button id="deletedAt-asc" class="pure-button" style="display: none;" title="Ascending" onclick="sort('deletedAt','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
+                    </form>
+                <% } %>
+                </th>
                 <th>
                     <form class="pure-form">
                         <a id="expires-desc-label" class="pure-button" title="Click to sort ascending by Expires" onclick="sort('expires','asc'); return false;">Expires</a>
                         <a id="expires-asc-label" class="pure-button" style="display: none;" title="Click to sort ascending by Expires" onclick="sort('expires','desc'); return false;">Expires</a>
-                        <button id="expires-desc" class="pure-button" style="display: none;" title="Descending: click to sort ascending by Expires" onclick="sort('expires','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
-                        <button id="expires-asc" class="pure-button" style="display: none;" title="Ascending: click to sort descending by Expires" onclick="sort('expires','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
+                        <button id="expires-desc" class="pure-button" style="display: none;" title="Descending" onclick="sort('expires','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
+                        <button id="expires-asc" class="pure-button" style="display: none;" title="Ascending" onclick="sort('expires','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
                     </form>
                 </th>
                 <th>
                     <form class="pure-form">
                         <a id="createdAt-desc-label" class="pure-button" title="Click to sort ascending by Created date" onclick="sort('createdAt','asc'); return false;">Created</a>
                         <a id="createdAt-asc-label" class="pure-button" style="display: none;" title="Click to sort ascending by Created date" onclick="sort('createdAt','desc'); return false;">Created</a>
-                        <button id="createdAt-desc" class="pure-button" title="Descending: click to sort ascending by Created date" onclick="sort('createdAt','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
-                        <button id="createdAt-asc" class="pure-button" style="display: none;" title="Ascending: click to sort descending by Created date" onclick="sort('createdAt','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
+                        <button id="createdAt-desc" class="pure-button" title="Descending" onclick="sort('createdAt','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
+                        <button id="createdAt-asc" class="pure-button" style="display: none;" title="Ascending" onclick="sort('createdAt','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
                     </form>
                 </th>
                 <th>
                     <form class="pure-form">
                         <a id="updatedAt-desc-label" class="pure-button" title="Click to sort ascending by Modifed date" onclick="sort('updatedAt','asc'); return false;">Modifed</a>
                         <a id="updatedAt-asc-label" class="pure-button" style="display: none;" title="Click to sort ascending by Modifed date" onclick="sort('updatedAt','desc'); return false;">Modifed</a>
-                        <button id="updatedAt-desc" class="pure-button" style="display: none;" title="Descending: click to sort ascending by Modifed date" onclick="sort('updatedAt','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
-                        <button id="updatedAt-asc" class="pure-button" style="display: none;" title="Ascending: click to sort descending by Modifed date" onclick="sort('updatedAt','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
+                        <button id="updatedAt-desc" class="pure-button" style="display: none;" title="Descending" onclick="sort('updatedAt','asc'); return false;"><i class="fa fa-sort-amount-desc"></i></button>
+                        <button id="updatedAt-asc" class="pure-button" style="display: none;" title="Ascending" onclick="sort('updatedAt','desc'); return false;"><i class="fa fa-sort-amount-asc"></i></button>
                     </form>
                 </th>
             </tr>
@@ -80,14 +90,14 @@
             <tr id="<%- local.users[i].dataValues.id _%>">
                 <td>
                   <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
-                    <a title="Impersonate <%- local.users[i].dataValues.email -%>" href="/dash/admin/user/<%= local.users[i].dataValues.id %>"><%- local.users[i].dataValues.email -%></a>
+                    <form class="pure-form"><a  class="pure-button" title="Impersonate <%- local.users[i].dataValues.email _%>" href="/dash/admin/user/<%= local.users[i].dataValues.id _%>"><i class="fa fa-edit"></i></a></form><%- local.users[i].dataValues.email _%>
                   <%_ } else { _%>
-                    <%- local.users[i].dataValues.email -%>
+                    <%- local.users[i].dataValues.email _%>
                   <%_ } _%>
                 </td>
                 <td>
                     <form class="pure-form is-center">
-                        <select class="pure-input-1" id="status-<%= local.users[i].dataValues.id %>" name="status" <%_ if(local.users[i].dataValues.deletedAt == null) { _%>onchange="updateStatusById('<%= local.users[i].dataValues.id %>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value);"<% } else { %> disabled="disabled"<% }%>>
+                        <select class="pure-input-1" id="status-<%= local.users[i].dataValues.id _%>" name="status" <%_ if(local.users[i].dataValues.deletedAt == null) { _%>onchange="updateStatusById('<%= local.users[i].dataValues.id %>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value);"<% } else { %> disabled="disabled"<% }%>>
                             <option value=""<%_ if(!local.users[i].dataValues.status || local.users[i].dataValues.status == '' ) { _%>selected="true"<%_ } _%>>Disabled</option>
                             <option value="active" <%_ if(local.users[i].dataValues.status == 'active') { _%>selected="true"<%_ } _%>>Active</option>
                             <option value="invite-only" <%_ if(local.users[i].dataValues.status == 'invite-only') { _%>selected="true"<%_ } _%>>Invite New Users</option>
@@ -97,41 +107,41 @@
                 </td>
               <%_ if(local.users[i].dataValues.deletedAt == null) { _%>  
                 <td>
-                  
                     <form class="pure-form is-center">
                         <input class="pure-input-1" type="text" onclick="this.select()" name="token" readonly="true" value="<%= local.users[i].dataValues.token %>">
                     </form>
                 </td>
               <%_ } else { _%>
                 <td>
-                    <span><%= new Date(local.users[i].dataValues.deletedAt).toISOString().slice(0, 19).replace('T', ' ') %>
                     <form class="pure-form">
                         <button class="pure-button" title="Recover User" onclick="recoverById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-undo"></i></button>
                     </form>
+                    <%= new Date(local.users[i].dataValues.deletedAt).toISOString().slice(0, 19).replace('T', ' ') %>
                 </td>
               <%_ } _%>
                 </td>
                 <td>
-                    <span class="<%_ if(new Date(local.users[i].dataValues.expires).getTime() < new Date().getTime()) { _%>red<%_ } _%>"><%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %>
                   <%_ if(local.url.indexOf('/recover') < 0) { _%>
                     <form class="pure-form">
                         <button class="pure-button" title="Expire Token" onclick="expireById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-remove"></i></button>
                     </form>
                   <%_ } _%>
+                    <span class="<%_ if(new Date(local.users[i].dataValues.expires).getTime() < new Date().getTime()) { _%>red<%_ } _%>"><%= new Date(local.users[i].dataValues.expires).toISOString().slice(0, 19).replace('T', ' ') %>
+
                 </td>
                 <td>
-                    <%= new Date(local.users[i].dataValues.createdAt).toISOString().slice(0, 19).replace('T', ' ') _%>
                   <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
                     <form class="pure-form">
                         <button class="pure-button" title="Delete User" onclick="deleteById('<%= local.users[i].dataValues.id %>'); return false;"><i class="fa fa-minus"></i></button>
                     </form>
                   <%_ } _%>
+                  <%= new Date(local.users[i].dataValues.createdAt).toISOString().slice(0, 19).replace('T', ' ') _%>
                 </td>
                 <td>
-                    <%= new Date(local.users[i].dataValues.updatedAt).toISOString().slice(0, 19).replace('T', ' ') _%>
                   <%_ if(local.users[i].dataValues.deletedAt == null) { _%>
                     <form class="pure-form"><button class="pure-button" title="Save" onclick="updateStatusById('<%= local.users[i].dataValues.id %>',document.querySelector('#status-<%= local.users[i].dataValues.id %>').value); return false;"><i class="fa fa-save"></i></button></form>
                   <%_ } _%>
+                    <%= new Date(local.users[i].dataValues.updatedAt).toISOString().slice(0, 19).replace('T', ' ') _%>
                 </td>
             <tr>
           <%_ } _%> 

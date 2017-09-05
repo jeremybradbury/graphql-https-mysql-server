@@ -32,15 +32,16 @@
         toggleClass(menu, active);
         toggleClass(menuLink, active);
     }
-
-    menuLink.onclick = function (e) {
-        toggleAll(e);
-    };
-
-    content.onclick = function(e) {
-        if (menu.className.indexOf('active') !== -1) {
-            toggleAll(e);
-        }
-    };
+    try {
+      menuLink.onclick = function (e) {
+          toggleAll(e);
+      };
+  
+      content.onclick = function(e) {
+          if (menu.className.indexOf('active') !== -1) {
+              toggleAll(e);
+          }
+      };
+    } catch(ex){ /* */ }
 
 }(this, this.document));
