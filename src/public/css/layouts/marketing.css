@@ -80,9 +80,10 @@ a.pure-button-primary,button.pure-button-primary {
 
 .pure-menu.pure-menu-vertical {
   position: relative;
-  left: -150px;
-  width: 150px;
-  overflow: hidden;
+}
+
+.pure-menu .pure-menu-heading {
+  text-transform: inherit;
 }
 
 .home-menu .pure-menu-heading {

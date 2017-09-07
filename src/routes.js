@@ -79,13 +79,13 @@ module.exports = function(app, passport) {
   app.get('/logout', User.logout );// logout
   app.get('/login', User.views.login); // login view
   app.get('/dash', isLoggedIn, User.views.dash); // dash view
-  app.get('/dash/admin/recover', isLoggedIn, isAdmin, User.admin.views.recover); // recover delted users view
-  app.get('/dash/admin/recover/1', User.admin.views.recover1); // dont use page 1
-  app.get('/dash/admin/recover/:page', isLoggedIn, isAdmin, User.admin.views.recoverPaged); // recover delted users pagination
-  app.get('/dash/admin', isLoggedIn, isAdmin, User.admin.views.dash); // admin dash view
-  app.get('/dash/admin/1', User.admin.views.dash1); // dont use page 1
-  app.get('/dash/admin/:page', isLoggedIn, isAdmin, User.admin.views.dashPaged);  // admin dash pagination
-  app.get('/dash/admin/user/:id', isLoggedIn, isAdmin, User.admin.views.userImpersonate); // user impersonation dash view
+  app.get('/users/admin/recover', isLoggedIn, isAdmin, User.admin.views.recover); // recover delted users view
+  app.get('/users/admin/recover/1', User.admin.views.recover1); // dont use page 1
+  app.get('/users/admin/recover/:page', isLoggedIn, isAdmin, User.admin.views.recoverPaged); // recover delted users pagination
+  app.get('/users/admin', isLoggedIn, isAdmin, User.admin.views.dash); // admin dash view
+  app.get('/users/admin/1', User.admin.views.dash1); // dont use page 1
+  app.get('/users/admin/:page', isLoggedIn, isAdmin, User.admin.views.dashPaged);  // admin dash pagination
+  app.get('/user/admin/:id', isLoggedIn, isAdmin, User.admin.views.userImpersonate); // user impersonation dash view
   app.get('/new/:token', User.views.new); // new user/password view
   app.get('/docs', isLoggedIn, GraphQL.docs); // GraphiQL view
   app.get('/docs/admin', isLoggedIn, isAdmin, GraphQL.admin.docs); // Admin GraphiQL view

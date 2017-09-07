@@ -9,21 +9,7 @@
               <p class="splash-subhead">Here you can manage your users, including reset passphrases, view and refresh tokens.</p>
           </div>
       </div>
-      <div>
-          <a href="#menu" id="menuLink" class="menu-link">
-            <i class="fa fa-bars"></i>
-          </a>
-          <div id="menu" class="menu pure-menu pure-menu-vertical">
-            <a class="pure-menu-heading" href="/dash#top">Dash</a>
-              <ul class="pure-menu-list is-right">
-                <%_ if (local.user.status == "manage-users" || local.user.status == "invite-only" ) { -%>
-                  <li class="pure-menu-item"><a class="pure-menu-link" href="/dash/admin#top">Admin</a></li>
-                <%_ } -%>
-                  <li class="pure-menu-item"><a href="/logout" class="pure-menu-link">Logout <small><br><%= local.user.email %></small></a></li>
-                  <li class="pure-menu-item"><a href="#manage" class="pure-menu-link">Users</a></li>
-              </ul>
-          </div>
-      </div>
+      <%- include ./partials/menu %>
       <div id="main" class="content-wrapper">
         <div class="content" id="invite">
             <%- include ./partials/adminInvite %>

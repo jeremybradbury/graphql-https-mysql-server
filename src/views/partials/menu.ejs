@@ -1,0 +1,25 @@
+<a href="#menu" id="menuLink" class="menu-link">
+  <i class="fa fa-bars"></i>
+</a>
+<div id="menu" class="menu pure-menu pure-menu-vertical">
+    <a class="pure-menu-heading" href="/dash#top">
+        <i class="fa fa-home"></i>
+        <small><%= local.user.email %></small>
+    </a>
+    <ul class="pure-menu-list is-right">
+        <li class="pure-menu-item"><a  class="pure-menu-link" href="/logout">Logout</a></li>
+        <li><hr></li>
+        <li class="pure-menu-item"><a  class="pure-menu-link" href="/docs" target="_blank" onclick="$('#menuLink').click();">Docs</a></li>
+      <%_ if (local.user.status == "manage-users") { -%>
+        <li class="pure-menu-item"><a  class="pure-menu-link" href="/docs/admin" target="_blank" onclick="$('#menuLink').click();">Admin Docs</a></li>
+        <li><hr></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="/users/admin">Users</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="/practices/admin">Practices</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="/providers/admin">Providers</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="/patients/admin">Patients</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="/procedures/admin">Procedures</a></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="/offers/admin">Offers</a></li>
+        <li><hr></li>
+      <%_ } -%>
+    </ul>
+</div>
