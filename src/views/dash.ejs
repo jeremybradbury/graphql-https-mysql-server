@@ -1,4 +1,4 @@
-<%- include ./partials/head %>
+<%- include ./partials/head _%>
 <body>
   <script src="/private/user.js"></script>
   <% if (local.impersonate) { %>
@@ -12,29 +12,7 @@
               <p class="splash-subhead">Here you can manage your user profile, including reset your passphrase, view and refresh your token.</p>
           </div>
       </div>
-      <div>
-          <a href="#menu" id="menuLink" class="menu-link">
-            <i class="fa fa-bars"></i>
-          </a>
-          <div id="menu" class="menu pure-menu pure-menu-vertical">
-            <a class="pure-menu-heading" href="/dash#top">Dash</a>
-              <ul class="pure-menu-list is-right">
-              <%_ if (local.user.status == "manage-users" || local.user.status == "invite-only" ) { -%>
-                <li class="pure-menu-item"><a class="pure-menu-link" href="/users/admin#top">Admin</a></li>
-              <%_ } -%>
-                <li class="pure-menu-item">
-                  <% if(local.impersonate){ %>
-                    <small><b><%= local.impersonate %></b></small>
-                    <br>impersonating: <br><b><%= local.user.email %></b>
-                  <% } else { %>
-                    <a href="/logout" class="pure-menu-link">Logout
-                    <br><small><%= local.user.email %></small></a>
-                  <% } %>
-                </li>
-                <li class="pure-menu-item"><a href="<%= local.url %>#password" class="pure-menu-link">Password<br>reset</a></li>
-              </ul>
-          </div>
-      </div>
+      <%- include ./partials/menu _%>
       <div id="main" class="content-wrapper">
           <div class="content" id="token">
               <%- include ./partials/apiToken %>
@@ -51,4 +29,4 @@
           getMyToken();
         </script>
     <br><br>
-<%- include ./partials/footer %>
+<%- include ./partials/footer _%>

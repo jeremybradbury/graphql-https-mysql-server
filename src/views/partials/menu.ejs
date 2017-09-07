@@ -4,8 +4,13 @@
 <div id="menu" class="menu pure-menu pure-menu-vertical">
     <a class="pure-menu-heading" href="/dash#top">
         <i class="fa fa-home"></i>
-        <small><%= local.user.email %></small>
-    </a>
+    <%_ if(local.impersonate){ _%>
+      <small><%= local.impersonate %></small></a>
+      <a><small>impersonating:</small></a>
+      <br><a><small><b><%= local.user.email %></b></small></a>
+    <%_ } else { _%>
+      <small><%= local.user.email %></small></a>
+    <%_ } _%>
     <ul class="pure-menu-list is-right">
         <li class="pure-menu-item"><a  class="pure-menu-link" href="/logout">Logout</a></li>
         <li><hr></li>
