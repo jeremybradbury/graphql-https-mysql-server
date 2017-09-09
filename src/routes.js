@@ -2,12 +2,10 @@ const express = require('express');
 const { User, GraphQL } = require('./controllers'); 
 const { appConfig } = require('./config');
 const session = require('express-session');
-const Store = require('express-session-sequelize')(session.Store);
+const Store = require('connect-session-sequelize')(session.Store);
 const cookieParser = require('cookie-parser');
 
-module.exports = function(app, passport) {
-  const store = new Store({ db: app.db.sequelize, checkExpirationInterval: 300000, expires: 900000 }); // cleanup every 5m, logout if inactive 15m
-  
+module.exports = function(app, passport) {  
   /* middleware */
   hasValidToken = passport.authenticate("bearer", { session: false }); // token auth middleware pure sessionless
   hasTokenOrSession = function(req,res,next) { // less secure
@@ -40,13 +38,27 @@ module.exports = function(app, passport) {
   app.post('/api/admin', hasValidToken, isAdmin, GraphQL.admin.api); // Admin GraphQL API endpoint
   
   /* sessions for routes below */
+  const expires = new Date();
+  expires.setDate(expires.getDate() + 1); // 24 hour expiry
+  function extendDefaultFields(defaults, session) {
+    let userId = (session.passport) ? session.passport.user : null;
+    return {
+      data: defaults.data,
+      expires: defaults.expires,
+      userId: userId
+    };
+  }
   app.use(session({ 
     key: 'sid',
     secret: appConfig.secret,
-    store: store,
-    cookie: { secure: true, sameSite: true, maxAge: 604800000/7 }, // 7days/7 = 24 hours; 7days*4 = 28 days
+    store: new Store({ 
+      db: app.db.sequelize,
+      table: 'session',
+      extendDefaultFields: extendDefaultFields,
+    }),
+    cookie: { secure: true, sameSite: true, expires: expires},
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false,
     })
   );
   app.use(passport.initialize());

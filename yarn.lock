@@ -363,6 +363,13 @@ connect-flash@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/connect-flash/-/connect-flash-0.1.1.tgz#d8630f26d95a7f851f9956b1e8cc6732f3b6aa30"
 
+connect-session-sequelize@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/connect-session-sequelize/-/connect-session-sequelize-4.1.0.tgz#d402749c3bebd79209192c164c090742b3fe2011"
+  dependencies:
+    debug "^2.1.1"
+    deep-equal "^1.0.1"
+
 connect@3.6.2:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/connect/-/connect-3.6.2.tgz#694e8d20681bfe490282c8ab886be98f09f42fe7"
@@ -461,7 +468,7 @@ debug@2.6.7:
   dependencies:
     ms "2.0.0"
 
-debug@2.6.8, debug@^2.2.0, debug@^2.6.8:
+debug@2.6.8, debug@^2.1.1, debug@^2.2.0, debug@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
@@ -473,7 +480,7 @@ debug@^3.0.0:
   dependencies:
     ms "2.0.0"
 
-deep-equal@~1.0.1:
+deep-equal@^1.0.1, deep-equal@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
 
@@ -645,10 +652,6 @@ expand-range@^1.8.1:
 expect-ct@0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/expect-ct/-/expect-ct-0.1.0.tgz#52735678de18530890d8d7b95f0ac63640958094"
-
-express-session-sequelize@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/express-session-sequelize/-/express-session-sequelize-1.1.0.tgz#6e4e25e9e7256e675e4a0cb7c461152ece702216"
 
 express-session@^1.15.5:
   version "1.15.5"
