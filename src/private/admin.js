@@ -87,10 +87,16 @@ function inviteByEmail() {
   XHR(`mutation {userInvite(email:"${email}"){url}}`,  // query
     function() { // callback
       if (this.readyState == 4 && this.status == 200) {
-        let url = JSON.parse(this.responseText).data.url;
+        var url;
+        var message;
+        if( url = JSON.parse(this.responseText).data.url ){
+          message = `Please provide ${email} with this link to set a password: ${url}<br><strong>Note: this link <em>expires in 24 hours</em>. It has NOT been automatically sent to the user (automated emailing hasn't been added).</strong>`;
+        } else {
+          message = JSON.parse(this.responseText).data.message;
+        }
         let alert = document.querySelector("#alert-message");
         alert.style = "padding:1em;"
-        alert.innerHTML = `Please provide ${email} with this link to set a password: ${url}<br><strong>Note: this link <em>expires in 24 hours</em>. It has NOT been automatically sent to the user (automated emailing hasn't been added).</strong>`;
+        alert.innerHTML = message;
         location.hash = '';
         location.hash = '#invite-user';
       }

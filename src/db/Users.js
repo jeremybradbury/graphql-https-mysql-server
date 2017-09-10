@@ -20,7 +20,7 @@ const Users = function(sequelize, DataTypes) {
       type: DataTypes.STRING(75)
     },
     status: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(50)
     },
     token: {
       type: DataTypes.STRING(600)
