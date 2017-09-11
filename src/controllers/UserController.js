@@ -94,7 +94,7 @@ exports.views.new = function(req,res) { // new user/password view
 
 exports.admin.views.dash1 = function(req,res) { 
   let q = req.url.split('?')[1]; // forward query
-  let url = (!q) ? '/users/admin/' : '/users/admin/?'+q; 
+  let url = (!q) ? '/admin/users/' : '/admin/users/?'+q; 
   res.redirect(url);
 }
 
@@ -202,7 +202,7 @@ exports.admin.views.dashPaged = function(req,res) {  // admin dash pagination
 
 exports.admin.views.recover1 = function (req,res) { // redirect /recover/1 to /recover/
   let q = req.url.split('?')[1]; // forward query 
-  let url = (!q) ? '/users/admin/recover/' : '/users/admin/recover/?'+q; // if exists
+  let url = (!q) ? '/admin/users/recover/' : '/admin/users/recover/?'+q; // if exists
   res.redirect(url);
 };
 
