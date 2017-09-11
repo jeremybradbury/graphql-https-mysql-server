@@ -12,11 +12,11 @@
       <%- include ./partials/menu %>
       <div id="main" class="content-wrapper">
         <div class="content" id="invite">
-            <%- include ./partials/adminInvite %>
+            <%- include ./admin/userInvite _%>
         </div>
         <div class="alert is-center" id="alert-message"><% if (message.length > 0) { %><%- message %><% } %></div>
         <div class="content dark" id="manage">
-            <%- include ./partials/adminUsers %>
+            <%- include ./admin/users _%>
         </div>
         <script>
           localStorage.setItem('id','<%= local.user.id %>');

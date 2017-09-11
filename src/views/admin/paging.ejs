@@ -1,0 +1,6 @@
+<%_ if (local.page.prev) { _%>
+  <a class="prev" href="<%= ((local.page.paged) ? local.url.split('?')[0].substring(0,local.url.split('?')[0].lastIndexOf('/'))+'/' : local.url.split('?')[0]) + local.page.prev %>">Back</a>
+<%_ } _%>
+<%_ if (local.page.next) { _%>
+  <a class="next" href="<%= ((local.page.paged) ? local.url.split('?')[0].substring(0,local.url.split('?')[0].lastIndexOf('/'))+'/' : local.url.split('?')[0]) + local.page.next %>">Next</a>
+<%_ } _%>

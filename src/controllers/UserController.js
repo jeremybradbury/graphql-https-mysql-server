@@ -189,6 +189,7 @@ exports.admin.views.dashPaged = function(req,res) {  // admin dash pagination
         return res.sendStatus(400); 
       }
       local.page = {
+        paged: true,
         prev: ((query.offset-1) > 0) ? page-1 : false, 
         next: (query.offset+query.limit<users.count) ? page+1 : false
       };
@@ -305,10 +306,11 @@ exports.admin.views.recoverPaged = function(req,res) { // recover delted users p
   }
   req.app.db.Users.findAndCountAll(query)
   .then(users => {
-    if (users.rows.length < 1 || offset>=users.count) { 
+    if (users.count < 1) {
       return res.sendStatus(400); 
     }
     local.page = {
+      paged: true,
       prev: ((query.offset-1) > 0) ? page-1 : false, 
       next: (query.offset+query.limit<users.count) ? page+1 : false
     };        
