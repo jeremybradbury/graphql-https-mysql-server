@@ -1,5 +1,5 @@
-const limit = 5;
-exports.limit = limit;
+var limit;
+exports.limit = limit = 5;
 exports.admin = {};
 exports.views = {};
 exports.admin.views = {};
@@ -71,7 +71,8 @@ exports.views.dash = function(req,res) { // dash view
   res.render('dash.ejs', { 
     local: {
       url: req.url, 
-      user : req.user, 
+      user: req.user,
+      type: 'User',
       impersonate: false
     } 
   }); 
@@ -137,6 +138,7 @@ exports.admin.views.dash = function(req,res) { // admin dash view
         prev: false
       };
       local.users = users.rows;
+      local.type = 'User';
       res.render('admin.ejs', {
         message: req.flash('inviteMessage'), 
         local: local
@@ -194,6 +196,7 @@ exports.admin.views.dashPaged = function(req,res) {  // admin dash pagination
         next: (query.offset+query.limit<users.count) ? page+1 : false
       };
       local.users = users.rows;
+      local.type = 'User';
       res.render('admin.ejs', {
         message: req.flash('inviteMessage'), 
         local: local
@@ -252,6 +255,7 @@ exports.admin.views.recover = function(req,res) { // recover delted users
         prev: false
       };
       local.users = users.rows;
+      local.type = 'User';
       res.render('admin.ejs', {
         message: req.flash('inviteMessage'), 
         local: local
@@ -315,6 +319,7 @@ exports.admin.views.recoverPaged = function(req,res) { // recover delted users p
       next: (query.offset+query.limit<users.count) ? page+1 : false
     };        
     local.users = users.rows;
+    local.type = 'User';
     res.render('admin.ejs', {
       message: req.flash('inviteMessage'), 
       local: local
