@@ -1,5 +1,5 @@
 function resetMyPassword() {
-  XHR("/password-reset",
+  XHR("/password-reset/",
     function() {
       if (this.readyState == 4 && this.status == 200) {
         let User = JSON.parse(this.responseText).data;
@@ -14,9 +14,9 @@ function resetMyPassword() {
 }
 
 function getMyToken(renew) {
-  let url = "/token";
+  let url = "/token/";
   if(typeof renew != 'undefined' && renew) {
-    url += "/renew";
+    url += "/renew/";
   }
   XHR(url,
     function() {
@@ -35,7 +35,7 @@ function getMyToken(renew) {
 }
 
 function expireMe() {
-  XHR("/token/expire",
+  XHR("/token/expire/",
     function() {
       if (this.readyState == 4 && this.status == 200) {
         location.reload();

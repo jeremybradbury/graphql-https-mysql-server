@@ -1,7 +1,7 @@
 // override user XHR & impersonate user override
 function XHR(query,callback) {
   let xhr = new XMLHttpRequest();
-  xhr.open("POST","/api/admin",true);
+  xhr.open("POST","/api/admin/",true);
   xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhr.setRequestHeader("Authorization", "Bearer "+localStorage.getItem('admin'));
   xhr.onreadystatechange = callback;
@@ -145,17 +145,43 @@ function lim(limit) {
     window.location.href = $.param.querystring(window.qUrl,window.qParams);
   })(jQuery);
 }
+function updateById(type) {
+  if(confirm(`Are you sure you want to update this ${type}?`)) {
+    var form = {};
+    $($("#update").find(":input").serializeArray()).each(function(k,v) {
+      if(v.value) {
+        form[v.name] = (!isNaN(parseFloat(v.value)) && isFinite(v.value)) ? parseFloat(v.value) : ((v.value == "null") ? "" : v.value);
+      }
+    });
+    delete form.createdAt;
+    delete form.updatedAt;
+    let id = form.id;
+    delete form.id;
+    let data = stringify(form);
+    XHR(`mutation {${type.toLowerCase()}Update(id:"${id}", data: ${data} ){ id }}`, // query
+      function() { // callback
+        if (this.readyState == 4 && this.status == 200) {
+          location.reload();
+        }
+      }
+    );
+  }
+}
+function stringify(obj_from_json){
+	if(typeof obj_from_json !== "object" || Array.isArray(obj_from_json)){
+  	return JSON.stringify(obj_from_json);
+  }
+  let props = Object
+  	.keys(obj_from_json)
+      .map(key => `${key}:${stringify(obj_from_json[key])}`)
+      .join(",");
+  return `{${props}}`;
+}
 function getQuery() {
   (function($){
     window.qParams = $.deparam.querystring();
-    if (typeof window.qParams.email != 'undefined') {
-      $('#filter-email').val(window.qParams.email);
-    }
-    if(typeof window.qParams.status != 'undefined') {
-      $('#filter-status').val(window.qParams.status);
-    }
-    if(typeof window.qParams.limit != 'undefined') {
-      $('#filter-limit').val(window.qParams.limit);
+    for(i in window.qParams){
+      $('#filter-'+i).val(window.qParams[i]);
     }
     if (typeof window.qParams.sort != 'undefined') {
       let dir = (typeof window.qParams.dir != 'undefined') ? window.qParams.dir : 'asc';

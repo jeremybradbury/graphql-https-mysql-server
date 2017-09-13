@@ -38,7 +38,12 @@ h1,h2,h3,h4,h5,h6,label {
 .is-center {
 	text-align:center;
 }
-
+.is-left {
+	text-align:left;
+}
+.is-right {
+	text-align:right;
+}
 /*
  * -- PURE FORM STYLES --
  */
@@ -150,9 +155,8 @@ a.pure-button-primary,button.pure-button-primary {
  * -- CONTENT STYLES --
  */
 .content-wrapper {
-	min-height:12%;
+	min-height:500px;
 	z-index:2;
-	background:#fff;
 }
 
 .content {
@@ -230,9 +234,10 @@ th .pure-form .pure-button, {
   padding: 0.2em 0.25em;
 }
 
-th .pure-form a {
-  color: #000 !important;
+th .pure-form a.pure-button {
+  color: #000;
   text-decoration: underline;
+  padding:0;
 }
 
 .red {
@@ -280,8 +285,16 @@ td {
   white-space: nowrap;
 }
 
-#manage {
-  margin-bottom: 3em;
+.light {
+  background: #fff;
+}
+
+.light * {
+  color: #1f8dd6;
+}
+
+#bottom {
+  height: 70px;
 }
 
 .footer {
@@ -343,7 +356,7 @@ td {
 
   th .pure-form button.pure-button { 
     float: right;
-    padding: 0.5em 0.75em;
+    padding: 0.25em 0.35em;
   }
 
 	.wrapper {

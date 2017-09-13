@@ -1,8 +1,8 @@
 function resetMyPassword() {
   let xhr = new XMLHttpRequest();
-  xhr.open("POST","/api",true);
+  xhr.open("POST","/api/",true);
   xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhr.setRequestHeader("Authorization", "Bearer "+location.pathname.split('/new/',2)[1]);
+  xhr.setRequestHeader("Authorization", "Bearer "+location.pathname.split('/new/',2)[1].replace('/',''));
   xhr.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       let data = JSON.parse(this.responseText).data;

@@ -32,6 +32,13 @@ app.use(flash());
 app.set('trust proxy',1);
 app.set('view engine', 'ejs');
 app.set('views','./src/views');
+app.use(function(req, res, next) { // add trailing slash unless there is a ".": (.css/.js/.html/.jpg) "?" or "#"
+  if (req.url.substr(-1) == '/' || req.url.indexOf('.') > 0 || req.url.indexOf('?') > 0 || req.url.indexOf('#') > 0) {
+    next();
+  } else {
+    res.redirect(301, req.url+'/'); 
+  }
+});
 //app.disable('view cache'); // not recommended
 
 // routes
