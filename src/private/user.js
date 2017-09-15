@@ -16,7 +16,7 @@ function resetMyPassword() {
 function getMyToken(renew) {
   let url = "/token/";
   if(typeof renew != 'undefined' && renew) {
-    url += "/renew/";
+    url += "renew/";
   }
   XHR(url,
     function() {
