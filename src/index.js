@@ -22,6 +22,15 @@ app.db = db;
 // destroy existing sessions on deploy/restart
 db.Sessions.sync({force: true}).then(()=>log.e.debug('Cleaned sessions'));
 
+// add trailing slash unless there is a ".": (.css/.js/.html/.jpg) "?" or "#"
+app.use(function(req, res, next) { 
+  if (req.url.substr(-1) == '/' || req.url.indexOf('.') > 0 || req.url.indexOf('?') > 0 || req.url.indexOf('#') > 0) {
+    next();
+  } else {
+    res.redirect(301, req.url+'/'); 
+  }
+});
+
 // configure
 require('./config/passport')(passport);
 app.use(helmet());
@@ -32,13 +41,6 @@ app.use(flash());
 app.set('trust proxy',1);
 app.set('view engine', 'ejs');
 app.set('views','./src/views');
-app.use(function(req, res, next) { // add trailing slash unless there is a ".": (.css/.js/.html/.jpg) "?" or "#"
-  if (req.url.substr(-1) == '/' || req.url.indexOf('.') > 0 || req.url.indexOf('?') > 0 || req.url.indexOf('#') > 0) {
-    next();
-  } else {
-    res.redirect(301, req.url+'/'); 
-  }
-});
 //app.disable('view cache'); // not recommended
 
 // routes
