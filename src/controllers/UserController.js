@@ -8,7 +8,7 @@ exports.admin.views = {};
 exports.logout = function(req,res) {
   req.logOut(); 
   req.session.destroy(() => {
-    res.redirect('/dash');
+    return res.redirect('/dash');
   });
 };
 
@@ -16,7 +16,7 @@ exports.getMyToken = function(req,res) {
   req.app.db.Users.getTokenById(req.user.id)
     .then(user => {
       let data = user.get();
-      res.json({data: { // user's dataa
+      return res.json({data: { // user's dataa
         id: req.user.id,
         token: data.token,
         expires: data.expires,
@@ -31,15 +31,13 @@ exports.renewMyToken = function(req,res) {
       let data = user.tokenNew();
       data.status = user.status; // user's status
       data.id = req.user.id;
-      res.json({data: data});
+      return res.json({data: data});
     });
 };
 
 exports.resetMyPassword = function(req,res) {
   req.app.db.Users.findById(req.user.id)
-    .then(user => {
-      res.json({data: {password: user.resetPass()}});
-    });
+    .then(user => res.json({data: {password: user.resetPass()}}));
 };
 
 /* ejs views */
@@ -85,9 +83,9 @@ exports.views.new = function(req,res) { // new user/password view
         res.sendStatus(401);
       } else {
         if(!user.password) { // empty password == new user
-          res.render('new.ejs', {local: { user: user }});
+          return res.render('new.ejs', {local: { user: user }});
         } else {
-          res.redirect('/dash'); // password is already set, go login fool (or home if you are logged in)
+          return res.redirect('/dash'); // password is already set, go login fool (or home if you are logged in)
         }
       }
     })
@@ -139,7 +137,7 @@ exports.admin.views.dash = function(req,res) { // admin dash view
       };
       local.users = users.rows;
       local.type = 'User';
-      res.render('admin.ejs', {
+      return res.render('admin.ejs', {
         message: req.flash('inviteMessage'), 
         local: local
       });
@@ -197,7 +195,7 @@ exports.admin.views.dashPaged = function(req,res) {  // admin dash pagination
       };
       local.users = users.rows;
       local.type = 'User';
-      res.render('admin.ejs', {
+      return res.render('admin.ejs', {
         message: req.flash('inviteMessage'), 
         local: local
       });
@@ -256,7 +254,7 @@ exports.admin.views.recover = function(req,res) { // recover delted users
       };
       local.users = users.rows;
       local.type = 'User';
-      res.render('admin.ejs', {
+      return res.render('admin.ejs', {
         message: req.flash('inviteMessage'), 
         local: local
       });
@@ -320,7 +318,7 @@ exports.admin.views.recoverPaged = function(req,res) { // recover delted users p
     };        
     local.users = users.rows;
     local.type = 'User';
-    res.render('admin.ejs', {
+    return res.render('admin.ejs', {
       message: req.flash('inviteMessage'), 
       local: local
     });
@@ -329,7 +327,5 @@ exports.admin.views.recoverPaged = function(req,res) { // recover delted users p
 
 exports.admin.views.userImpersonate = function(req,res) { // user impersonation dash view
   req.app.db.Users.findById(req.params.id)
-    .then(user => {
-      res.render('dash.ejs', {local: {user: user, impersonate: req.user.email }});
-    })
+    .then(user => res.render('dash.ejs', {local: {url: req.url, user: user, impersonate: req.user.email }}))
 };
