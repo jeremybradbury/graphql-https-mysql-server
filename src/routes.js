@@ -36,6 +36,7 @@ module.exports = function(app, passport) {
     });
   app.post('/api', hasValidToken, GraphQL.api); // User GraphQL API endpoint
   app.post('/api/admin', hasValidToken, isAdmin, GraphQL.admin.api); // Admin GraphQL API endpoint
+  app.post('/api/auth', User.auth);
   
   /* sessions for routes below */
   const expires = new Date();

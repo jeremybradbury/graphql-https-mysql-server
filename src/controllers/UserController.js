@@ -5,6 +5,14 @@ exports.views = {};
 exports.admin.views = {};
 
 /* json endpoints */
+exports.auth = function(req,res) {
+  req.app.db.Users.check(req.body.email,req.body.password)
+    .then(user => {
+      delete user.password;
+      return res.json({data: {user: user}});
+    });
+};
+
 exports.logout = function(req,res) {
   req.logOut(); 
   req.session.destroy(() => {
