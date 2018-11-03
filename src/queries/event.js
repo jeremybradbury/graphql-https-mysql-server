@@ -13,7 +13,7 @@ module.exports = {
   resolve: (
     root, 
     { id }, 
-    { req: { app: {db: {Event }}} }, 
+    { req: { app: {db: {Events}}} }, 
     fieldASTs
   ) => {
       return new Promise((resolve, reject) => {
@@ -22,7 +22,7 @@ module.exports = {
           where: {id: id}, 
           attributes: projection
         };
-        Event.findOne(q)
+        Events.findOne(q)
           .then(events => resolve(events))
           .catch(errors => reject(errors));
       })  

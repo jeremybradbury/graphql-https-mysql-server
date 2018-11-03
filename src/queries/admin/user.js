@@ -25,7 +25,7 @@ module.exports = {
   resolve: (
     root, 
     data, 
-    { req: {app: {db: {User}}}},
+    { req: {app: {db: {Users}}}},
     fieldASTs
   ) => {
       return new Promise((resolve, reject) => {
@@ -35,7 +35,7 @@ module.exports = {
             where: data, 
             attributes: projection
           };
-          User.findOne(q)
+          Users.findOne(q)
             .then(user => resolve(user))
             .catch(errors => reject(errors));
         } else {

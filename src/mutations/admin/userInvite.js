@@ -1,40 +1,37 @@
-const { GraphQLNonNull } = require('graphql');
+const { 
+  GraphQLString,
+  GraphQLID,
+  GraphQLNonNull 
+} = require('graphql');
 const UserType = require('../../types/user');
-const UserInputType = require('../../types/input/user');
-const { appConfig } = require('../../config');
 //const socket = require('../../socket');
 
 module.exports = {
   type: UserType,
-  description: 'Email is required',
+  description: 'Email required',
   args: {
-    data: {
-      name: 'data',
-      type: new GraphQLNonNull(UserInputType)
+    email: {
+      name: 'email',
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'Email required'
     }
   },
-  resolve: (root, { data }, {req: {app: {db: {User}}},res}) => {
+  resolve: (root, args, {req: {app: {url, db: {Users}}}, res}) => {
     return new Promise((resolve, reject) => {
-      User.sync()
-        .then(() => {
-          return User.findOrCreate({where: data});
-        })
+      Users.findOrCreate({where: args})
         .spread((result,created) => { // like .then() splitting results
-          if(created){
-            user = result.dataValues
-            console.log(user);
-            var expires = new Date(user.expires);
-            var now = new Date();
-            if (expires.getTime() <= now.getTime()) { // expired 
-              var token = result.tokenNew(1); // new 24 hour token
-              user.token = token.token;
-              user.expires = token.expires;
-            }
-            res.json({data: {url: `${appConfig.url}:${appConfig.port}/new/${user.token}`}});
-            resolve(user);
-          } else {
-            throw new Error('User already exists.');
+          user = result.dataValues
+          var expires = new Date(user.expires);
+          var now = new Date();
+          if (user.password != null) {
+            return res.json({data: {message:"Password already set"}});
           }
+          if (expires.getTime() <= now.getTime()) { // expired 
+            let token = result.tokenNew(1); // new 24 hour token
+            user.token = token.token;
+            user.expires = token.expires;
+          }
+          return res.json({data: {url: `${url}/new/${user.token}` }});
         })
         .catch(errors => reject(errors))
     })

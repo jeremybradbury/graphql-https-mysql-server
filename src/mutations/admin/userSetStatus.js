@@ -1,28 +1,48 @@
-const { GraphQLNonNull } = require('graphql');
+const { 
+  GraphQLString,
+  GraphQLID 
+} = require('graphql');
 const UserType = require('../../types/user');
-const UserInputType = require('../../types/input/user');
 //const socket = require('../../socket');
 
 module.exports = {
   type: UserType,
   description: 'Email, token or id is required.',
   args: {
-    data: {
-      name: 'data',
-      type: new GraphQLNonNull(UserInputType)
+    id: {
+      name: 'id',
+      type: GraphQLID,
+      description: 'Email, token or id is required.'
+    },
+    email: {
+      name: 'email',
+      type: GraphQLString,
+      description: 'Email, token or id is required.'
+    },
+    token: {
+      name: 'token',
+      type: GraphQLString,
+      description: 'Email, token or id is required.'
+    },
+    status: {
+      name: 'status',
+      type: GraphQLString,
+      description: 'If no status supplied, user is disabled'
     }
   },
-  resolve: (root, { data }, {req: {app: {db: {User}}}}) => {
+  resolve: (root, args, {req: {app: {db: {Users}}}}) => {
     return new Promise((resolve, reject) => {
-      let status = data.status; // save this for setting
-      delete data.status; // remove from the query
-      User.findOne({where: data})
+      let status = args.status; // save this for setting
+      delete args.status; // remove from the query
+      Users.findOne({where: args})
         .then((user) => {
-          let expires = user.disable();
-          if(status){
+          let expires, result;
+          if(status) {
             expires = user.enable(status);
+          } else {
+            expires = user.disable();
           }
-          let result = user.dataValues;
+          result = user.dataValues;
           return Object.assign(result,expires);
         })
         .then((user)=>{

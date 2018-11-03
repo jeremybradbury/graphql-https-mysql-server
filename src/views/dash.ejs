@@ -1,0 +1,31 @@
+<%- include ./partials/head _%>
+<body>
+  <script src="/private/user.js"></script>
+  <% if (local.impersonate) { %>
+  <%# override user functions, so not always for admins %>
+  <script src="/private/admin.js"></script>
+  <% } %>
+  <div id="layout">
+      <div class="splash-container" id="top">
+          <div class="splash">
+              <h1 class="splash-head">My Dashboard</h1>
+              <p class="splash-subhead">Here you can manage your user profile, including reset your passphrase, view and refresh your token.</p>
+          </div>
+      </div>
+      <%- include ./partials/menu _%>
+      <div id="main" class="content-wrapper">
+          <div class="content" id="token">
+              <%- include ./partials/apiToken %>
+          </div>
+          <div class="content dark">
+              <%- include ./partials/reqPass %>
+          </div>
+        <script>
+          localStorage.setItem('id','<%= local.user.id %>');
+          localStorage.setItem('token','<%= local.user.token %>');
+          localStorage.setItem('expires','<%= local.user.expires %>');
+          document.getElementById("mytoken").value = localStorage.getItem('token');
+          document.getElementById("expires").value = localStorage.getItem('expires');
+          getMyToken();
+        </script>
+<%- include ./partials/footer _%>

@@ -1,146 +1,108 @@
-const { graphqlExpress, graphiqlExpress } = require('graphql-server-express');
-const schema = require('./schema');
-const schemaAdmin = require('./schema-admin');
-const { appConfig } = require('./config');
 const express = require('express');
-const admin = require('./db/admin');
+const { User, GraphQL } = require('./controllers'); 
+const { appConfig } = require('./config');
+const session = require('express-session');
+const Store = require('connect-session-sequelize')(session.Store);
+const cookieParser = require('cookie-parser');
 
-module.exports = function(app, passport) {
-  const TokenAuth = passport.authenticate("bearer", { session: false }); // token auth middleware
-  var { tools: {log} } = app; // extract app.tools.log to log
-  app.use('/', // static resources (icons,images,css,etc
+module.exports = function(app, passport) {  
+  /* middleware */
+  hasValidToken = passport.authenticate("bearer", { session: false }); // token auth middleware pure sessionless
+  hasTokenOrSession = function(req,res,next) { // less secure
+    if (req.isAuthenticated()) { return next(); } // valid login session OR...
+    return passport.authenticate("bearer", { session: false })(req,res,next); // token auth middleware
+  }
+  isLoggedIn = function (req, res, next) { // user auth middleware
+    if (req.isAuthenticated()) return next(); // proceed to next middleware
+    req.session.returnTo = req.url; // dont forget where we came
+    res.redirect('/login'); // not authenticated
+  };
+  isAdmin = function (req, res, next) { // admin middleware
+    if(req.user.status == 'manage-users') return next(); // proceed to next middleware
+    res.sendStatus(403); // not allowed
+  }
+  
+  /* sessionless routes */
+  app.use('/', // icons,images,css,etc
     express.static(__dirname+'/public')
   );
-  app.use('/private', // authenticated static resources  
-    isLoggedIn, // hide scripts with ajax code
+  // CORS for APIs
+  app.use(['/api','/api/admin'], 
+    function(req, res, next) {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      res.header("Access-Control-Allow-Method", "POST");
+      next();
+    });
+  app.post('/api', hasValidToken, GraphQL.api); // User GraphQL API endpoint
+  app.post('/api/admin', hasValidToken, isAdmin, GraphQL.admin.api); // Admin GraphQL API endpoint
+  app.post('/api/auth', User.auth);
+  
+  /* sessions for routes below */
+  const expires = new Date();
+  expires.setDate(expires.getDate() + 1); // 24 hour expiry
+  function extendDefaultFields(defaults, session) {
+    let userId = (session.passport) ? session.passport.user : null;
+    return {
+      data: defaults.data,
+      expires: defaults.expires,
+      userId: userId
+    };
+  }
+  app.use(session({ 
+    key: 'sid',
+    secret: appConfig.secret,
+    store: new Store({ 
+      db: app.db.sequelize,
+      table: 'session',
+      extendDefaultFields: extendDefaultFields,
+    }),
+    cookie: { secure: true, sameSite: true, expires: expires},
+    resave: false,
+    saveUninitialized: false,
+    })
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(cookieParser(appConfig.secret));
+  
+  /* sessioned static resources */
+  app.use('/private',
+    isLoggedIn, // authenticated static resources
     express.static(__dirname+'/private')
   );
   
-  /* auth endpoints */
-  app.post('/login', // login endpoint
-    function(req, res, next) {
-      passport.authenticate('local', function(err, user, info) {
+  /* sessioned endpoints */
+  app.post('/login', (req, res, next) => { // login endpoint
+    passport.authenticate('local', function(err, user, info) {
+      if (err) { return next(err); }
+      if (!user) { return res.redirect('/login'); }
+      req.logIn(user, function(err) {
         if (err) { return next(err); }
-        if (!user) { return res.redirect('/login'); }
-        req.logIn(user, function(err) {
-          if (err) { return next(err); }
-          return res.redirect(req.session.returnTo || '/dash');
-        });
-      })(req, res, next);
-    });
-  app.get('/logout',   // logout endpoint
-    function(req, res) {
-      req.logout();
-      res.redirect('/dash');
-    });
-    
-  /* views */
-  app.get('/login',   // login view
-    function(req, res) {
-      res.render('login.ejs', { 
-          message: req.flash('loginMessage'), 
-          local: {
-            url: req.url, 
-            user : ''
-          }
+        return res.redirect(req.session.returnTo || '/dash');
       });
-    });
-  app.get('/dash', // dash view
-    isLoggedIn,
-    function(req,res) {
-      res.render('dash.ejs', { 
-        local: {
-          url: req.url, 
-          user : req.user, 
-          impersonate: false
-        } 
-      }); 
-    });
-  app.get('/dash/admin',  // admin dash view
-    isLoggedIn,
-    isAdmin,
-    function(req,res) {
-      let local = {url: req.url, user : req.user};
-      app.db.User.findAll({ attributes: { exclude: ['password'] }})
-        .then(users => {
-          local.users = users;
-          res.render('admin.ejs', {
-            message: req.flash('inviteMessage'), 
-            local: local
-          });
-        });
-    }); 
-  app.get('/dash/admin/user/:id', // user impersonation dash view
-    isLoggedIn,
-    isAdmin,
-    function(req,res) {
-      app.db.User.findById(req.params.id)
-        .then(user => {
-          res.render('dash.ejs', {local: {user: user, impersonate: req.user.email }});
-        })
-    });
-  app.get('/new/:token', // new user/password view
-    function(req, res) {
-      app.db.User.findByToken(req.params.token)
-        .then(user => {
-          if(user instanceof Error || !user.status) { // valid user without a flasey status
-            res.sendStatus(401);
-          } else {
-            if(!user.password) { // empty password == new user
-              res.render('new.ejs', {local: { user: user }});
-            } else {
-              res.redirect('/dash'); // password is already set, go login fool (or home if you are logged in)
-            }
-          }
-        })
-    });
+    })(req, res, next);
+  });
+  app.get('/password-reset', hasTokenOrSession, User.resetMyPassword);
+  app.get('/token', hasTokenOrSession, User.getMyToken);
+  app.get('/token/renew', hasTokenOrSession, User.renewMyToken);
   
-  /* GraphQL endpoints/views */
-  app.post('/api', // User GraphQL API endpoint
-    TokenAuth, 
-    graphqlExpress((req, res)=>{
-      let User = req.app.db.User; // model
-      let user = req.user; // self
-      return { context: { req, res, User, user }, schema: schema } // user schema
-    }) // restricted db context in req.app.db. pass only User from admin. user = self from auth. res for response overrides.
-  );
-  app.db = admin; // reassign app.db for admin operations (added security)
-  app.post('/api/admin', // Admin GraphQL API endpoint
-    TokenAuth, 
-    isAdmin, 
-    graphqlExpress((req,res)=>({context: { req, res }, schema: schemaAdmin })) // admin schema
-  ); // access to req.app.[tools/db] and res
-  // GraphiQL view
-  app.get('/docs', 
-    isLoggedIn,
-    // isAdmin, // [TODO] choose in config. ie: admin only prod, open for local/dev
-    graphiqlExpress((req)=> {
-      return {
-        endpointURL: '/api',
-        subscriptionsEndpoint: `wss://${appConfig.host}:${appConfig.port}/subscriptions`,
-        passHeader: `'Authorization': 'Bearer ${req.user.token}'` // forward user's token (set by passport)
-      }
-    }));
-  app.get('/docs/admin', // Admin GraphiQL view
-    isLoggedIn, 
-    isAdmin, 
-    graphiqlExpress((req)=> {
-      return {
-        endpointURL: '/api/admin',
-        subscriptionsEndpoint: `wss://${appConfig.host}:${appConfig.port}/subscriptions`,
-        passHeader: `'Authorization': 'Bearer ${req.user.token}'` // forward admin's token (set by passport)
-      }
-    }));
-    
+  /* sessioned views */
+  app.get('/', User.views.homeHide); // hidden home. what? it's an API
+  app.get('/logout', User.logout );// logout
+  app.get('/login', User.views.login); // login view
+  app.get('/dash', isLoggedIn, User.views.dash); // dash view
+  app.get('/admin/users/recover', isLoggedIn, isAdmin, User.admin.views.recover); // recover delted users view
+  app.get('/admin/users/recover/1', User.admin.views.recover1); // dont use page 1
+  app.get('/admin/users/recover/:page', isLoggedIn, isAdmin, User.admin.views.recoverPaged); // recover delted users pagination
+  app.get('/admin/users', isLoggedIn, isAdmin, User.admin.views.dash); // admin dash view
+  app.get('/admin/users/1', User.admin.views.dash1); // dont use page 1
+  app.get('/admin/users/:page', isLoggedIn, isAdmin, User.admin.views.dashPaged);  // admin dash pagination
+  app.get('/admin/user/:id', isLoggedIn, isAdmin, User.admin.views.userImpersonate); // user impersonation dash view
+  app.get('/new/:token', User.views.new); // new user/password view
+  app.get('/docs', isLoggedIn, GraphQL.docs); // GraphiQL view
+  app.get('/docs/admin', isLoggedIn, isAdmin, GraphQL.admin.docs); // Admin GraphiQL view
+
   /* 404 everything else */
-  app.use('*',(req,res)=>{ res.sendStatus(404); });  // [TODO] 404 view
-}
-function isLoggedIn(req, res, next) { // user auth middleware
-  if (req.isAuthenticated()) return next(); // proceed to next middleware
-  req.session.returnTo = req.url; // dont forget where we came
-  res.redirect('/login'); // not authenticated
-}
-function isAdmin(req, res, next) { // admin middleware
-  if(req.user.status == 'manage-users') return next(); // proceed to next middleware
-  res.sendStatus(403); // not allowed
+  app.use('*',(req,res) => { res.sendStatus(404); });  // [TODO] error view  
 }

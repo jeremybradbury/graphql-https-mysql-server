@@ -11,12 +11,11 @@ module.exports = {
       type: new GraphQLNonNull(EventInputType)
     }
   },
-  resolve: (root, { data }, { db: { Event } }) => {
+  resolve: (root, { data }, {req: {app: {db: {Events}}}}) => {
     return new Promise((resolve, reject) => {
-      Event.sync().then(() => {
-        console.log(data);
-        return Event.create(data);
-      }).then(data => {
+      Events.sync()
+        .then(()=>Event.create(data))
+        .then(data => {
           socket.publish('EVENT_CREATED', {
             eventCreated: data
           })

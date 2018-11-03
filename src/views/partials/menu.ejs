@@ -1,0 +1,25 @@
+<a href="#menu" id="menuLink" class="menu-link">
+  <i class="fa fa-bars"></i>
+</a>
+<div id="menu" class="menu pure-menu pure-menu-vertical">
+    <a class="pure-menu-heading" href="/dash#top">
+        <i class="fa fa-home"></i>
+    <%_ if(local.impersonate){ _%>
+      <small><%= local.impersonate %></small></a>
+      <a><small>impersonating:</small></a>
+      <br><a><small><b><%= local.user.email %></b></small></a>
+    <%_ } else { _%>
+      <small><%= local.user.email %></small></a>
+    <%_ } _%>
+    <ul class="pure-menu-list">
+        <li class="pure-menu-item"><a  class="pure-menu-link" href="/logout/">Logout</a></li>
+        <li><hr></li>
+        <li class="pure-menu-item"><a  class="pure-menu-link" href="/docs/" target="_blank" onclick="$('#menuLink').click();">Docs</a></li>
+      <%_ if (local.user.status == "manage-users") { -%>
+        <li class="pure-menu-item"><a  class="pure-menu-link" href="/docs/admin/" target="_blank" onclick="$('#menuLink').click();">Admin Docs</a></li>
+        <li><hr></li>
+        <li class="pure-menu-item"><a class="pure-menu-link" href="/admin/users/">Users</a></li>
+        <li><hr></li>
+      <%_ } -%>
+    </ul>
+</div>

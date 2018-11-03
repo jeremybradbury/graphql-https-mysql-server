@@ -1,5 +1,5 @@
-module.exports = function (User,token) {
-  return User.findOne({
+module.exports = function (Users,token) {
+  return Users.findOne({
     where: {token: token}
   }).then(user => {
     if (user) {

@@ -5,9 +5,9 @@ const UserInputType = require('../types/input/user');
 
 module.exports = {
   type: UserType,
-  resolve: (root, { }, { User, user }) => {
+  resolve: (root, { }, { Users, user }) => {
     return new Promise((resolve, reject) => {
-      User.findOne({where: {id: user.id}}) // reset MY token
+      Users.findOne({where: {id: user.id}}) // reset MY token
         .then((User) => {
           return User.dataValues;
         })

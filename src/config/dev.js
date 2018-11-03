@@ -16,7 +16,7 @@ exports.dbConfig = {
   port: 3306
 };
 exports.logConfig = {
-  dir: __dirname+'/../log',
+  dir: __dirname+'/../../log',
   access: {
     fn: 'access.log',
     options: {

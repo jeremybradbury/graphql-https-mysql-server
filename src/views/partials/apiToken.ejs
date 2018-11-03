@@ -3,11 +3,11 @@
     <div class="l-box-lrg pure-u-1 pure-u-md-4-24"></div>
     <div class="l-box-lrg pure-u-1 pure-u-md-16-24">
         <p class="is-center">This token must be present in an Authorization header as a Bearer token for each request to /api/. <a href="https://wp-oauth.com/kb/step-by-step-using-bearer-token-authorization-for-wp-rest-api/" target="_blank">See here for the best short explaination & example I could find.</a></p>
-        <p class="is-center">The API only accepts POST requests (which GraphiQL sends). GraphiQL is mapped to /docs/ and requires both a valid session <b>and</b> a valid token. However, you will need <a href="https://chrome.google.com/webstore/detail/modheader/idgpnmonknjnojddfkpgkljpfnnfcklj" target="_blank">the ModHeader Chrome Extentsion</a> (or similar) to kill the "Unathorized" response on the right. I <b>highly</b> recommend an API tool like <a href="https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop" target="_blank">Postman Chrome Extension</a> or <a href="https://www.getpostman.com" target="_blank">Postman Standalone App</a> to test <b>and</b> to use /docs/ (the GraphiQL UI) I recommend</p>
+        <p class="is-center">The API only accepts POST requests (which GraphiQL sends). GraphiQL is mapped to <a href="/docs/" target="_blank">/docs/</a> which requires a valid login session <b>and</b> a valid token. I <b>highly</b> recommend an API client like <a href="https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop" target="_blank">Postman Chrome Extension</a> or <a href="https://www.getpostman.com" target="_blank">Postman Standalone App</a> to test.</p>
         <form class="pure-form pure-form-stacked is-center">
             <fieldset>
                 <label for="token">Token </label>
-                <input class="pure-u-1" id="mytoken" type="text" readonly="true">
+                <input class="pure-u-1" id="mytoken" onfocus="this.select()" type="text" readonly="true">
                 <label for="expires">Expires </label>
                 <input class="pure-u-1" id="expires" type="text" readonly="true">
                 <button onclick="getMyToken(true); return false;" id="renew" class="pure-button">Renew Token</button>
@@ -16,6 +16,3 @@
         <p class="is-center">Tokens expire after 7 days maximum and must be renewed. Accesing this dashboard is the only way to renew a token after it has expired. Otherwise tokens may be renewed programmatically before their expiration.</p>
     </div>
 </div>
-<script>
-  getMyToken(); // request token on login
-</script>

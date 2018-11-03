@@ -1,0 +1,23 @@
+<%_ if(local.url.indexOf('/recover') < 0) { _%>
+  <a class="pure-button" href="<%- local.url.split('?')[0] _%>recover/#manage">Recover</a>
+<%_ } else { _%>
+  <a class="pure-button" href="<%- local.url.split('/recover/')[0] _%>/#manage">Manage</a>
+<%_ } _%>
+<% if ((local.objects && local.objects.length > 0) || (local.users && local.users.length > 0)) { %>
+<form class="pure-form" style="display:inline">
+    <label for="filter-limit" >Page size:</label>
+    <select class="pure-input" id="filter-limit" name="limit" title="Select how many <%= local.type %>s to view per page" onchange="lim(this.value); return false;">
+        <option>5</option>
+        <option>10</option>
+        <option>25</option>
+        <option>50</option>
+        <option>100</option>
+        <option>250</option>
+        <option>500</option>
+        <option>1000</option>
+    </select>
+</form>
+<% } %>
+<%_ if(local.url.indexOf('?') > 0) { _%>
+  <button class="pure-button" id="filter-clear" onclick="filter()">Clear Filters</button>
+<%_ } _%>

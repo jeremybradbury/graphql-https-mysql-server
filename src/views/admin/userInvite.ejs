@@ -1,0 +1,17 @@
+<h2 class="content-head is-center">Add & Invite New User</h2>
+<div class="pure-g">
+    <div class="l-box-lrg pure-u-1 pure-u-md-1-4"></div>
+    <div class="l-box-lrg pure-u-1 pure-u-md-1-2">
+        <p class="is-center">Enter an email to create a new user and generate a new password url. 
+          <br>The user must create a password & login within 24 hours or the link will expire.
+        </p>
+        <form class="pure-form pure-form-stacked is-center">
+            <fieldset>
+                <label for="email">Email</label> 
+                <input class="pure-u-1" id="email" name="email" type="email" placeholder="email">
+                <br>
+                <button id="invite-user" class="pure-button" onclick="inviteByEmail(); return false;">Invite User</button>
+            </fieldset>
+        </form>
+    </div>
+</div>

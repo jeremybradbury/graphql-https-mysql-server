@@ -25,13 +25,12 @@ module.exports = {
       description: 'Email, token or id is required.'
     }
   },
-  resolve: (root, args,  {req: {app: {db: {Users}}},res} ) => {
+  resolve: (root, args, {req: {app: {db: {Users}}}}) => {
     return new Promise((resolve, reject) => {
-      Users.findOne({where: args}) // reset someone's passoword
+      Users.findOne({where: args})
         .then((user) => {
-          let password = user.resetPass();
-          res.json({data: {password: password}});
-          resolve(user);
+          user.tokenNew();
+          resolve(user.dataValues);
         })
         .catch(errors => reject(errors))
     })

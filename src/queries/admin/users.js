@@ -17,18 +17,23 @@ module.exports = {
   resolve: (
     root,
     { first = null, skip = null },
-    { req: {app: {db: {User}}}},
+    { req: {app: {db: {Users}}}},
     fieldASTs
   ) => {
     return new Promise((resolve, reject) => {
       const projection = Object.keys(getProjection(fieldASTs));
       const q = { 
         attributes: projection,
+        order: [['createdAt', 'DESC']],
         offset: skip,
         limit: first
       }
-      User.findAll(q)
-        .then(users => resolve(users))
+      Users.findAndCountAll(q)
+        .then((users) => {
+          let page = {prev: ((q.offset/5)-1 >= 0) ? q.offset/5-1 : false, next: (q.offset<users.count) ? (q.offset/5)+1 : false};
+          let u = users.rows;
+          resolve(Object.assign(u,page));
+        })
         .catch(errors => reject(errors));
     })
   }

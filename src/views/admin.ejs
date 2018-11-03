@@ -1,0 +1,27 @@
+<%- include ./partials/head %>
+<body>
+    <script src="/private/user.js"></script>
+    <script src="/private/admin.js"></script>
+<div id="layout">
+      <div class="splash-container" id="top">
+          <div class="splash">
+              <h1 class="splash-head">Admin Dashboard</h1>
+              <p class="splash-subhead">Here you can manage your users, including reset passphrases, view and refresh tokens.</p>
+          </div>
+      </div>
+      <%- include ./partials/menu %>
+      <div id="main" class="content-wrapper">
+        <div class="content" id="invite">
+            <%- include ./admin/userInvite _%>
+        </div>
+        <div class="alert is-center" id="alert-message"><% if (message.length > 0) { %><%- message %><% } %></div>
+        <div class="content dark" id="manage">
+            <%- include ./admin/users _%>
+        </div>
+        <script>
+          localStorage.setItem('id','<%= local.user.id %>');
+          localStorage.setItem('token','<%= local.user.token %>');
+          localStorage.setItem('expires','<%= local.user.expires %>');
+          getMyToken();
+      </script>
+<%- include ./partials/footer %>

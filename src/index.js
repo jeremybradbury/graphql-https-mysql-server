@@ -1,54 +1,58 @@
 'use strict';
 const fs = require('fs');
 const express = require('express');
-const session = require('express-session');
 const passport = require("passport");
 const helmet = require('helmet');
 const flash = require('connect-flash');
-const cookieParser = require('cookie-parser');
 const { json, urlencoded  } = require('body-parser');
 const { createServer } = require('https');
 const { SubscriptionServer } = require('subscriptions-transport-ws');
 const { subscribe, execute } = require('graphql');
-const { appConfig } = require('./config');
+const { appConfig, dbConfig } = require('./config');
 const schema = require('./schema');
 const db = require('./db');
 const key = fs.readFileSync("./https/key.pem");
 const cert = fs.readFileSync("./https/cert.pem");
 const app = express();
-
-// middleware
-require('./config/passport')(passport);
-app.set('view engine', 'ejs');
-app.use(session({
-  secret: appConfig.secret,
-  cookie: { secure: true }, 
-  resave: false,
-  saveUninitialized: false
-}));
-app.use(passport.initialize()); 
-app.use(passport.session());
-app.use(helmet());
+app.url = (process.env.NODE_ENV == 'development') ? `${appConfig.url}:${appConfig.port}` : `${appConfig.url}`;
+app.url = (process.env.API_URL) ? process.env.API_URL : app.url;
 const { log } = app.tools = require('auto-load')('src/tools');
 app.db = db;
+
+// destroy existing sessions on deploy/restart
+db.Sessions.sync({force: true}).then(()=>log.e.debug('Cleaned sessions'));
+
+// add trailing slash unless there is a ".": (.css/.js/.html/.jpg) "?" or "#"
+app.use(function(req, res, next) { 
+  if (req.url.substr(-1) == '/' || req.url.indexOf('.') > 0 || req.url.indexOf('?') > 0 || req.url.indexOf('#') > 0) {
+    next();
+  } else {
+    res.redirect(301, req.url+'/'); 
+  }
+});
+
+// configure
+require('./config/passport')(passport);
+app.use(helmet());
 app.use(json());
 app.use(urlencoded({ extended: true }));
-app.use(cookieParser());
 app.use(log.access("combined",{stream: log.aStream})); // add morgan
 app.use(flash());
-//app.disable('view cache');
+app.set('trust proxy',1);
+app.set('view engine', 'ejs');
+app.set('views','./src/views');
+//app.disable('view cache'); // not recommended
 
 // routes
 require('./routes')(app, passport); 
 
 const server = createServer({ key: key, cert: cert }, app);
 server.listen(appConfig.port, err => {
-  if (err) throw err
-
+  if (err) throw err;
   new SubscriptionServer(
     { schema, execute, subscribe, onConnect: () => log.e.debug('Client connected') },
     { server, path: '/subscriptions' }
   );
   // TODO: admin subscription server
-  log.e.info(`Listening on ${appConfig.host}:${appConfig.port}`);
+  log.e.info(`Listening on ${app.url}`);
 })

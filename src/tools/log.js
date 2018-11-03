@@ -18,7 +18,7 @@ const e = new winston.Logger({
 });
 const eStream = {
   write: function(message, encoding) {
-    e.info(message);
+    e.log(message);
   }
 }
 

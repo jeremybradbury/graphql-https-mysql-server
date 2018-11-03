@@ -12,9 +12,9 @@ module.exports = {
       type: new GraphQLNonNull(UserInputType)
     }
   },
-  resolve: (root, { data }, { User, user, res }) => {
+  resolve: (root, { data }, { Users, user, res }) => {
     return new Promise((resolve, reject) => {
-      User.findOne({where: {id: user.id}}) // reset MY password
+      Users.findOne({where: {id: user.id}}) // reset MY password
         .then((u) => {
           let password = u.resetPass(); // update db w ecrypted pass
           res.json({data: {password: password}}); // return generated passphrase (only once)
