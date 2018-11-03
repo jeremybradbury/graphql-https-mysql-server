@@ -1,3 +1,4 @@
+// create a strong crypto-rando variable length token. 280-536 chars (256 chars = 2048 bit key)
 var crypto = require('crypto');
 module.exports = function(){
   var len = parseInt(crypto.randomBytes(1).toString('hex'), 16) / 2; // random length 0 to 256/2= 128 + 140

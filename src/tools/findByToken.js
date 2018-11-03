@@ -1,19 +1,15 @@
-module.exports = function (Users,token) {
-  return Users.findOne({
-    where: {token: token}
-  }).then(user => {
-    if (user) {
-      var expires = new Date(user.expires);
-      var now = new Date();
-      if (expires.getTime() >= now.getTime()) {
-        return user.dataValues;
-      } else {
-        let err = new Error('Token has expired');
-        return err;
-      }
+// lookup user by token, while validating the token
+module.exports = (Users,token,refresh = null) => Users.findOne({ where: {token: token}})
+.then(user => {
+  if (user) {
+    var expires = new Date(user.expires);
+    var now = new Date();
+    if ((expires.getTime() >= now.getTime()) || (refresh && (user.refresh == refresh))) {
+      return user.get({plain:true});
     } else {
-      let err = new Error('Token does not exist');
-      return err;
+      return null;
     }
-  })
-}
+  } else {
+    return null;
+  }
+})
