@@ -18,7 +18,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
     "connect-flash": "^0.1.1",
-    "connect-session-sequelize": "^4.1.0",
+    "connect-session-sequelize": "^5.0.0",
     "cookie-parser": "^1.4.3",
     "ejs": "^2.5.7",
     "express": "^4.15.4",
@@ -33,7 +33,7 @@
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
     "rotating-file-stream": "^1.2.2",
-    "sequelize": "^4.8.2",
+    "sequelize": "^5.1.0",
     "subscriptions-transport-ws": "^0.8.2",
     "winston": "^2.3.1",
     "xkcd-pass-plus": "^0.1.2"
