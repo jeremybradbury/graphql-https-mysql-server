@@ -33,7 +33,7 @@
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
     "rotating-file-stream": "^1.2.2",
-    "sequelize": "^4.8.2",
+    "sequelize": "^6.6.5",
     "subscriptions-transport-ws": "^0.8.2",
     "winston": "^2.3.1",
     "xkcd-pass-plus": "^0.1.2"
